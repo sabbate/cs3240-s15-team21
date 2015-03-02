@@ -1,3 +1,4 @@
+#ADDING A COMMENT TO TRACK, TEAM 21 FOR LIFE
 """
 Django settings for django1 project.
 
