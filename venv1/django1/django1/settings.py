@@ -83,4 +83,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#OXER COMMENT 1
+#OXER COMMENT 2
