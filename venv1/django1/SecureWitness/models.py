@@ -9,16 +9,6 @@ class Users(models.Model):
     admin = models.BooleanField(default=False)
 
 
-class Reports(models.Model):
-    RID = models.IntegerField(primary_key=True)
-    folderID = models.ForeignKey(Files) #the folder that this current report belongs to
-    #folder = models.ForeignKey(Folders)
-    authorID = models.IntegerField()
-    #author = models.ForeignKey(Users)
-    create_date = models.DateTimeField('date created')
-    last_update_date = models.DateTimeField('date of last modification')
-
-
 class Group(models.Model):
     GID = models.IntegerField(primary_key=True)
     group_name = models.CharField(max_length=100)
@@ -33,6 +23,16 @@ class Files(models.Model):
     #report = models.ForeignKey(Reports) #many (files) to one (report) relationship
     content = models.CharField(max_length=1000) #some kind of link to the actual file
     file_name = models.CharField(max_length=100)
+
+
+class Reports(models.Model):
+    RID = models.IntegerField(primary_key=True)
+    folderID = models.ForeignKey(Files) #the folder that this current report belongs to
+    #folder = models.ForeignKey(Folders)
+    authorID = models.IntegerField()
+    #author = models.ForeignKey(Users)
+    create_date = models.DateTimeField('date created')
+    last_update_date = models.DateTimeField('date of last modification')
 
 
 class Folders(models.Model):
