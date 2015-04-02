@@ -9,11 +9,17 @@ class User(models.Model):
     reg_date = models.DateTimeField('date of registration')
     admin = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.username
+
 
 class Group(models.Model):
     GID = models.AutoField(primary_key=True)
     group_name = models.CharField(max_length=100)
     size = models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.group_name
 
 
 class File(models.Model):
@@ -25,6 +31,9 @@ class File(models.Model):
     content = models.CharField(max_length=1000) #some kind of link to the actual file
     file_name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.file_name
+
 
 class Report(models.Model):
     RID = models.AutoField(primary_key=True)
@@ -34,6 +43,10 @@ class Report(models.Model):
     #author = models.ForeignKey(Users)
     create_date = models.DateTimeField('date created')
     last_update_date = models.DateTimeField('date of last modification')
+    report_name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.report_name
 
 
 class Folder(models.Model):
@@ -43,6 +56,9 @@ class Folder(models.Model):
     folder_name = models.CharField(max_length=100)
     parent = models.IntegerField() #the folderID of the parent folder
     GID = models.IntegerField()
+
+    def __str__(self):
+        return self.folder_name
 
 
 class UserToGroup(models.Model):
