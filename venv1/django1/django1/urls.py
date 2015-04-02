@@ -11,5 +11,3 @@ urlpatterns = patterns('',
                        url(r'^groups/', views.GroupView.as_view(), name='groups'),
                        url(r'^admin/', include(admin.site.urls)),
                        )
-
-# Added a comment - smm8ec
