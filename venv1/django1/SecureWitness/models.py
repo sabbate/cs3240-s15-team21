@@ -50,10 +50,3 @@ class UserToGroup(models.Model):
     UID = models.ManyToManyField(User)
     GID = models.ManyToManyField(Group)
     leader = models.BooleanField(default=False)
-
-admin.site.register(Group)
-admin.site.register(File)
-admin.site.register(Report)
-admin.site.register(Folder)
-admin.site.register(UserToGroup)
-

@@ -13,10 +13,14 @@ class IndexView(generic.ListView):
 
 
 class GroupView(generic.ListView):
-    model = Group
     template_name = 'SecureWitness/groups.html'
     context_object_name = 'group_list'
 
     def get_queryset(self):
         """Return last five groups"""
         return Group.objects.order_by('-GID')[:5]
+
+
+class GroupDetail(generic.DetailView):
+    model = Group
+    template_name = 'SecureWitness/group_detail.html'

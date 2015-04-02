@@ -8,6 +8,6 @@ urlpatterns = patterns('',
                        # url(r'^$', 'django1.views.home', name='home'),
                        # url(r'^blog/', include('blog.urls')),
 
-                       url(r'^groups/', views.GroupView.as_view(), name='groups'),
+                       url(r'^groups/', include('SecureWitness.urls', namespace="SecureWitness")),
                        url(r'^admin/', include(admin.site.urls)),
                        )
