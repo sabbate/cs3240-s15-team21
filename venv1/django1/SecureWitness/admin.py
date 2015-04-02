@@ -2,6 +2,10 @@ from django.contrib import admin
 from SecureWitness.models import *
 
 
+class UserAdmin(admin.ModelAdmin):
+    pass
+
+
 class GroupAdmin(admin.ModelAdmin):
     fields = ('group_name', 'size')
 
@@ -22,6 +26,7 @@ class UserToGroupAdmin(admin.ModelAdmin):
     pass
 
 
+admin.site.register(User, UserAdmin)
 admin.site.register(Group, GroupAdmin)
 admin.site.register(File, FileAdmin)
 admin.site.register(Report, ReportAdmin)
