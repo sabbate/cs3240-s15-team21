@@ -1,1 +1,11 @@
-<h1></h1>
+<h1>Groups</h1>
+
+{% if group_list %}
+    <ul>
+    {% for group in group_list %}
+        <li>{{ group.group_name }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No groups are available.</p>
+{% endif %}
