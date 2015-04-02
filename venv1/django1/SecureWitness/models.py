@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib import admin
 
 
-class Users(models.Model):
+class User(models.Model):
     UID = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
@@ -16,7 +16,7 @@ class Group(models.Model):
     size = models.IntegerField(default=1)
 
 
-class Files(models.Model):
+class File(models.Model):
     fileID = models.AutoField(primary_key=True)
     authorID = models.IntegerField()
     #author = models.ForeignKey(Users)
@@ -26,9 +26,9 @@ class Files(models.Model):
     file_name = models.CharField(max_length=100)
 
 
-class Reports(models.Model):
+class Report(models.Model):
     RID = models.AutoField(primary_key=True)
-    folderID = models.ForeignKey(Files) #the folder that this current report belongs to
+    folderID = models.ForeignKey(File) #the folder that this current report belongs to
     #folder = models.ForeignKey(Folders)
     authorID = models.IntegerField()
     #author = models.ForeignKey(Users)
@@ -36,7 +36,7 @@ class Reports(models.Model):
     last_update_date = models.DateTimeField('date of last modification')
 
 
-class Folders(models.Model):
+class Folder(models.Model):
     folderID = models.AutoField(primary_key=True)
     authorID = models.IntegerField()
     # author = models.ForeignKey(Users)
@@ -45,15 +45,15 @@ class Folders(models.Model):
     GID = models.IntegerField()
 
 
-class UsersInGroups(models.Model):
+class UserToGroup(models.Model):
     ID = models.AutoField(primary_key=True)
-    UID = models.ManyToManyField(Users)
+    UID = models.ManyToManyField(User)
     GID = models.ManyToManyField(Group)
     leader = models.BooleanField(default=False)
 
 admin.site.register(Group)
-admin.site.register(Files)
-admin.site.register(Reports)
-admin.site.register(Folders)
-admin.site.register(UsersInGroups)
+admin.site.register(File)
+admin.site.register(Report)
+admin.site.register(Folder)
+admin.site.register(UserToGroup)
 
