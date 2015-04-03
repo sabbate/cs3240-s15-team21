@@ -4,8 +4,8 @@ from django.views import generic
 from SecureWitness.models import Group
 
 
-class IndexView(generic.ListView):
-    template_name = 'SecureWitness/index.html'
+class GroupIndexView(generic.ListView):
+    template_name = 'SecureWitness/group_index.html'
 
     def get_queryset(self):
         """Return the last five published groups."""
