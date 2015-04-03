@@ -4,55 +4,74 @@
     <database-info product="SQLite" version="3.7.6.3" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native"/>
     <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed"/>
     <schema name="" catalog=""/>
-    <table name="SecureWitness_files" schema="" catalog="" type="TABLE">
-      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="fileID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+    <table name="SecureWitness_file" schema="" catalog="" type="TABLE">
       <column name="authorID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="ReportID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="content" sqlType="VARCHAR(1000)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="file_name" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <primary-key columns="id"/>
+      <column name="fileID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="fileID"/>
+      <exported-key name="#FAKE_SecureWitness_report_1" table="SecureWitness_report" schema="" catalog="" columns="folderID_id"/>
     </table>
-    <table name="SecureWitness_folders" schema="" catalog="" type="TABLE">
-      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="folderID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+    <table name="SecureWitness_folder" schema="" catalog="" type="TABLE">
       <column name="authorID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="folder_name" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="parent" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="GID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <primary-key columns="id"/>
+      <column name="folderID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="folderID"/>
     </table>
     <table name="SecureWitness_group" schema="" catalog="" type="TABLE">
-      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="GID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="group_name" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="size" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <primary-key columns="id"/>
+      <column name="GID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="GID"/>
+      <exported-key name="#FAKE_SecureWitness_usersingroups_GID_1" table="SecureWitness_usersingroups_GID" schema="" catalog="" columns="group_id"/>
     </table>
-    <table name="SecureWitness_reports" schema="" catalog="" type="TABLE">
-      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+    <table name="SecureWitness_report" schema="" catalog="" type="TABLE">
+      <column name="report_name" sqlType="VARCHAR(200)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="RID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="folderID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="folderID_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="authorID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="create_date" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="last_update_date" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <primary-key columns="id"/>
+      <primary-key columns="RID"/>
+      <foreign-key name="#FAKE_SecureWitness_report_1" columns="folderID_id" ref-table="SecureWitness_file" ref-schema="" ref-catalog="" ref-columns="fileID" update-rule="3" delete-rule="3" deferrability="1"/>
+      <index name="SecureWitness_report_f1420f45" unique="true" columns="folderID_id"/>
     </table>
-    <table name="SecureWitness_users" schema="" catalog="" type="TABLE">
-      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="UID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+    <table name="SecureWitness_user" schema="" catalog="" type="TABLE">
       <column name="username" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="password" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="reg_date" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <column name="privilege" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <primary-key columns="id"/>
-    </table>
-    <table name="SecureWitness_users_in_groups" schema="" catalog="" type="TABLE">
-      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="admin" sqlType="BOOL" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="UID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="GID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="leader" sqlType="BOOL" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="UID"/>
+      <exported-key name="#FAKE_SecureWitness_usersingroups_UID_1" table="SecureWitness_usersingroups_UID" schema="" catalog="" columns="user_id"/>
+    </table>
+    <table name="SecureWitness_usersingroups_GID" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="usersingroups_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="group_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <primary-key columns="id"/>
+      <foreign-key name="#FAKE_SecureWitness_usersingroups_GID_1" columns="group_id" ref-table="SecureWitness_group" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_SecureWitness_usersingroups_GID_2" columns="usersingroups_id" ref-table="SecureWitness_usersingroups" ref-schema="" ref-catalog="" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="1"/>
+      <index name="SecureWitness_usersingroups_GID_0e939a4f" unique="true" columns="group_id"/>
+      <index name="SecureWitness_usersingroups_GID_82804f71" unique="true" columns="usersingroups_id"/>
+    </table>
+    <table name="SecureWitness_usersingroups_UID" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="usersingroups_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="user_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="id"/>
+      <foreign-key name="#FAKE_SecureWitness_usersingroups_UID_1" columns="user_id" ref-table="SecureWitness_user" ref-schema="" ref-catalog="" ref-columns="UID" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_SecureWitness_usersingroups_UID_2" columns="usersingroups_id" ref-table="SecureWitness_usersingroups" ref-schema="" ref-catalog="" ref-columns="ID" update-rule="3" delete-rule="3" deferrability="1"/>
+      <index name="SecureWitness_usersingroups_UID_e8701ad4" unique="true" columns="user_id"/>
+      <index name="SecureWitness_usersingroups_UID_82804f71" unique="true" columns="usersingroups_id"/>
+    </table>
+    <table name="SecureWitness_usertogroup" schema="" catalog="" type="TABLE">
+      <column name="ID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="leader" sqlType="BOOL" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <primary-key columns="ID"/>
     </table>
     <table name="auth_group" schema="" catalog="" type="TABLE">
       <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
