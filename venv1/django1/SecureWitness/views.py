@@ -6,6 +6,7 @@ from SecureWitness.models import Group
 
 class GroupIndexView(generic.ListView):
     template_name = 'SecureWitness/group_index.html'
+    context_object_name = 'group_list'
 
     def get_queryset(self):
         """Return the last five published groups."""
@@ -14,7 +15,6 @@ class GroupIndexView(generic.ListView):
 
 class GroupView(generic.ListView):
     template_name = 'SecureWitness/group_detail.html'
-    context_object_name = 'group_list'
 
     def get_queryset(self):
         """Return last five groups"""
