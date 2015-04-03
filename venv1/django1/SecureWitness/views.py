@@ -13,7 +13,7 @@ class GroupIndexView(generic.ListView):
 
 
 class GroupView(generic.ListView):
-    template_name = 'SecureWitness/group.html'
+    template_name = 'SecureWitness/group_detail.html'
     context_object_name = 'group_list'
 
     def get_queryset(self):
