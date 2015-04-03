@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.views import generic
 
-from SecureWitness.models import Group
+from SecureWitness.models import *
 
 
 class GroupIndexView(generic.ListView):
@@ -13,9 +13,6 @@ class GroupIndexView(generic.ListView):
         return Group.objects.order_by('-GID')[:5]
 
 
-class GroupView(generic.ListView):
+class GroupView(generic.DetailView):
+    model = Group
     template_name = 'SecureWitness/group_detail.html'
-
-    def get_queryset(self):
-        """Return last five groups"""
-        return Group.objects.order_by('-GID')[:5]
