@@ -3,7 +3,7 @@
 {% if group_list %}
     <ul>
     {% for group in group_list %}
-        <li>{{ group.GID }} {{ group.group_name }}</li>
+        <li><a href="{% url 'SecureWitness:group' group.GID %}">{{ group.group_name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}

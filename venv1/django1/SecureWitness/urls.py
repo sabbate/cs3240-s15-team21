@@ -4,6 +4,6 @@ from SecureWitness import views
 
 urlpatterns = patterns('',
                        url(r'^$', views.IndexView.as_view(), name='index'),
-                       #url(r'^/groups', views.GroupView.as_view(), name='group'),
-                       url(r'^(?P<pk>\d+)/$', views.GroupView.as_view(), name='group_detail'),
+                       # url(r'^/groups', views.GroupView.as_view(), name='group'),
+                       url(r'^(?P<pk>\d+)/$', views.GroupView.as_view(), name='group'),
                        )
