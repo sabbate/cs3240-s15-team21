@@ -17,6 +17,7 @@ class Group(models.Model):
     GID = models.AutoField(primary_key=True)
     group_name = models.CharField(max_length=100)
     size = models.IntegerField(default=1)
+    users = models.ManyToManyField(User,through='UserToGroup')
 
     def __str__(self):
         return self.group_name
@@ -62,7 +63,8 @@ class Folder(models.Model):
 
 
 class UserToGroup(models.Model):
+    # Intermediary model between User and Group
     ID = models.AutoField(primary_key=True)
-    UID = models.ManyToManyField(User)
-    GID = models.ManyToManyField(Group)
+    UID = models.ForeignKey(User)
+    GID = models.ForeignKey(Group)
     leader = models.BooleanField(default=False)

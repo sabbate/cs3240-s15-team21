@@ -11,10 +11,9 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Files',
+            name='File',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('fileID', models.IntegerField()),
+                ('fileID', models.AutoField(serialize=False, primary_key=True)),
                 ('authorID', models.IntegerField()),
                 ('ReportID', models.IntegerField()),
                 ('content', models.CharField(max_length=1000)),
@@ -25,10 +24,9 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Folders',
+            name='Folder',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('folderID', models.IntegerField()),
+                ('folderID', models.AutoField(serialize=False, primary_key=True)),
                 ('authorID', models.IntegerField()),
                 ('folder_name', models.CharField(max_length=100)),
                 ('parent', models.IntegerField()),
@@ -41,8 +39,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Group',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('GID', models.IntegerField()),
+                ('GID', models.AutoField(serialize=False, primary_key=True)),
                 ('group_name', models.CharField(max_length=100)),
                 ('size', models.IntegerField(default=1)),
             ],
@@ -51,43 +48,48 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Reports',
+            name='Report',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('RID', models.IntegerField()),
-                ('folderID', models.IntegerField()),
+                ('RID', models.AutoField(serialize=False, primary_key=True)),
                 ('authorID', models.IntegerField()),
                 ('create_date', models.DateTimeField(verbose_name='date created')),
                 ('last_update_date', models.DateTimeField(verbose_name='date of last modification')),
+                ('report_name', models.CharField(max_length=200)),
+                ('folderID', models.ForeignKey(to='SecureWitness.File')),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Users',
+            name='User',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('UID', models.IntegerField()),
+                ('UID', models.AutoField(serialize=False, primary_key=True)),
                 ('username', models.CharField(max_length=100)),
                 ('password', models.CharField(max_length=100)),
                 ('reg_date', models.DateTimeField(verbose_name='date of registration')),
-                ('privilege', models.CharField(max_length=100)),
+                ('admin', models.BooleanField(default=False)),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Users_in_groups',
+            name='UserToGroup',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('UID', models.IntegerField()),
-                ('GID', models.IntegerField()),
+                ('ID', models.AutoField(serialize=False, primary_key=True)),
                 ('leader', models.BooleanField(default=False)),
+                ('GID', models.ForeignKey(to='SecureWitness.Group')),
+                ('UID', models.ForeignKey(to='SecureWitness.User')),
             ],
             options={
             },
             bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='group',
+            name='users',
+            field=models.ManyToManyField(through='SecureWitness.UserToGroup', to='SecureWitness.User'),
+            preserve_default=True,
         ),
     ]
