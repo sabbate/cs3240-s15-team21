@@ -17,7 +17,7 @@ class Group(models.Model):
     GID = models.AutoField(primary_key=True)
     group_name = models.CharField(max_length=100)
     size = models.IntegerField(default=1)
-    users = models.ManyToManyField(User,through='UserToGroup')
+    users = models.ManyToManyField(User, through='UserToGroup')
 
     def __str__(self):
         return self.group_name
