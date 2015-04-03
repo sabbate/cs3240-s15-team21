@@ -1,11 +1,12 @@
-<h1>Groups</h1>
+<h1>{{ group.group_name }}</h1>
 
-{% if group_list %}
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form>
+    {% csrf_token %}
     <ul>
-    {% for group in group_list %}
-        <li>{{ group.GID }} {{ group.group_name }}</li>
-    {% endfor %}
+        {% for user in group.user_set.all %}
+        <li>user</li>
+        {% endfor %}
     </ul>
-{% else %}
-    <p>No groups are available.</p>
-{% endif %}
+</form>
