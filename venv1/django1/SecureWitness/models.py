@@ -68,3 +68,4 @@ class UserToGroup(models.Model):
     UID = models.ForeignKey(User)
     GID = models.ForeignKey(Group)
     leader = models.BooleanField(default=False)
+    request_join = models.BooleanField(default=False)  # If true, user is not in group, but wants to join
