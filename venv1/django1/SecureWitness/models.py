@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib import admin
+from django import forms
 
 
 class User(models.Model):
@@ -8,6 +9,7 @@ class User(models.Model):
     password = models.CharField(max_length=100)
     reg_date = models.DateTimeField('date of registration')
     admin = models.BooleanField(default=False)
+    email = models.EmailField()
 
     def __str__(self):
         return self.username

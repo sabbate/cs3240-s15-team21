@@ -1,5 +1,6 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, render
 from django.views import generic
+from django.http import HttpResponseRedirect
 
 from SecureWitness.models import *
 
