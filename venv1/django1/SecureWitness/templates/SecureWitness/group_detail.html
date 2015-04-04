@@ -6,7 +6,7 @@
     {% csrf_token %}
     <ul>
         {% for user in group.usertogroup_set.all %}
-            <li>{{ user.UID.username }}</li>
+            <li>{{ user.UID.UID }} {{ user.UID.username }}</li>
         {% endfor %}
     </ul>
 </form>
