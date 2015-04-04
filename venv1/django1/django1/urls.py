@@ -9,5 +9,6 @@ urlpatterns = patterns('',
                        # url(r'^blog/', include('blog.urls')),
 
                        url(r'^groups/', include('SecureWitness.urls', namespace="SecureWitness")),
+                       url(r'^reports/', include('SecureWitness.urls_reports', namespace="Reports")),
                        url(r'^admin/', include(admin.site.urls)),
                        )

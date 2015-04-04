@@ -71,3 +71,11 @@ class UserToGroup(models.Model):
     GID = models.ForeignKey(Group)
     leader = models.BooleanField(default=False)
     request_join = models.BooleanField(default=False)  # If true, user is not in group, but wants to join
+
+class ReportSharingUser(models.Model):
+    # Intermediary model between Report and User
+    id = models.AutoField(primary_key=True)
+    UID = models.ForeignKey(User)
+    # TODO Need to determine how we will keep track of when reports are shared
+    # TODO need to determine if sharing with users and groups needs to remain separate, or can be combined
+    pass

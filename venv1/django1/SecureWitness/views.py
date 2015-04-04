@@ -14,6 +14,15 @@ class GroupIndexView(generic.ListView):
         return Group.objects.order_by('-GID')[:5]
 
 
-class GroupView(generic.DetailView):
+class GroupDetailView(generic.DetailView):
     model = Group
     template_name = 'SecureWitness/group_detail.html'
+
+
+class ReportIndexView(generic.ListView):
+    template_name = 'SecureWitness/report_index.html'
+    context_object_name = 'report_list'
+
+    def get_queryset(self):
+        """Return the last five uploaded reports."""
+        return Report.objects.order_by('-RID')[:5]
