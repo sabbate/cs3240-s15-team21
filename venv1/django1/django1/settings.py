@@ -1,4 +1,4 @@
-# ADDING A COMMENT TO TRACK, TEAM 21 FOR LIFE
+#ADDING A COMMENT TO TRACK, TEAM 21 FOR LIFE
 """
 Django settings for django1 project.
 
@@ -84,4 +84,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# OXER COMMENT 2
+#OXER COMMENT 2
