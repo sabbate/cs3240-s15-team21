@@ -10,14 +10,22 @@ class Users(models.Model):
     privilege = models.CharField(max_length=100)
 
 class Reports(models.Model):
-    RID = models.IntegerField()
-    folderID = models.IntegerField() #the folder that this current report belongs to
+	RID = models.AutoField(primary_key=True)
+	folderID = models.IntegerField(default=0) #the folder that this current report belongs to
     #folder = models.ForeignKey(Folders)
-    authorID = models.IntegerField()
+	authorID = models.IntegerField(default=0)
     #author = models.ForeignKey(Users)
-    create_date = models.DateTimeField('date created')
-    last_update_date = models.DateTimeField('date of last modification')
-
+	create_date = models.DateTimeField('date created')
+	last_update_date = models.DateTimeField('date of last modification')
+	short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
+	long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
+	file = models.CharField(max_length=300,default='DEFAULT VALUE')
+	location = models.CharField(max_length=300,default='DEFAULT VALUE')
+	incident_date = models.CharField(max_length=300,default='DEFAULT VALUE')
+	keywords = models.CharField(max_length=300,default='DEFAULT VALUE')
+	private = models.BooleanField(default=False)
+	def __str__(self):
+		return self.short_desc
 
 class Group(models.Model):
     GID = models.IntegerField()
