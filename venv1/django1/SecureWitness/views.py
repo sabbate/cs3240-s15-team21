@@ -1,5 +1,7 @@
-from django.shortcuts import render
-
+from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
+from django.contrib import auth
+from django.core.context_processors import csrf
 from django.http import HttpResponse #, HttpResposeDirect
 from SecureWitness.models import Reports
 from django import forms
@@ -7,16 +9,6 @@ import datetime
 
 def index(request):
 	return HttpResponse("Welcome to SecureWitness!")
-"""
-	all_reports = Reports.objects.all()
-	class ReportForm(forms.Form):
-		author = forms.CharField(label='Author Name', max_length=100)
-		short = forms.CharField(label='Short Description', max_length=150)
-		long = forms.CharField(label='Long Desccription', max_length=300)
-		filepath = forms.CharField(label='File path', max_length=300)
-	form = ReportForm()
-	#output = ', '.join(p.short_desc for p in all_reports)
-	return HttpResponse(form) """
 		
 def newreport(request):
 	return render(request, 'newreport.html')
@@ -49,4 +41,31 @@ def search(request):
 	else:
 		return HttpResponse('No results found. Please try another search term.')
 		
-			
+# Create your views here.
+
+def login(request):
+    c = {}
+    c.update(csrf(request))
+    return render_to_response('login.html', c)
+
+def auth_view(request):
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    user = auth.authenticate(username=username, password=password)
+
+    if user is not None:
+        auth.login(request, user)
+        return HttpResponseRedirect('../loggedin')
+    else:
+        return HttpResponseRedirect('../invalid')
+
+def loggedin(request):
+    return render_to_response('loggedin.html',
+        {'full_name': request.user.username})
+
+def invalid(request):
+    return render_to_response('invalid.html')
+
+def logout(request):
+    auth.logout(request)
+    return render_to_response('logout.html')
