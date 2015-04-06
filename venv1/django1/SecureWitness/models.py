@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib import admin
 from django import forms
+from datetime import datetime
 
 
 class User(models.Model):
@@ -28,10 +29,10 @@ class Group(models.Model):
 class File(models.Model):
     fileID = models.AutoField(primary_key=True)
     authorID = models.IntegerField()
-    #author = models.ForeignKey(Users)
+    # author = models.ForeignKey(Users)
     ReportID = models.IntegerField()
-    #report = models.ForeignKey(Reports) #many (files) to one (report) relationship
-    content = models.CharField(max_length=1000) #some kind of link to the actual file
+    # report = models.ForeignKey(Reports) #many (files) to one (report) relationship
+    content = models.CharField(max_length=1000)  #some kind of link to the actual file
     file_name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -40,10 +41,10 @@ class File(models.Model):
 
 class Report(models.Model):
     RID = models.AutoField(primary_key=True)
-    folderID = models.ForeignKey(File) #the folder that this current report belongs to
-    #folder = models.ForeignKey(Folders)
+    folderID = models.ForeignKey(File)  # the folder that this current report belongs to
+    # folder = models.ForeignKey(Folders)
     authorID = models.IntegerField()
-    #author = models.ForeignKey(Users)
+    # author = models.ForeignKey(Users)
     create_date = models.DateTimeField('date created')
     last_update_date = models.DateTimeField('date of last modification')
     report_name = models.CharField(max_length=200)
@@ -57,7 +58,7 @@ class Folder(models.Model):
     authorID = models.IntegerField()
     # author = models.ForeignKey(Users)
     folder_name = models.CharField(max_length=100)
-    parent = models.IntegerField() #the folderID of the parent folder
+    parent = models.IntegerField()  # the folderID of the parent folder
     GID = models.IntegerField()
 
     def __str__(self):
@@ -72,10 +73,15 @@ class UserToGroup(models.Model):
     leader = models.BooleanField(default=False)
     request_join = models.BooleanField(default=False)  # If true, user is not in group, but wants to join
 
+
 class ReportSharingUser(models.Model):
-    # Intermediary model between Report and User
     id = models.AutoField(primary_key=True)
     UID = models.ForeignKey(User)
-    # TODO Need to determine how we will keep track of when reports are shared
-    # TODO need to determine if sharing with users and groups needs to remain separate, or can be combined
+    sharing_date = models.DateTimeField(datetime.now())
     pass
+
+
+class ReportSharingGroup(models.Model):
+    id = models.AutoField(primary_key=True)
+    GID = models.ForeignKey(Group)
+    sharing_date = models.DateTimeField(datetime.now())

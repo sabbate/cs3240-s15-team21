@@ -40,6 +40,7 @@
       <index name="SecureWitness_report_f1420f45" unique="true" columns="folderID_id"/>
     </table>
     <table name="SecureWitness_user" schema="" catalog="" type="TABLE">
+      <column name="email" sqlType="VARCHAR(75)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="UID" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="username" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="password" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
