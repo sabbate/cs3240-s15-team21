@@ -7,7 +7,7 @@ class Users(models.Model):
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
     reg_date = models.DateTimeField('date of registration')
-    privilege = models.CharField(max_length=100)
+    privilege = models.CharField(max_length=100, default='DEFAULT VALUE')
 
 class Reports(models.Model):
 	RID = models.AutoField(primary_key=True)
