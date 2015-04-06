@@ -5,6 +5,7 @@ from django.core.context_processors import csrf
 from django.http import HttpResponse #, HttpResposeDirect
 from SecureWitness.models import Reports
 from django import forms
+from django.shortcuts import render
 import datetime
 
 def index(request):
@@ -36,7 +37,7 @@ def search_form(request):
 def search(request):
 	if 'q' in request.GET and request.GET['q']:
 		q = request.GET['q']
-		reports = Reports.objects.filter(short_desc__icontains=q)
+		reports = Reports.objects.filter(keywords__icontains=q)
 		return render(request, 'search_results.html', {'reports': reports, 'query': q})
 	else:
 		return HttpResponse('No results found. Please try another search term.')
