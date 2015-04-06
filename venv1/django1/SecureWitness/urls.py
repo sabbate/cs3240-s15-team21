@@ -12,6 +12,10 @@ urlpatterns = patterns('',
                        url(r'^logout/$', views.logout),
                        url(r'^loggedin/$', views.loggedin),
                        url(r'^invalid/$', views.invalid),
+                       url(r'newreport/$', views.newreport, name='newreport'),
+                       url(r'^search_form/$', views.search_form),
+                       url(r'^search/$', views.search),
+                       url(r'^submitreport/$', views.submitreport),
                        )
 
 '''
@@ -19,3 +23,7 @@ urlpatterns = patterns('',
                        url(r'^accounts/login/$', 'django.contrib.auth.views.login'),
 
 '''
+# url(r'^login/$', 'django.contrib.auth.views.login',
+# {'template_name': 'admin/login.html'}),
+#  url(r'^register/$', views.register, name='register'),
+

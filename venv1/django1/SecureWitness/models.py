@@ -48,6 +48,13 @@ class Report(models.Model):
     create_date = models.DateTimeField('date created')
     last_update_date = models.DateTimeField('date of last modification')
     report_name = models.CharField(max_length=200)
+    short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
+    long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
+    file = models.CharField(max_length=300, default='DEFAULT VALUE')
+    location = models.CharField(max_length=300, default='DEFAULT VALUE')
+    incident_date = models.CharField(max_length=300, default='DEFAULT VALUE')
+    keywords = models.CharField(max_length=300, default='DEFAULT VALUE')
+    private = models.BooleanField(default=False)
 
     def __str__(self):
         return self.report_name
