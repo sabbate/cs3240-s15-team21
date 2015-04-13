@@ -15,15 +15,16 @@ class Reports(models.Model):
     #folder = models.ForeignKey(Folders)
 	authorID = models.IntegerField(default=0)
     #author = models.ForeignKey(Users)
-	create_date = models.DateTimeField('date created')
+	create_date = models.DateTimeField()
 	last_update_date = models.DateTimeField('date of last modification')
 	short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
 	long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
-	file = models.CharField(max_length=300,default='DEFAULT VALUE')
+	#file = models.CharField(max_length=300,default='DEFAULT VALUE')
 	location = models.CharField(max_length=300,default='DEFAULT VALUE')
 	incident_date = models.CharField(max_length=300,default='DEFAULT VALUE')
 	keywords = models.CharField(max_length=300,default='DEFAULT VALUE')
 	private = models.BooleanField(default=False)
+	
 	def __str__(self):
 		return self.short_desc
 
@@ -33,12 +34,12 @@ class Group(models.Model):
     size = models.IntegerField(default=1)
 
 class Files(models.Model):
-    fileID = models.IntegerField()
+    fileID = models.AutoField(primary_key=True)
     authorID = models.IntegerField()
     #author = models.ForeignKey(Users)
     ReportID = models.IntegerField()
     #report = models.ForeignKey(Reports) #many (files) to one (report) relationship
-    content = models.CharField(max_length=1000) #some kind of link to the actual file
+    docfile = models.FileField(upload_to='files/', default = False) #some kind of link to the actual file
     file_name = models.CharField(max_length=100)
 
 class Folders(models.Model):

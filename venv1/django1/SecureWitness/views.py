@@ -4,12 +4,15 @@ from django.contrib import auth
 from django.core.context_processors import csrf
 from django.http import HttpResponse #, HttpResposeDirect
 from SecureWitness.models import Reports
+from SecureWitness.models import Files
 from django import forms
 from django.shortcuts import render
 import datetime
 
 def index(request):
-	return HttpResponse("Welcome to SecureWitness!")
+	reports = Reports.objects.raw('SELECT * FROM SecureWitness_reports')
+	return render(request, 'all-reports.html', {'reports': reports})
+	#return HttpResponse("Welcome to SecureWitness!")
 		
 def newreport(request):
 	return render(request, 'newreport.html')
@@ -21,12 +24,20 @@ def submitreport(request):
 		loc = request.POST['location']
 		date = request.POST['date']
 		keys = request.POST['keys']
-		priv = request.POST['private']
+		priv = request.POST.get('private', False)
 		#files = HttpRequest.FILES;
 		cur_time = datetime.datetime.now()
 		r = Reports(create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
 		location = loc, incident_date = date, keywords = keys, private = priv)
 		r.save();
+		for key, file in request.FILES.items():
+			path = 'C:/Users/Sarah M/gitrepos/cs3240-s15-team21/venv1/django1/SecureWitness/files/' + file.name
+			dest = open(path, 'wb+')
+			dest.write(file.read())
+			dest.close()
+			f = Files(authorID = 1, ReportID = 1, docfile = path);
+			f.save();
+
 		return HttpResponse('Thank you for submitting a report!')
 	else:
 		return HttpResponse('Your submission was unsuccessful.')

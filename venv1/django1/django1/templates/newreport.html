@@ -2,7 +2,7 @@
 <head><title> Submit Report</title></head>
 <body>
 <h2> Submit a Report </h2>
-<form action = "/SecureWitness/submitreport/" method = "post">{% csrf_token %}
+<form action = "/SecureWitness/submitreport/" method = "post" enctype="multipart/form-data">{% csrf_token %}
 <table>
 	<tr><td>Short Description:</td><td><input type = "text" name = "short"></td></tr>
 	<tr><td>Long Description:</td><td><textarea name = "long" rows="7" cols="40"></textarea></td></tr>
