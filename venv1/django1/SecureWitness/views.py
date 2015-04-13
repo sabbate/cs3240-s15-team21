@@ -54,7 +54,7 @@ def submitreport(request):
 		priv = request.POST.get('private', False)
 		#files = HttpRequest.FILES;
 		cur_time = datetime.datetime.now()
-		r = Reports(create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
+		r = Report(create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
 		location = loc, incident_date = date, keywords = keys, private = priv)
 		r.save();
 		for key, file in request.FILES.items():
@@ -62,7 +62,7 @@ def submitreport(request):
 			dest = open(path, 'wb+')
 			dest.write(file.read())
 			dest.close()
-			f = Files(authorID = 1, ReportID = 1, docfile = path);
+			f = File(authorID = 1, ReportID = 1, docfile = path);
 			f.save();
 
 		return HttpResponse('Thank you for submitting a report!')
