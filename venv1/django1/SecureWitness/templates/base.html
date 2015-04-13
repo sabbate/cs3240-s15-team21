@@ -11,9 +11,15 @@
         <li><a href="/">Home</a></li>
 
         {% if user.is_authenticated %}
+<<<<<<< HEAD
             <li><a href="/SecureWitness/account/logout">Logout</a></li>
         {% else %}
             <li><a href="/SecureWitness/account/login">Login</a></li>
+=======
+            <li><a href="/SecureWitness/logout">Logout</a></li>
+        {% else %}
+            <li><a href="/SecureWitness/login">Login</a></li>
+>>>>>>> 705e127d3c7140da426a4a91d1cbae3f3ff5f203
         {% endif %}
     </ul>
     {% endblock %}
