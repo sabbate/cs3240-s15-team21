@@ -1,0 +1,18 @@
+<html>
+<head><title> Submit Report</title></head>
+<body>
+<h2> Submit a Report </h2>
+<form action = "/SecureWitness/submitreport/" method = "post" enctype="multipart/form-data">{% csrf_token %}
+<table>
+	<tr><td>Short Description:</td><td><input type = "text" name = "short"></td></tr>
+	<tr><td>Long Description:</td><td><textarea name = "long" rows="7" cols="40"></textarea></td></tr>
+	<tr><td>Location:</td><td><input type = "text" name = "location"></td></tr>
+	<tr><td>Date of Incident:</td><td><input type = "date" name = "date"></td></tr>
+	<tr><td>Keywords(space-separated):</td><td><input type = "text" name = "keys"></td></tr>
+	<tr><td>Upload files</td><td><input type="file" name="files" accept="file_extension|audio/*|video/*|image/*|media_type" multiple></td></tr>
+	</table>
+	Private report? <input type = "checkbox" name = "private">
+	<input type = "submit" value = "Submit Report">
+</form>
+</body>
+</html>

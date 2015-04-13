@@ -15,6 +15,7 @@ class User(models.Model):
     def __str__(self):
         return self.username
 
+    privilege = models.CharField(max_length=100, default='DEFAULT VALUE')
 
 class Group(models.Model):
     GID = models.AutoField(primary_key=True)
@@ -25,7 +26,6 @@ class Group(models.Model):
     def __str__(self):
         return self.group_name
 
-
 class File(models.Model):
     fileID = models.AutoField(primary_key=True)
     authorID = models.IntegerField()
@@ -33,6 +33,8 @@ class File(models.Model):
     ReportID = models.IntegerField()
     # report = models.ForeignKey(Reports) #many (files) to one (report) relationship
     content = models.CharField(max_length=1000)  #some kind of link to the actual file
+    #report = models.ForeignKey(Reports) #many (files) to one (report) relationship
+    docfile = models.FileField(upload_to='files/', default = False) #some kind of link to the actual file
     file_name = models.CharField(max_length=100)
 
     def __str__(self):
@@ -50,7 +52,7 @@ class Report(models.Model):
     report_name = models.CharField(max_length=200)
     short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
     long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
-    file = models.CharField(max_length=300, default='DEFAULT VALUE')
+    #file = models.CharField(max_length=300, default='DEFAULT VALUE')
     location = models.CharField(max_length=300, default='DEFAULT VALUE')
     incident_date = models.CharField(max_length=300, default='DEFAULT VALUE')
     keywords = models.CharField(max_length=300, default='DEFAULT VALUE')
