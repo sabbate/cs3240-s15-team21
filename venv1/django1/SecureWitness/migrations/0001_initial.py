@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='File',
             fields=[
-                ('fileID', models.AutoField(serialize=False, primary_key=True)),
+                ('fileID', models.AutoField(primary_key=True, serialize=False)),
                 ('authorID', models.IntegerField()),
                 ('ReportID', models.IntegerField()),
                 ('content', models.CharField(max_length=1000)),
@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Folder',
             fields=[
-                ('folderID', models.AutoField(serialize=False, primary_key=True)),
+                ('folderID', models.AutoField(primary_key=True, serialize=False)),
                 ('authorID', models.IntegerField()),
                 ('folder_name', models.CharField(max_length=100)),
                 ('parent', models.IntegerField()),
@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Group',
             fields=[
-                ('GID', models.AutoField(serialize=False, primary_key=True)),
+                ('GID', models.AutoField(primary_key=True, serialize=False)),
                 ('group_name', models.CharField(max_length=100)),
                 ('size', models.IntegerField(default=1)),
             ],
@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Report',
             fields=[
-                ('RID', models.AutoField(serialize=False, primary_key=True)),
+                ('RID', models.AutoField(primary_key=True, serialize=False)),
                 ('authorID', models.IntegerField()),
                 ('create_date', models.DateTimeField(verbose_name='date created')),
                 ('last_update_date', models.DateTimeField(verbose_name='date of last modification')),
@@ -72,8 +72,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ReportSharingGroup',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True)),
-                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 15, 52, 48, 989845))),
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 16, 21, 59, 978373))),
                 ('GID', models.ForeignKey(to='SecureWitness.Group')),
             ],
             options={
@@ -83,8 +83,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ReportSharingUser',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True)),
-                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 15, 52, 48, 989845))),
+                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 16, 21, 59, 978373))),
             ],
             options={
             },
@@ -93,7 +93,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('UID', models.AutoField(serialize=False, primary_key=True)),
+                ('UID', models.AutoField(primary_key=True, serialize=False)),
                 ('username', models.CharField(max_length=100)),
                 ('password', models.CharField(max_length=100)),
                 ('reg_date', models.DateTimeField(verbose_name='date of registration')),
@@ -108,7 +108,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserToGroup',
             fields=[
-                ('ID', models.AutoField(serialize=False, primary_key=True)),
+                ('ID', models.AutoField(primary_key=True, serialize=False)),
                 ('leader', models.BooleanField(default=False)),
                 ('request_join', models.BooleanField(default=False)),
                 ('GID', models.ForeignKey(to='SecureWitness.Group')),
@@ -127,7 +127,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='group',
             name='users',
-            field=models.ManyToManyField(through='SecureWitness.UserToGroup', to='SecureWitness.User'),
+            field=models.ManyToManyField(to='SecureWitness.User', through='SecureWitness.UserToGroup'),
             preserve_default=True,
         ),
     ]

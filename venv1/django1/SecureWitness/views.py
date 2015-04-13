@@ -53,10 +53,7 @@ def submitreport(request):
 		keys = request.POST.get('keys', False)
 		priv = request.POST.get('private', False)
 		#files = HttpRequest.FILES;
-		cur_time = datetime.datetime.now()
-		r = Report(authorID=1, create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
-		location = loc, incident_date = date, keywords = keys, private = priv)
-		r.save();
+		cur_time = datetime.now()
 		for key, file in request.FILES.items():
 			path = 'C:/Users/Sarah M/gitrepos/cs3240-s15-team21/venv1/django1/SecureWitness/files/' + file.name
 			dest = open(path, 'wb+')
@@ -64,7 +61,9 @@ def submitreport(request):
 			dest.close()
 			f = File(authorID = 1, ReportID = 1, docfile = path);
 			f.save();
-
+		r = Report(authorID=1, create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
+		location = loc, folderID = f, incident_date = date, keywords = keys, private = priv)
+		r.save();
 		return HttpResponse('Thank you for submitting a report!')
 	else:
 		return HttpResponse('Your submission was unsuccessful.')
