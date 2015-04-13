@@ -5,8 +5,8 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
-from SecureWitness.models import Reports
-from SecureWitness.models import Files
+from SecureWitness.models import Report
+from SecureWitness.models import File
 from django import forms
 from django.shortcuts import render
 import datetime
@@ -45,16 +45,16 @@ def newreport(request):
 	return render(request, 'newreport.html')
 
 def submitreport(request):
-	if request.POST['short'] and request.POST['long']:
-		short = request.POST['short']
-		long = request.POST['long']
-		loc = request.POST['location']
-		date = request.POST['date']
-		keys = request.POST['keys']
+	if request.POST.get('short', False) and request.POST.get('long', False):
+		short = request.POST.get('short', False)
+		long = request.POST.get('long', False)
+		loc = request.POST.get('location', False)
+		date = request.POST.get('date', False)
+		keys = request.POST.get('keys', False)
 		priv = request.POST.get('private', False)
 		#files = HttpRequest.FILES;
 		cur_time = datetime.datetime.now()
-		r = Report(create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
+		r = Report(authorID=1, create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
 		location = loc, incident_date = date, keywords = keys, private = priv)
 		r.save();
 		for key, file in request.FILES.items():
