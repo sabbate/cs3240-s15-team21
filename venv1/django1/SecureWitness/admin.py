@@ -1,5 +1,5 @@
 from django.contrib import admin
-#from SecureWitness.models import *
+import SecureWitness.models
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -25,11 +25,10 @@ class FolderAdmin(admin.ModelAdmin):
 class UserToGroupAdmin(admin.ModelAdmin):
     pass
 
-'''
-admin.site.register(User, UserAdmin)
-admin.site.register(Group, GroupAdmin)
-admin.site.register(File, FileAdmin)
-admin.site.register(Report, ReportAdmin)
-admin.site.register(Folder, FolderAdmin)
-admin.site.register(UserToGroup, UserToGroupAdmin)
-'''
+
+admin.site.register(SecureWitness.models.User, UserAdmin)
+admin.site.register(SecureWitness.models.Group, GroupAdmin)
+admin.site.register(SecureWitness.models.File, FileAdmin)
+admin.site.register(SecureWitness.models.Report, ReportAdmin)
+admin.site.register(SecureWitness.models.Folder, FolderAdmin)
+admin.site.register(SecureWitness.models.UserToGroup, UserToGroupAdmin)
