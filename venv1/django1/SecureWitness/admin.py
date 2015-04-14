@@ -1,5 +1,5 @@
 from django.contrib import admin
-from SecureWitness.models import *
+#from SecureWitness.models import *
 
 
 class UserAdmin(admin.ModelAdmin):

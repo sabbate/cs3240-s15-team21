@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 
-from SecureWitness import views
 
 urlpatterns = patterns('',
                        # Examples:
