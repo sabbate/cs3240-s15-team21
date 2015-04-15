@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('authorID', models.IntegerField()),
                 ('ReportID', models.IntegerField()),
                 ('content', models.CharField(max_length=1000)),
-                ('docfile', models.FileField(upload_to='files/', default=False)),
+                ('docfile', models.FileField(default=False, upload_to='files/')),
                 ('file_name', models.CharField(max_length=100)),
             ],
             options={
@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
             name='ReportSharingGroup',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 16, 21, 59, 978373))),
+                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 16, 45, 18, 715702))),
                 ('GID', models.ForeignKey(to='SecureWitness.Group')),
             ],
             options={
@@ -84,7 +84,7 @@ class Migration(migrations.Migration):
             name='ReportSharingUser',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 16, 21, 59, 978373))),
+                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 16, 45, 18, 715702))),
             ],
             options={
             },

@@ -29,6 +29,7 @@ class Group(models.Model):
 class File(models.Model):
     fileID = models.AutoField(primary_key=True)
     authorID = models.IntegerField()
+
     # author = models.ForeignKey(Users)
     ReportID = models.IntegerField()
     # report = models.ForeignKey(Reports) #many (files) to one (report) relationship
@@ -36,7 +37,7 @@ class File(models.Model):
     #report = models.ForeignKey(Reports) #many (files) to one (report) relationship
     docfile = models.FileField(upload_to='files/', default = False) #some kind of link to the actual file
     file_name = models.CharField(max_length=100)
-
+	
     def __str__(self):
         return self.file_name
 
@@ -44,7 +45,6 @@ class File(models.Model):
 class Report(models.Model):
     RID = models.AutoField(primary_key=True)
     folderID = models.ForeignKey(File)  # the folder that this current report belongs to
-    # folder = models.ForeignKey(Folders)
     authorID = models.IntegerField()
     # author = models.ForeignKey(Users)
     create_date = models.DateTimeField('date created')
@@ -52,12 +52,11 @@ class Report(models.Model):
     report_name = models.CharField(max_length=200)
     short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
     long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
-    #file = models.CharField(max_length=300, default='DEFAULT VALUE')
     location = models.CharField(max_length=300, default='DEFAULT VALUE')
     incident_date = models.CharField(max_length=300, default='DEFAULT VALUE')
     keywords = models.CharField(max_length=300, default='DEFAULT VALUE')
     private = models.BooleanField(default=False)
-
+	
     def __str__(self):
         return self.report_name
 
