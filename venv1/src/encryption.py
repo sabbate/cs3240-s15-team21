@@ -11,7 +11,7 @@ from Crypto.Cipher import AES
 
 # Configure these global variables to encrypt/decrypt.
 # NOTE: A file that is already encrypted will throw an error if you try to encrypt it again
-FILE_NAME = 'test.txt'
+FILE_NAME = 'encrypt.txt'
 KEY_ROOT = 'rootkeyhere'
 ZERO_FOR_ENCRYPT_ONE_FOR_DECRYPT = 1
 
@@ -44,28 +44,28 @@ def encrypt(filename, root):
 def decrypt(filename, root):
 
     # Open up encrypted file and read the ciphertext into a buffer.
-    with open(filename, 'rb') as f:
-        buffer = f.read()
-    ciphertext = buffer
+	path = 'C:/Users/Sarah M/gitrepos/cs3240-s15-team21/venv1/django1/SecureWitness/files/'
+	with open(path + 'p450.aseqs', 'rb') as f:
+		buffer = f.read()
+	ciphertext = buffer
 
     # Create a 16 byte SHA hash of the key root
-    with open("key_" + filename, 'rb') as f:
-        buffer = f.read()
-    key1 = buffer
+	with open( path + "key_" + 'p450.aseqs', 'rb') as f:
+		buffer = f.read()
+	key1 = buffer
 
     # Using this newly generated key, create a cipher. Then, use this cipher to decrypt
     # the ciphertext
-    cipher = AES.new(key1, AES.MODE_CFB, 'this is an IV456')
-    plaintext = cipher.decrypt(ciphertext)
+	cipher = AES.new(key1, AES.MODE_CFB, 'this is an IV456')
+	plaintext = cipher.decrypt(ciphertext)
 
     # Write the decrypted ciphertext (plaintext) into the same file.
-    with open(filename,'wb') as f:
-        f.write(plaintext)
-
+	with open(path + 'p450.aseqs','wb') as f:
+		f.write(plaintext)
 
 if __name__ == "__main__":
 
-    if ZERO_FOR_ENCRYPT_ONE_FOR_DECRYPT == 0:
-        encrypt(FILE_NAME, KEY_ROOT)
-    if ZERO_FOR_ENCRYPT_ONE_FOR_DECRYPT == 1:
-        decrypt(FILE_NAME, KEY_ROOT)
+	if ZERO_FOR_ENCRYPT_ONE_FOR_DECRYPT == 0:
+		encrypt(FILE_NAME, KEY_ROOT)
+	if ZERO_FOR_ENCRYPT_ONE_FOR_DECRYPT == 1:
+		decrypt(FILE_NAME, KEY_ROOT)
