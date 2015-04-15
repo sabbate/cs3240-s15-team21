@@ -1,0 +1,40 @@
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="../../../bootstrap-3.3.4-dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <h1>{{ group.group_name }}</h1>
+
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+        <form>
+            {% csrf_token %}
+            <ul>
+                {% for user in group.usertogroup_set.all %}
+                    <li>{{ user.UID.UID }} {{ user.UID.username }} {% if user.leader %}<strong>&nbsp;&nbsp;&nbsp;
+                        Leader</strong>{% endif %}</li>
+                {% endfor %}
+            </ul>
+        </form>
+
+        <p>If you wish to join {{ group.group_name }}, please email one of the leaders below.</p>
+
+        <form>
+            {% csrf_token %}
+            <ul class="list-group">
+                {% for user in group.usertogroup_set.all %}
+                    {% if user.leader %}
+                        <li class="list-group-item">{{ user.UID.username }}&nbsp;&nbsp;&nbsp;<a href="mailto:{{ user.UID.email }}">
+                            {{ user.UID.email }}</a></li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </form>
+
+        <script src="https://ajax.googleapis.com/ajax.libs/jquery/1.11.2/jquery.mis.js"></script>
+        <script src="../../../bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
+    </body>
+</html>

@@ -5,7 +5,7 @@
     {% if form.errors %}
         <p class="error">Sorry, this is not a valid username or password.</p>
     {% endif %}
-
+    <p> Are you a new user to the system? Register <a href="/SecureWitness/account/register/">here</a> !</p>
     <form action="../auth/" method="post">
         {% csrf_token %}
         <label for="username">Username:</label>

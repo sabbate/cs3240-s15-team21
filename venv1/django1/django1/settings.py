@@ -1,4 +1,4 @@
-#ADDING A COMMENT TO TRACK, TEAM 21 FOR LIFE
+# ADDING A COMMENT TO TRACK, TEAM 21 FOR LIFE
 """
 Django settings for django1 project.
 
@@ -26,21 +26,6 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
-
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_ROOT, 'templates').replace('\\','/'),
-)
-
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
 
 
 # Application definition
@@ -80,9 +65,6 @@ DATABASES = {
     }
 }
 
-MEDIA_ROOT = '/django1/SecureWitness/files'
-MEDIA_URL = '/files/'
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
@@ -102,4 +84,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#OXER COMMENT 2
+# OXER COMMENT 2

@@ -1,64 +1,105 @@
+#import sys
+#import os.path
+
+#sys.path.append(os.path.join(os.path.dirname('views.py'), '..'))
+#import gen_py.lib
+from django.shortcuts import render
+from django.views import generic
+from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
-from django.http import HttpResponse #, HttpResposeDirect
-from SecureWitness.models import Reports
-from SecureWitness.models import Files
-from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from SecureWitness.models import Report
+from SecureWitness.models import File
+#from django import forms
 from django.shortcuts import render
 import datetime
+from SecureWitness.models import *
+import Crypto
+from Crypto.Hash import SHA256
+from Crypto.Cipher import AES
+import os
+
+
+
+class GroupIndexView(generic.ListView):
+    template_name = 'SecureWitness/group_index.html'
+    context_object_name = 'group_list'
+
+    def get_queryset(self):
+        """Return the last five published groups."""
+        return Group.objects.order_by('-GID')[:5]
+
+
+class GroupDetailView(generic.DetailView):
+    model = Group
+    template_name = 'SecureWitness/group_detail.html'
+
+
+class ReportIndexView(generic.ListView):
+    template_name = 'SecureWitness/report_index.html'
+    context_object_name = 'report_list'
+
+    def get_queryset(self):
+        """Return the last five uploaded reports."""
+        return Report.objects.order_by('-RID')[:5]
 
 def index(request):
-	reports = Reports.objects.raw('SELECT * FROM SecureWitness_reports')
-	return render(request, 'all-reports.html', {'reports': reports})
-	#return HttpResponse("Welcome to SecureWitness!")
-		
+    reports = Report.objects.raw('SELECT * FROM SecureWitness_reports')
+    return render(request, 'all-reports.html', {'reports': reports})
+    #return HttpResponse("Welcome to SecureWitness!")
+
 def newreport(request):
-	return render(request, 'newreport.html')
+    return render(request, 'newreport.html')
 
 def submitreport(request):
-	if request.POST['short'] and request.POST['long']:
-		short = request.POST['short']
-		long = request.POST['long']
-		loc = request.POST['location']
-		date = request.POST['date']
-		keys = request.POST['keys']
+	if request.POST.get('short', False) and request.POST.get('long', False):
+		short = request.POST.get('short', False)
+		long = request.POST.get('long', False)
+		loc = request.POST.get('location', False)
+		date = request.POST.get('date', False)
+		keys = request.POST.get('keys', False)
 		priv = request.POST.get('private', False)
+		password = request.POST.get('pw', False)
 		#files = HttpRequest.FILES;
-		cur_time = datetime.datetime.now()
-		r = Reports(create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
-		location = loc, incident_date = date, keywords = keys, private = priv)
-		r.save();
+		cur_time = datetime.now()
 		for key, file in request.FILES.items():
-			path = 'C:/Users/Sarah M/gitrepos/cs3240-s15-team21/venv1/django1/SecureWitness/files/' + file.name
-			dest = open(path, 'wb+')
+			path = os.getcwd() + '\\SecureWitness\\files\\'
+			dest = open(path + file.name, 'wb+')
 			dest.write(file.read())
+			encrypt(path,file.name,password)
 			dest.close()
-			f = Files(authorID = 1, ReportID = 1, docfile = path);
+			f = File(authorID = 1, ReportID = 1, docfile = path);
 			f.save();
-
+		r = Report(authorID=1, create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
+		location = loc, folderID = f, incident_date = date, keywords = keys, private = priv)
+		r.save();
 		return HttpResponse('Thank you for submitting a report!')
 	else:
 		return HttpResponse('Your submission was unsuccessful.')
-	
+
 def search_form(request):
-	return render(request, 'search_form.html')
+    return render(request, 'search_form.html')
 
 def search(request):
 	if 'q' in request.GET and request.GET['q']:
 		q = request.GET['q']
-		reports = Reports.objects.filter(keywords__icontains=q)
+		r1 = Report.objects.filter(keywords__icontains=q)
+		r2 = Report.objects.filter(short_desc__icontains=q)
+		reports = r1 | r2
 		return render(request, 'search_results.html', {'reports': reports, 'query': q})
 	else:
 		return HttpResponse('No results found. Please try another search term.')
-		
-# Create your views here.
 
 def login(request):
     c = {}
     c.update(csrf(request))
     return render_to_response('login.html', c)
+
 
 def auth_view(request):
     username = request.POST.get('username', '')
@@ -67,17 +108,123 @@ def auth_view(request):
 
     if user is not None:
         auth.login(request, user)
-        return HttpResponseRedirect('../loggedin')
+        if(user.is_superuser):
+            return HttpResponseRedirect('../../admin')
+        else:
+            return HttpResponseRedirect('../loggedin')
     else:
         return HttpResponseRedirect('../invalid')
+
+@login_required
 
 def loggedin(request):
     return render_to_response('loggedin.html',
         {'full_name': request.user.username})
 
+@login_required
+def admin(request):
+    c = {}
+    c.update(csrf(request))
+    #c['username'] =  request.newAdmin.username
+    return render_to_response('admin.html',
+        c)
+
+def suspend_user_view(request):
+    username = request.POST.get('username_suspend', '')
+    try:
+        suspend = User.objects.get(username=username)
+    except:
+        return HttpResponseRedirect('../user_suspend_failed')
+
+    if suspend.is_active:
+        suspend.is_active = False
+        suspend.save()
+        if not suspend.is_active :
+            return HttpResponseRedirect('../user_suspended')
+    else:
+        return HttpResponseRedirect('../user_already_suspended')
+
+def assigning_admin_view(request):
+    username = request.POST.get('username_admin', '')
+
+    try:
+        newAdmin = User.objects.get(username=username)
+    except:
+        return HttpResponseRedirect('../admin_assign_failed')
+
+    if not newAdmin.is_superuser:
+        newAdmin.is_superuser = True
+        newAdmin.save()
+        if newAdmin.is_superuser:
+            return HttpResponseRedirect('../admin_assigned')
+    else:
+        return HttpResponseRedirect('../admin_already_assigned')
+
+
 def invalid(request):
     return render_to_response('invalid.html')
 
+@login_required
 def logout(request):
     auth.logout(request)
     return render_to_response('logout.html')
+
+def encrypt(path, filename, root):
+
+    # Open up unencrypted file and read the plaintext into a buffer.
+    with open(path + filename,'r') as f:
+        buffer = f.read()
+    plaintext = buffer
+
+    # Create a 16 byte SHA hash of the key root
+    hash = SHA256.new()
+    hash.update(root.encode('utf-8'))
+    key = hash.digest()[0:16]
+
+    # Using this newly generated key, create a cipher. Then, use this cipher to encrypt
+    # the plaintext
+    cipher = AES.new(key, AES.MODE_CFB, 'this is an IV456')
+    ciphertext = cipher.encrypt(plaintext)
+
+    # Write the encrypted plaintext (ciphertext) into the same file.
+    # NOTE: this ciphertext is written in bytes, not unicode. Notice the "wb" flag
+    # in write() instead of just "w".
+    with open(path + filename,'wb') as f:
+		#print(ciphertext)
+        f.write(ciphertext);
+    with open(path +"key_"+filename,'wb') as f:
+        f.write(key);
+
+def register_user(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('../register_success')
+    args = {}
+    args.update(csrf(request))
+
+    args['form'] = UserCreationForm()
+    return render_to_response('register.html', args)
+
+def register_success(request):
+    return render_to_response('register_success.html')
+
+def admin_assigned(request):
+    return render_to_response('admin_assigned.html')
+
+def admin_already_assigned(request):
+    return render_to_response('admin_already_assigned.html')
+
+def admin_assign_failed(request):
+    return render_to_response('admin_assign_failed.html')
+
+def user_suspended(request):
+    return render_to_response('user_suspended.html')
+
+def user_already_suspended(request):
+    return render_to_response('user_already_suspended.html')
+
+def user_suspend_failed(request):
+    return render_to_response('user_suspend_failed.html')
+

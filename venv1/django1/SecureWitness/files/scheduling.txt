@@ -1,0 +1,42 @@
+CS 4414 Operating Systems TUTH 11-12:15 Marty Humphrey
+CS 4630 Defence Against the Dark Arts MOWEFRI 9-9:50 TBD
+APMA 3100 Probability MOWEFRI 10-10:50 or 11-11:50 Daria Snider
+CS 2330 DLD TUTH 9:30-10:45 LABS VARY Joanne Dugan
+BIOL 4050 Developmental Biology Lab MO or TU 1-4, WE or TH 2-3 Raymond Keller
+STS 4500 Engineering Practice <VARIES> 
+CS 4971 Capstone
+----21 cred
+Conflicting
+BIOL 4240 History and Philosophy of Biology MOWEFRI 9-9:50 Robert Kretsinger
+
+For completion of both majors:
+-2 CS electives
+-2 BIOL electives
+-1 BIOL lab
+-STS 4500
+-STS 4600
+-Capstone
+-Probability
+-DLD
+-OS
+-----11 classes, 33 credits
+
+Summer 2015
+	Mountain Lake:
+	SESSION I: May 18 - June 12
+		BIOL 4751 - Plant Diversity & Conservation: Bioinformatics and Systematics ( LAB)
+		BIOL 4754 - Field Herpetology
+	SESSION II: June 15 - July 10
+		BIOL 4757 - GIS for Field Biologists
+		BIOL 4660 - Hormones and Behavior
+		BIOL 4758 - Field Entomology
+	SESSION III: July 13 - July 31
+		BIOL 4759 - Field Methods in Wildlife Ecology
+		
+	Grounds:
+	SESSION I: May 18 - June 12
+		CS 4730 - Computer Game Design, 10:30 - 12:45
+	SESSION II: June 15 - July 10
+		BIOL 3410 - Human Anatomy and Physiology, 9AM-2:45PM
+	SESSION III: July 13 - July 31
+		
