@@ -5,4 +5,34 @@
     <h2>Hi {{full_name}} you are now logged in!</h2>
     <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
 
+
+        <!--display groups related to this user-->
+    <p>The groups you are affiliated to: </p>
+
+    {% if groups %}
+        <p>Found {{ groups|length }} groups{{ reports|pluralize }}.</p>
+        <ul>
+            {% for group in groups %}
+            <li>{{ group.GID }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No group found.</p>
+    {% endif %}
+
+        <!--display reports related to this user-->
+    <p>The reports you are affiliated to: </p>
+
+    {% if reports %}
+        <p>Found {{ reports|length }} groups{{ reports|pluralize }}.</p>
+        <ul>
+            {% for report in reports %}
+            <li>{{ report.report_name}}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No report found.</p>
+    {% endif %}
+
+
 {% endblock %}

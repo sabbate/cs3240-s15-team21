@@ -118,8 +118,18 @@ def auth_view(request):
 @login_required
 
 def loggedin(request):
+    try:
+        groups = UserToGroup.objects.filter(UID=request.user.username)
+    except:
+        groups = None
+
+    try:
+        reports = UserToReports.objects.filter(authorID=request.user.username)
+    except:
+        reports = None
     return render_to_response('loggedin.html',
-        {'full_name': request.user.username})
+           {'full_name': request.user.username, 'groups': groups, 'reports': reports})
+
 
 @login_required
 def admin(request):

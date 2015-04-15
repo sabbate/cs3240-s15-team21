@@ -3,36 +3,35 @@ from django.conf.urls import patterns, url
 from . import views
 
 urlpatterns = [
-                       url(r'^$', views.GroupIndexView.as_view(), name='index'),
-                       url(r'^/groups', views.GroupDetailView.as_view(), name='group'),
-					   url(r'^$', views.index, name='index'),
-                       url(r'^(?P<pk>\d+)/$', views.GroupDetailView.as_view(), name='group'),
-                       url(r'^(?P<pk>\d+)/$', views.ReportIndexView.as_view(), name='report_index'),
-                       url(r'newreport/$', views.newreport, name='newreport'),
-                       url(r'^search_form/$', views.search_form),
-                       url(r'^search/$', views.search),
-                       url(r'^submitreport/$', views.submitreport),
-                       url(r'^account/login/$', views.login),
-                        url(r'^account/auth/$', views.auth_view),
-                        url(r'^account/logout/$', views.logout),
-                        url(r'^account/loggedin/$', views.loggedin),
-                        url(r'^account/invalid/$', views.invalid),
-                        url(r'^account/register/$', views.register_user),
-                        url(r'^account/register_success/$', views.register_success),
-                        url(r'^admin/$', views.admin),
-                        url(r'^admin_assigned/$', views.admin_assigned),
-                        url(r'^admin_already_assigned/$', views.admin_already_assigned),
-                        url(r'^assigning_admin_view/$', views.assigning_admin_view),
-                        url(r'^admin_assign_failed/$', views.admin_assign_failed),
-                        url(r'^user_suspended/$', views.user_suspended),
-                        url(r'^user_already_suspended/$', views.user_already_suspended),
-                        url(r'^suspend_user_view/$', views.suspend_user_view),
-                        url(r'^user_suspend_failed/$', views.user_suspend_failed)
+    url(r'^$', views.GroupIndexView.as_view(), name='index'),
+    url(r'^/groups', views.GroupDetailView.as_view(), name='group'),
+    url(r'^(?P<pk>\d+)/$', views.GroupDetailView.as_view(), name='group'),
+    url(r'^(?P<pk>\d+)/$', views.ReportIndexView.as_view(), name='report_index'),
+    url(r'newreport/$', views.newreport, name='newreport'),
+    url(r'^search_form/$', views.search_form),
+    url(r'^search/$', views.search),
+    url(r'^submitreport/$', views.submitreport),
+    url(r'^account/login/$', views.login),
+    url(r'^account/auth/$', views.auth_view),
+    url(r'^account/logout/$', views.logout),
+    url(r'^account/loggedin/$', views.loggedin),
+    url(r'^account/invalid/$', views.invalid),
+    url(r'^account/register/$', views.register_user),
+    url(r'^account/register_success/$', views.register_success),
+    url(r'^admin/$', views.admin),
+    url(r'^admin_assigned/$', views.admin_assigned),
+    url(r'^admin_already_assigned/$', views.admin_already_assigned),
+    url(r'^assigning_admin_view/$', views.assigning_admin_view),
+    url(r'^admin_assign_failed/$', views.admin_assign_failed),
+    url(r'^user_suspended/$', views.user_suspended),
+    url(r'^user_already_suspended/$', views.user_already_suspended),
+    url(r'^suspend_user_view/$', views.suspend_user_view),
+    url(r'^user_suspend_failed/$', views.user_suspend_failed)
 
-                       ]
+]
 
 
 # url(r'^login/$', 'django.contrib.auth.views.login',
 # {'template_name': 'admin/login.html'}),
-#  url(r'^register/$', views.register, name='register'),
+# url(r'^register/$', views.register, name='register'),
 

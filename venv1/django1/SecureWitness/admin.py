@@ -1,35 +1,34 @@
 from django.contrib import admin
-#from SecureWitness.models import *
+import SecureWitness.models
 
 
 class UserAdmin(admin.ModelAdmin):
-    pass
+    fields = ('username', 'password', 'reg_date', 'admin', 'email', 'privilege')
 
 
 class GroupAdmin(admin.ModelAdmin):
-    fields = ('group_name', 'size')
+    pass
 
 
 class FileAdmin(admin.ModelAdmin):
-    pass
+    fields = ('docfile', 'file_name')
 
 
 class ReportAdmin(admin.ModelAdmin):
-    pass
+    fields = ('report_name', 'short_desc', 'long_desc', 'location', 'keywords', 'private')
 
 
 class FolderAdmin(admin.ModelAdmin):
-    pass
+    fields = ('folder_name', 'parent', 'GID')
 
 
 class UserToGroupAdmin(admin.ModelAdmin):
-    pass
+    fields = ('UID', 'GID', 'leader', 'request_join')
 
-'''
-admin.site.register(User, UserAdmin)
-admin.site.register(Group, GroupAdmin)
-admin.site.register(File, FileAdmin)
-admin.site.register(Report, ReportAdmin)
-admin.site.register(Folder, FolderAdmin)
-admin.site.register(UserToGroup, UserToGroupAdmin)
-'''
+
+admin.site.register(SecureWitness.models.User, UserAdmin)
+admin.site.register(SecureWitness.models.Group, GroupAdmin)
+admin.site.register(SecureWitness.models.File, FileAdmin)
+admin.site.register(SecureWitness.models.Report, ReportAdmin)
+admin.site.register(SecureWitness.models.Folder, FolderAdmin)
+admin.site.register(SecureWitness.models.UserToGroup, UserToGroupAdmin)
