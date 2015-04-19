@@ -26,7 +26,7 @@ class UserToGroupAdmin(admin.ModelAdmin):
     fields = ('UID', 'GID', 'leader', 'request_join')
 
 
-admin.site.register(SecureWitness.models.User, UserAdmin)
+#admin.site.register(SecureWitness.models.User, UserAdmin)
 admin.site.register(SecureWitness.models.Group, GroupAdmin)
 admin.site.register(SecureWitness.models.File, FileAdmin)
 admin.site.register(SecureWitness.models.Report, ReportAdmin)

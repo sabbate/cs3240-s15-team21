@@ -1,7 +1,8 @@
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
 
-
+'''
 class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100)
@@ -13,7 +14,7 @@ class User(models.Model):
 
     def __str__(self):
         return self.username
-
+'''
 
 class Group(models.Model):
     group_id = models.AutoField(primary_key=True)

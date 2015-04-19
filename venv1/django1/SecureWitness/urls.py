@@ -26,7 +26,12 @@ urlpatterns = [
     url(r'^user_suspended/$', views.user_suspended),
     url(r'^user_already_suspended/$', views.user_already_suspended),
     url(r'^suspend_user_view/$', views.suspend_user_view),
-    url(r'^user_suspend_failed/$', views.user_suspend_failed)
+    url(r'^user_suspend_failed/$', views.user_suspend_failed),
+    url(r'^admin/group_management/$', views.group_management),
+    url(r'^admin/group_management/create_group/$', views.create_group),
+    url(r'^admin/group_management/create_group_failed/$', views.create_group_failed),
+
+
 
 ]
 

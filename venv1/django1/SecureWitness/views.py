@@ -15,9 +15,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from SecureWitness.models import Report
 from SecureWitness.models import File
+from SecureWitness.models import Group
 #from django import forms
 from django.shortcuts import render
 import datetime
+import time
 from SecureWitness.models import *
 
 
@@ -29,7 +31,7 @@ class GroupIndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published groups."""
-        return Group.objects.order_by('-GID')[:5]
+        return Group.objects.order_by('-group_id')[:5]
 
 
 class GroupDetailView(generic.DetailView):
@@ -206,3 +208,27 @@ def user_already_suspended(request):
 def user_suspend_failed(request):
     return render_to_response('user_suspend_failed.html')
 
+def group_management(request):
+    c = {}
+    c.update(csrf(request))
+    c['groups'] = Group.objects.values_list('group_name')
+    return render_to_response('group_management.html',c)
+
+def create_group_failed(request):
+    return render_to_response('create_group_failed.html')
+
+def create_group(request):
+    groupname = request.POST.get('groupname', '')
+
+    try:
+        group = Group.objects.get(group_name=groupname)
+    except:
+        f = '%Y%m%d%H%M%S'
+        now = time.localtime()
+        timeString =time.strftime(f, now)
+        timeInt = int(timeString)
+        g = Group(group_name = groupname, group_id = timeInt) #use datetime of created as id
+        g.save()
+        return HttpResponseRedirect('../../group_management')
+
+    return HttpResponseRedirect('../create_group_failed')
