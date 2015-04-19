@@ -9,7 +9,7 @@
             {% csrf_token %}
             <ul>
                 {% for user in group.usertogroup_set.all %}
-                    <li>{{ user.UID.UID }} {{ user.UID.username }} {% if user.leader %}<strong>&nbsp;&nbsp;&nbsp;
+                    <li>{{ user.user_id }} {{ user.user_id.username }} {% if user.leader %}<strong>&nbsp;&nbsp;&nbsp;
                         Leader</strong>{% endif %}</li>
                 {% endfor %}
             </ul>
@@ -22,8 +22,8 @@
             <ul>
                 {% for user in group.usertogroup_set.all %}
                     {% if user.leader %}
-                        <li>{{ user.UID.username }}&nbsp;&nbsp;&nbsp;<a href="mailto:{{ user.UID.email }}">
-                            {{ user.UID.email }}</a></li>
+                        <li>{{ user.user_id.username }}&nbsp;&nbsp;&nbsp;<a href="mailto:{{ user.user_id.email }}">
+                            {{ user.user_id.email }}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>
