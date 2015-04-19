@@ -28,12 +28,9 @@ class Group(models.Model):
 
 class File(models.Model):
     fileID = models.AutoField(primary_key=True)
-    authorID = models.IntegerField()
-    # author = models.ForeignKey(Users)
-    ReportID = models.IntegerField()
-    # report = models.ForeignKey(Reports) #many (files) to one (report) relationship
+    author_id = models.ForeignKey(User)
+    report_id = models.ForeignKey(Report)
     content = models.CharField(max_length=1000)  # some kind of link to the actual file
-    # report = models.ForeignKey(Reports) #many (files) to one (report) relationship
     docfile = models.FileField(upload_to='files/', default=False)  # some kind of link to the actual file
     file_name = models.CharField(max_length=100)
 
