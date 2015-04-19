@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^account/auth/$', views.auth_view),
     url(r'^account/logout/$', views.logout),
     url(r'^account/loggedin/$', views.loggedin),
+    url(r'^account/user_not_active/$', views.user_not_active),
     url(r'^account/invalid/$', views.invalid),
     url(r'^account/register/$', views.register_user),
     url(r'^account/register_success/$', views.register_success),
