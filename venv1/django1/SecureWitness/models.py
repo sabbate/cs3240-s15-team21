@@ -81,7 +81,6 @@ class UserToGroup(models.Model):
     user_id = models.ForeignKey(User)
     group_id = models.ForeignKey(Group)
     leader = models.BooleanField(default=False)
-    request_join = models.BooleanField(default=False)  # If true, user is not in group, but wants to join
 
 
 class ReportSharingUser(models.Model):
