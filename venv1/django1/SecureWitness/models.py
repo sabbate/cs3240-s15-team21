@@ -25,7 +25,7 @@ class Group(models.Model):
     def __str__(self):
         return self.group_name
 
-"""
+'''
 class File(models.Model):
     fileID = models.AutoField(primary_key=True)
     author_id = models.ForeignKey(User)
@@ -33,7 +33,8 @@ class File(models.Model):
     content = models.CharField(max_length=1000)  # some kind of link to the actual file
     docfile = models.FileField(upload_to='files/', default=False)  # some kind of link to the actual file
     file_name = models.CharField(max_length=100)
-"""
+'''
+
 
 class Folder(models.Model):
     folder_id = models.AutoField(primary_key=True)

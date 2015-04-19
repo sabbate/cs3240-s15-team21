@@ -1,8 +1,8 @@
-#import sys
-#import os.path
+# import sys
+# import os.path
 
-#sys.path.append(os.path.join(os.path.dirname('views.py'), '..'))
-#import gen_py.lib
+# sys.path.append(os.path.join(os.path.dirname('views.py'), '..'))
+# import gen_py.lib
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponse
@@ -16,7 +16,8 @@ from django.contrib.auth.models import User
 from SecureWitness.models import Report
 from SecureWitness.models import File
 from SecureWitness.models import Group
-#from django import forms
+# from django import forms
+# from django import forms
 from django.shortcuts import render
 import datetime
 import time
@@ -25,7 +26,7 @@ import Crypto
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
 import os
-
+from .forms import *
 
 
 class GroupIndexView(generic.ListView):
@@ -50,52 +51,58 @@ class ReportIndexView(generic.ListView):
         """Return the last five uploaded reports."""
         return Report.objects.order_by('-RID')[:5]
 
+
 def index(request):
     reports = Report.objects.raw('SELECT * FROM SecureWitness_reports')
     return render(request, 'all-reports.html', {'reports': reports})
-    #return HttpResponse("Welcome to SecureWitness!")
+    # return HttpResponse("Welcome to SecureWitness!")
+
 
 def newreport(request):
     return render(request, 'newreport.html')
 
+
 def submitreport(request):
-	if request.POST.get('short', False) and request.POST.get('long', False):
-		short = request.POST.get('short', False)
-		long = request.POST.get('long', False)
-		loc = request.POST.get('location', False)
-		date = request.POST.get('date', False)
-		keys = request.POST.get('keys', False)
-		priv = request.POST.get('private', False)
-		password = request.POST.get('pw', False)
-		#files = HttpRequest.FILES;
-		cur_time = datetime.now()
-		for key, file in request.FILES.items():
-			path = os.getcwd() + '\\SecureWitness\\files\\'
-			dest = open(path + file.name, 'wb+')
-			dest.write(file.read())
-			encrypt(path,file.name,password)
-			dest.close()
-			f = File(authorID = 1, ReportID = 1, docfile = path);
-			f.save();
-		r = Report(authorID=1, create_date = cur_time, last_update_date = cur_time, short_desc = short, long_desc = long, 
-		location = loc, folderID = f, incident_date = date, keywords = keys, private = priv)
-		r.save();
-		return HttpResponse('Thank you for submitting a report!')
-	else:
-		return HttpResponse('Your submission was unsuccessful.')
+    if request.POST.get('short', False) and request.POST.get('long', False):
+        short = request.POST.get('short', False)
+        long = request.POST.get('long', False)
+        loc = request.POST.get('location', False)
+        date = request.POST.get('date', False)
+        keys = request.POST.get('keys', False)
+        priv = request.POST.get('private', False)
+        password = request.POST.get('pw', False)
+        # files = HttpRequest.FILES;
+        cur_time = datetime.now()
+        for key, file in request.FILES.items():
+            path = os.getcwd() + '\\SecureWitness\\files\\'
+            dest = open(path + file.name, 'wb+')
+            dest.write(file.read())
+            encrypt(path, file.name, password)
+            dest.close()
+            f = File(authorID=1, ReportID=1, docfile=path);
+            f.save();
+        r = Report(authorID=1, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
+                   location=loc, folderID=f, incident_date=date, keywords=keys, private=priv)
+        r.save();
+        return HttpResponse('Thank you for submitting a report!')
+    else:
+        return HttpResponse('Your submission was unsuccessful.')
+
 
 def search_form(request):
     return render(request, 'search_form.html')
 
+
 def search(request):
-	if 'q' in request.GET and request.GET['q']:
-		q = request.GET['q']
-		r1 = Report.objects.filter(keywords__icontains=q)
-		r2 = Report.objects.filter(short_desc__icontains=q)
-		reports = r1 | r2
-		return render(request, 'search_results.html', {'reports': reports, 'query': q})
-	else:
-		return HttpResponse('No results found. Please try another search term.')
+    if 'q' in request.GET and request.GET['q']:
+        q = request.GET['q']
+        r1 = Report.objects.filter(keywords__icontains=q)
+        r2 = Report.objects.filter(short_desc__icontains=q)
+        reports = r1 | r2
+        return render(request, 'search_results.html', {'reports': reports, 'query': q})
+    else:
+        return HttpResponse('No results found. Please try another search term.')
+
 
 def login(request):
     c = {}
@@ -113,15 +120,15 @@ def auth_view(request):
         if not user.is_active:
             return HttpResponseRedirect('../user_not_active')
         else:
-            if(user.is_superuser):
+            if (user.is_superuser):
                 return HttpResponseRedirect('../../admin')
             else:
                 return HttpResponseRedirect('../loggedin')
     else:
         return HttpResponseRedirect('../invalid')
 
-@login_required
 
+@login_required
 def loggedin(request):
     try:
         groups = UserToGroup.objects.filter(UID=request.user.username)
@@ -133,16 +140,16 @@ def loggedin(request):
     except:
         reports = None
     return render_to_response('loggedin.html',
-           {'full_name': request.user.username, 'groups': groups, 'reports': reports})
+                              {'full_name': request.user.username, 'groups': groups, 'reports': reports})
 
 
 @login_required
 def admin(request):
     c = {}
     c.update(csrf(request))
-    #c['username'] =  request.newAdmin.username
-    return render_to_response('admin.html',
-        c)
+    # c['username'] =  request.newAdmin.username
+    return render_to_response('admin.html', c)
+
 
 def suspend_user_view(request):
     username = request.POST.get('username_suspend', '')
@@ -154,10 +161,11 @@ def suspend_user_view(request):
     if suspend.is_active:
         suspend.is_active = False
         suspend.save()
-        if not suspend.is_active :
+        if not suspend.is_active:
             return HttpResponseRedirect('../user_suspended')
     else:
         return HttpResponseRedirect('../user_already_suspended')
+
 
 def assigning_admin_view(request):
     username = request.POST.get('username_admin', '')
@@ -179,15 +187,16 @@ def assigning_admin_view(request):
 def invalid(request):
     return render_to_response('invalid.html')
 
+
 @login_required
 def logout(request):
     auth.logout(request)
     return render_to_response('logout.html')
 
-def encrypt(path, filename, root):
 
+def encrypt(path, filename, root):
     # Open up unencrypted file and read the plaintext into a buffer.
-    with open(path + filename,'r') as f:
+    with open(path + filename, 'r') as f:
         buffer = f.read()
     plaintext = buffer
 
@@ -204,11 +213,12 @@ def encrypt(path, filename, root):
     # Write the encrypted plaintext (ciphertext) into the same file.
     # NOTE: this ciphertext is written in bytes, not unicode. Notice the "wb" flag
     # in write() instead of just "w".
-    with open(path + filename,'wb') as f:
-		#print(ciphertext)
+    with open(path + filename, 'wb') as f:
+        # print(ciphertext)
         f.write(ciphertext);
-    with open(path +"key_"+filename,'wb') as f:
+    with open(path + "key_" + filename, 'wb') as f:
         f.write(key);
+
 
 def register_user(request):
     if request.method == "POST":
@@ -222,38 +232,49 @@ def register_user(request):
     args['form'] = UserCreationForm()
     return render_to_response('register.html', args)
 
+
 def register_success(request):
     return render_to_response('register_success.html')
+
 
 def admin_assigned(request):
     return render_to_response('admin_assigned.html')
 
+
 def admin_already_assigned(request):
     return render_to_response('admin_already_assigned.html')
+
 
 def admin_assign_failed(request):
     return render_to_response('admin_assign_failed.html')
 
+
 def user_suspended(request):
     return render_to_response('user_suspended.html')
+
 
 def user_not_active(request):
     return render_to_response('user_not_active.html')
 
+
 def user_already_suspended(request):
     return render_to_response('user_already_suspended.html')
 
+
 def user_suspend_failed(request):
     return render_to_response('user_suspend_failed.html')
+
 
 def group_management(request):
     c = {}
     c.update(csrf(request))
     c['groups'] = Group.objects.values_list('group_name')
-    return render_to_response('group_management.html',c)
+    return render_to_response('group_management.html', c)
+
 
 def create_group_failed(request):
     return render_to_response('create_group_failed.html')
+
 
 def create_group(request):
     groupname = request.POST.get('groupname', '')
@@ -263,10 +284,21 @@ def create_group(request):
     except:
         f = '%Y%m%d%H%M%S'
         now = time.localtime()
-        timeString =time.strftime(f, now)
+        timeString = time.strftime(f, now)
         timeInt = int(timeString)
-        g = Group(group_name = groupname, group_id = timeInt) #use datetime of created as id
+        g = Group(group_name=groupname, group_id=timeInt)  # use datetime of created as id
         g.save()
         return HttpResponseRedirect('../../group_management')
 
     return HttpResponseRedirect('../create_group_failed')
+
+
+def folder_data(request):
+    if request.method == 'POST':
+        form = FolderForm(request.POST)
+        if form.is_valid():
+            return HttpResponseRedirect('../folders/')
+    else:
+        form = FolderForm()
+
+    return render(request, 'SecureWitness/folder_detail.html', {'form': form})

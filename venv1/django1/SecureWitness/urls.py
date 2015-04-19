@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^admin/group_management/$', views.group_management),
     url(r'^admin/group_management/create_group/$', views.create_group),
     url(r'^admin/group_management/create_group_failed/$', views.create_group_failed),
+    url(r'^folders/', views.folder_data),
 
 
 

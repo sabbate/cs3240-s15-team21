@@ -1,0 +1,15 @@
+<!-- This will be the details on a particular folder-->
+<h2>{{ folder.folder_name }} Details</h2>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<!-- Details will be editable-->
+<!-- TODO Determine page to redirect to and make a view-->
+<form action="../folders/folder_detail.html" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
+
+<!-- Parent folder will be mentioned & linked-->
+
+<!-- Sub-folders will be listed & linked -->

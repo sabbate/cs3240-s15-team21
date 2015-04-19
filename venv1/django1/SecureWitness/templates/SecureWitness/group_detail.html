@@ -5,6 +5,7 @@
 
         {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
+        <!-- List of all users-->
         <form>
             {% csrf_token %}
             <ul>
@@ -17,6 +18,7 @@
 
         <p>If you wish to join {{ group.group_name }}, please email one of the leaders below.</p>
 
+        <!-- List of leaders & email addresses-->
         <form>
             {% csrf_token %}
             <ul>
@@ -25,6 +27,30 @@
                         <li>{{ user.user_id.username }}&nbsp;&nbsp;&nbsp;<a href="mailto:{{ user.user_id.email }}">
                             {{ user.user_id.email }}</a></li>
                     {% endif %}
+                {% endfor %}
+            </ul>
+        </form>
+
+        <!-- List of Folders-->
+        <h4>Folders</h4>
+        <form>
+            {% csrf_token %}
+            <ul>
+                {% for folder in group.folder_set.all %}
+                    {% if not folder.parent %}
+                        <li>{{ folder.folder_name }}</li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </form>
+
+        <!-- List of Top Level Reports-->
+        <h4>Reports</h4>
+        <form>
+            {% csrf_token %}
+            <ul>
+                {% for report in group.report_set.all %}
+                    <li>{{ report.report_name }}</li>
                 {% endfor %}
             </ul>
         </form>
