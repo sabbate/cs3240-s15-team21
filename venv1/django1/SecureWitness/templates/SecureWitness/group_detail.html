@@ -10,11 +10,14 @@
             {% csrf_token %}
             <ul>
                 {% for user in group.usertogroup_set.all %}
-                    <li>{{ user.user_id }} {{ user.user_id.username }} {% if user.leader %}<strong>&nbsp;&nbsp;&nbsp;
-                        Leader</strong>{% endif %}</li>
+                    <li>{{ user.user_id.username }}
+                        {% if user.leader %}
+                            <strong>&nbsp;&nbsp;&nbsp;Leader</strong>
+                        {% endif %}</li>
                 {% endfor %}
             </ul>
         </form>
+        <!-- TODO Add button to remove users -->
 
         <p>If you wish to join {{ group.group_name }}, please email one of the leaders below.</p>
 
@@ -24,8 +27,8 @@
             <ul>
                 {% for user in group.usertogroup_set.all %}
                     {% if user.leader %}
-                        <li>{{ user.user_id.username }}&nbsp;&nbsp;&nbsp;<a href="mailto:{{ user.user_id.email }}">
-                            {{ user.user_id.email }}</a></li>
+                        <li>{{ user.user_id.username }}&nbsp;&nbsp;&nbsp;
+                            <a href="mailto:{{ user.user_id.email }}">{{ user.user_id.email }}</a></li>
                     {% endif %}
                 {% endfor %}
             </ul>

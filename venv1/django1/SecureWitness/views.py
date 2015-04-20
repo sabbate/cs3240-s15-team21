@@ -278,7 +278,7 @@ def create_group_failed(request):
 
 def create_group(request):
     groupname = request.POST.get('groupname', '')
-
+    print(groupname)
     try:
         group = Group.objects.get(group_name=groupname)
     except:
