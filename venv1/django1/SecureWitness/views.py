@@ -215,9 +215,9 @@ def encrypt(path, filename, root):
     # in write() instead of just "w".
     with open(path + filename, 'wb') as f:
         # print(ciphertext)
-        f.write(ciphertext);
+        f.write(ciphertext)
     with open(path + "key_" + filename, 'wb') as f:
-        f.write(key);
+        f.write(key)
 
 
 def register_user(request):
@@ -292,7 +292,7 @@ def create_group(request):
 
     return HttpResponseRedirect('../create_group_failed')
 
-
+'''
 def new_folder(request):
     return render(request, 'new_folder.html')
 
@@ -314,3 +314,4 @@ def add_folder(request):
         return HttpResponseRedirect('../folder_index.html')
 
     return HttpResponseRedirect('../add_folder_failed')
+'''
