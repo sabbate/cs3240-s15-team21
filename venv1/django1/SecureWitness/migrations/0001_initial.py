@@ -2,24 +2,23 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
             name='File',
             fields=[
-                ('fileID', models.AutoField(primary_key=True, serialize=False)),
-                ('authorID', models.IntegerField()),
-                ('ReportID', models.IntegerField()),
-                ('content', models.CharField(max_length=1000)),
-                ('docfile', models.FileField(default=False, upload_to='files/')),
+                ('file_id', models.AutoField(primary_key=True, serialize=False)),
+                ('docfile', models.FileField(upload_to='files/', default=False)),
                 ('file_name', models.CharField(max_length=100)),
+                ('author_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -28,11 +27,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Folder',
             fields=[
-                ('folderID', models.AutoField(primary_key=True, serialize=False)),
-                ('authorID', models.IntegerField()),
+                ('folder_id', models.AutoField(primary_key=True, serialize=False)),
                 ('folder_name', models.CharField(max_length=100)),
-                ('parent', models.IntegerField()),
-                ('GID', models.IntegerField()),
             ],
             options={
             },
@@ -41,9 +37,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Group',
             fields=[
-                ('GID', models.AutoField(primary_key=True, serialize=False)),
+                ('group_id', models.AutoField(primary_key=True, serialize=False)),
                 ('group_name', models.CharField(max_length=100)),
-                ('size', models.IntegerField(default=1)),
             ],
             options={
             },
@@ -52,8 +47,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Report',
             fields=[
-                ('RID', models.AutoField(primary_key=True, serialize=False)),
-                ('authorID', models.IntegerField()),
+                ('report_id', models.AutoField(primary_key=True, serialize=False)),
                 ('create_date', models.DateTimeField(verbose_name='date created')),
                 ('last_update_date', models.DateTimeField(verbose_name='date of last modification')),
                 ('report_name', models.CharField(max_length=200)),
@@ -63,7 +57,8 @@ class Migration(migrations.Migration):
                 ('incident_date', models.CharField(max_length=300, default='DEFAULT VALUE')),
                 ('keywords', models.CharField(max_length=300, default='DEFAULT VALUE')),
                 ('private', models.BooleanField(default=False)),
-                ('folderID', models.ForeignKey(to='SecureWitness.File')),
+                ('author_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('folder_id', models.ForeignKey(to='SecureWitness.Folder')),
             ],
             options={
             },
@@ -73,8 +68,8 @@ class Migration(migrations.Migration):
             name='ReportSharingGroup',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 16, 45, 18, 715702))),
-                ('GID', models.ForeignKey(to='SecureWitness.Group')),
+                ('sharing_date', models.DateTimeField()),
+                ('group_id', models.ForeignKey(to='SecureWitness.Group')),
             ],
             options={
             },
@@ -84,22 +79,8 @@ class Migration(migrations.Migration):
             name='ReportSharingUser',
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('sharing_date', models.DateTimeField(verbose_name=datetime.datetime(2015, 4, 13, 16, 45, 18, 715702))),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
-            name='User',
-            fields=[
-                ('UID', models.AutoField(primary_key=True, serialize=False)),
-                ('username', models.CharField(max_length=100)),
-                ('password', models.CharField(max_length=100)),
-                ('reg_date', models.DateTimeField(verbose_name='date of registration')),
-                ('admin', models.BooleanField(default=False)),
-                ('email', models.EmailField(max_length=75)),
-                ('privilege', models.CharField(max_length=100, default='DEFAULT VALUE')),
+                ('sharing_date', models.DateTimeField()),
+                ('user_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
@@ -108,26 +89,44 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserToGroup',
             fields=[
-                ('ID', models.AutoField(primary_key=True, serialize=False)),
+                ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('leader', models.BooleanField(default=False)),
                 ('request_join', models.BooleanField(default=False)),
-                ('GID', models.ForeignKey(to='SecureWitness.Group')),
-                ('UID', models.ForeignKey(to='SecureWitness.User')),
+                ('group_id', models.ForeignKey(to='SecureWitness.Group')),
+                ('user_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },
             bases=(models.Model,),
         ),
         migrations.AddField(
-            model_name='reportsharinguser',
-            name='UID',
-            field=models.ForeignKey(to='SecureWitness.User'),
+            model_name='group',
+            name='users',
+            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, through='SecureWitness.UserToGroup'),
             preserve_default=True,
         ),
         migrations.AddField(
-            model_name='group',
-            name='users',
-            field=models.ManyToManyField(to='SecureWitness.User', through='SecureWitness.UserToGroup'),
+            model_name='folder',
+            name='GID',
+            field=models.ForeignKey(to='SecureWitness.Group'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='folder',
+            name='author_id',
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='folder',
+            name='parent',
+            field=models.ForeignKey(to='SecureWitness.Folder'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='file',
+            name='report_id',
+            field=models.ForeignKey(to='SecureWitness.Report'),
             preserve_default=True,
         ),
     ]

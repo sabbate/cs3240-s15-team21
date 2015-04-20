@@ -31,6 +31,24 @@ urlpatterns = [
     url(r'^admin/group_management/$', views.group_management),
     url(r'^admin/group_management/create_group/$', views.create_group),
     url(r'^admin/group_management/create_group_failed/$', views.create_group_failed),
+    url(r'^activate_user_view/$', views.activate_user_view),
+    url(r'^user_activate_failed/$', views.user_activate_failed),
+    url(r'^user_activated/$', views.user_activated),
+    url(r'^user_already_activated/$', views.user_already_activated),
+    url(r'^admin_remove_failed/$', views.admin_remove_failed),
+    url(r'^admin_removed/$', views.admin_removed),
+    url(r'^not_admin/$', views.not_admin),
+    url(r'^removing_admin_view/$', views.removing_admin_view),
+    url(r'^register_confirm/$', views.removing_admin_view),
+    url(r'^removing_admin_view/$', views.removing_admin_view),
+    url(r'^account/confirmed/$', views.confirmed),
+    url(r'^account/confirm_expired/$', views.confirm_expired),
+    url(r'^account/confirm/(?P<activation_key>\w+)/', views.register_confirm),
+
+
+
+
+
 
 
 

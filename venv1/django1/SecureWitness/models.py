@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+import datetime
 from django.contrib.auth.models import User
 
 '''
@@ -96,4 +96,9 @@ class ReportSharingGroup(models.Model):
     id = models.AutoField(primary_key=True)
     group_id = models.ForeignKey(Group)
     sharing_date = models.DateTimeField()
+
+class ActivationProfile(models.Model):
+    activation_key = models.CharField(max_length=300, default='DEFAULT VALUE')
+    user = models.OneToOneField(User, primary_key=True)
+    key_expires = models.DateTimeField(default=datetime.date.today())
 

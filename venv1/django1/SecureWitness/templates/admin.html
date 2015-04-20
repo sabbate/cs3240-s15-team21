@@ -17,10 +17,30 @@
 
         <p></p>
 
+        <form action="../activate_user_view/" method="post">
+            {% csrf_token %}
+            <label for="username_suspend">Enter the username if you want to activate someone: </label>
+            <input type="text" name="username_activate" value="" id="username_activate">
+
+            <input type="submit" value="OK"/>
+        </form>
+
+        <p></p>
+
          <form action="../assigning_admin_view/" method="post">
             {% csrf_token %}
             <label for="username_admin">Enter the username if you want to assign someone to be a new admin: </label>
             <input type="text" name="username_admin" value="" id="username_admin">
+
+            <input type="submit" value="OK"/>
+        </form>
+
+        <p></p>
+
+         <form action="../removing_admin_view/" method="post">
+            {% csrf_token %}
+            <label for="username_admin">Enter the username if you want to cancel someone's admin status: </label>
+            <input type="text" name="username_removeadmin" value="" id="username_removeadmin">
 
             <input type="submit" value="OK"/>
         </form>
