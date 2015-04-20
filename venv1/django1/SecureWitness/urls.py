@@ -31,8 +31,7 @@ urlpatterns = [
     url(r'^admin/group_management/$', views.group_management),
     url(r'^admin/group_management/create_group/$', views.create_group),
     url(r'^admin/group_management/create_group_failed/$', views.create_group_failed),
-    url(r'^newfolder/', views.new_folder),
-    url(r'^addfolder/', views.add_folder),
+
 
 
 
@@ -42,4 +41,7 @@ urlpatterns = [
 # url(r'^login/$', 'django.contrib.auth.views.login',
 # {'template_name': 'admin/login.html'}),
 # url(r'^register/$', views.register, name='register'),
-
+'''
+url(r'^newfolder/', views.new_folder),
+url(r'^addfolder/', views.add_folder),
+'''
