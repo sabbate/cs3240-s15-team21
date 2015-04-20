@@ -19,11 +19,11 @@ class ReportAdmin(admin.ModelAdmin):
 
 
 class FolderAdmin(admin.ModelAdmin):
-    fields = ('folder_name', 'parent', 'GID')
+    fields = ('folder_name', 'author_id', 'parent', 'GID')
 
 
 class UserToGroupAdmin(admin.ModelAdmin):
-    fields = ('UID', 'GID', 'leader', 'request_join')
+    fields = ('user_id', 'group_id', 'leader')
 
 
 #admin.site.register(SecureWitness.models.User, UserAdmin)

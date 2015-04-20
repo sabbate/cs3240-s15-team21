@@ -1,4 +1,5 @@
 from django import forms
+<<<<<<< HEAD
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -15,3 +16,13 @@ class UserCreateForm(UserCreationForm):
         if commit:
             user.save()
         return user
+=======
+from . import models
+
+
+class FolderForm(forms.Form):
+    group_id = forms.CharField(max_length=100, label="group_id")
+    author_id = forms.CharField(max_length=100, label="author_id")
+    folder_name = forms.CharField(label="folder_name", max_length=100)
+    parent = forms.CharField(max_length=100, label="parent", required=False)
+>>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
