@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.GroupIndexView.as_view(), name='index'),
-    url(r'^/groups', views.GroupDetailView.as_view(), name='group'),
+    url(r'^groups', views.GroupDetailView.as_view(), name='group'),
     url(r'^(?P<pk>\d+)/$', views.GroupDetailView.as_view(), name='group'),
     url(r'^(?P<pk>\d+)/$', views.ReportIndexView.as_view(), name='report_index'),
     url(r'newreport/$', views.newreport, name='newreport'),
@@ -31,7 +31,8 @@ urlpatterns = [
     url(r'^admin/group_management/$', views.group_management),
     url(r'^admin/group_management/create_group/$', views.create_group),
     url(r'^admin/group_management/create_group_failed/$', views.create_group_failed),
-    url(r'^folders/', views.folder_data),
+    url(r'^newfolder/', views.new_folder),
+    url(r'^addfolder/', views.add_folder),
 
 
 

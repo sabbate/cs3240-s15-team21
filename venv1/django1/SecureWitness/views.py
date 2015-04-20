@@ -293,12 +293,24 @@ def create_group(request):
     return HttpResponseRedirect('../create_group_failed')
 
 
-def folder_data(request):
-    if request.method == 'POST':
-        form = FolderForm(request.POST)
-        if form.is_valid():
-            return HttpResponseRedirect('../folders/')
-    else:
-        form = FolderForm()
+def new_folder(request):
+    return render(request, 'new_folder.html')
 
-    return render(request, 'SecureWitness/folder_detail.html', {'form': form})
+
+def add_folder(request):
+    foldername = request.POST.get('Folder Name', '')
+
+    try:
+        folder = Folder.objects.get(folder_name=foldername)
+    except:
+        # Change so that it takes given names and searches for their id
+        User.objects.raw('SELECT user_id FROM USER')
+        this_author_id = request.POST.get('Author ID', '')
+        this_parent = request.POST.get('Parent', '')
+        this_group_id = request.POST.get('Group ID', '')
+        f = Folder(folder_name=foldername, author_id=this_author_id, parent=this_parent,
+                   group_id=this_group_id)
+        f.save()
+        return HttpResponseRedirect('../folder_index.html')
+
+    return HttpResponseRedirect('../add_folder_failed')
