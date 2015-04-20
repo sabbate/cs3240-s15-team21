@@ -1,3 +1,4 @@
 *.sqlite3
-/migrations/*
-
+/SecureWitness/migrations/*
+/__pycache__/
+/SecureWitness/__pycache__/
