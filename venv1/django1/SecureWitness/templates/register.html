@@ -5,7 +5,9 @@
     <h2>Register</h2>
     <form action="../register/" method="post"> {% csrf_token %}
         {{form}}
-
+        <label for="email">Email:</label>
+        <input type="text" name="email" value="" id="email">
         <input type="submit" value="Register"/>
+
     </form>
 {% endblock %}
