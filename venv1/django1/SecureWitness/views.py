@@ -16,14 +16,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from SecureWitness.models import Report
 from SecureWitness.models import File
-<<<<<<< HEAD
 from SecureWitness.models import Group, ActivationProfile
 from django import forms
-=======
-from SecureWitness.models import Group
 # from django import forms
 # from django import forms
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 from django.shortcuts import render
 import datetime, hashlib, random
 import time
@@ -32,15 +28,10 @@ import Crypto
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
 import os
-<<<<<<< HEAD
 from django.core.mail import send_mail
 from django.utils import timezone
 import smtplib
-
-
-=======
 from .forms import *
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 
 
 class GroupIndexView(generic.ListView):
@@ -142,11 +133,7 @@ def auth_view(request):
         return HttpResponseRedirect('../invalid')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
-@login_required
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def loggedin(request):
     try:
         groups = UserToGroup.objects.filter(UID=request.user.username)
@@ -244,20 +231,12 @@ def invalid(request):
     return render_to_response('invalid.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
-@login_required
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def logout(request):
     auth.logout(request)
     return render_to_response('logout.html')
 
-<<<<<<< HEAD
 
-def encrypt(path, filename, root):
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 
 def encrypt(path, filename, root):
     # Open up unencrypted file and read the plaintext into a buffer.
@@ -336,66 +315,42 @@ def register_success(request):
     return render_to_response('register_success.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def admin_assigned(request):
     return render_to_response('admin_assigned.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def admin_already_assigned(request):
     return render_to_response('admin_already_assigned.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def admin_assign_failed(request):
     return render_to_response('admin_assign_failed.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def user_suspended(request):
     return render_to_response('user_suspended.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def user_not_active(request):
     return render_to_response('user_not_active.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def user_already_suspended(request):
     return render_to_response('user_already_suspended.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def user_suspend_failed(request):
     return render_to_response('user_suspend_failed.html')
 
 
-<<<<<<< HEAD
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def group_management(request):
     c = {}
     c.update(csrf(request))
@@ -409,7 +364,6 @@ def create_group_failed(request):
     return render_to_response('create_group_failed.html')
 
 
-<<<<<<< HEAD
 def admin_remove_failed(request):
     return render_to_response('admin_remove_failed.html')
 
@@ -433,9 +387,8 @@ def user_already_activated(request):
 def user_activate_failed(request):
     return render_to_response('user_activate_failed.html')
 
+
 @login_required(login_url="/SecureWitness/account/login")
-=======
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
 def create_group(request):
     groupname = request.POST.get('groupname', '')
 
@@ -451,8 +404,6 @@ def create_group(request):
         return HttpResponseRedirect('../../group_management')
 
     return HttpResponseRedirect('../create_group_failed')
-
-<<<<<<< HEAD
 
 
 def register_confirm(request, activation_key):
@@ -479,7 +430,6 @@ def confirmed(request):
 
 def confirm_expired(request):
     return render_to_response('confirm_expired.htmls')
-=======
 '''
 def new_folder(request):
     return render(request, 'new_folder.html')
@@ -503,4 +453,3 @@ def add_folder(request):
 
     return HttpResponseRedirect('../add_folder_failed')
 '''
->>>>>>> 1406712f6d54d1138114cc3a031b342503d235f7
