@@ -7,7 +7,7 @@ class User(models.Model):
     user_id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=100)
-    reg_date = models.DateTimeField('date of registration')
+    reg_date = models.DateTimeField('date of myregistration')
     admin = models.BooleanField(default=False)
     email = models.EmailField()
     privilege = models.CharField(max_length=100, default='DEFAULT VALUE')

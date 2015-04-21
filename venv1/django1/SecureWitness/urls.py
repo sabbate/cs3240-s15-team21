@@ -1,5 +1,7 @@
-from django.conf.urls import patterns, url
-
+from django.conf.urls import patterns, url, include
+# from django.contrib import admin
+# admin.autodiscover()
+import django
 from . import views
 
 urlpatterns = [
@@ -44,7 +46,14 @@ urlpatterns = [
     url(r'^account/confirmed/$', views.confirmed),
     url(r'^account/confirm_expired/$', views.confirm_expired),
     url(r'^account/confirm/(?P<activation_key>\w+)/', views.register_confirm),
-
+    url(r'^account/register/duplicate_email/', views.duplicate_email),
+    url(r'^account/resetpassword/', django.contrib.auth.views.password_reset, {'template_name': 'myregistration/password_reset_form.html'}),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+            django.contrib.auth.views.password_reset_confirm, {'template_name': 'myregistration/password_reset_confirm.html'}),
+    url(r'^resetpassword/passwordsent/$', django.contrib.auth.views.password_reset_done, {'template_name': 'myregistration/password_reset_done.html'}),
+    url(r'^password_reset/done/$', django.contrib.auth.views.password_reset_complete, {'template_name': 'myregistration/password_reset_complete.html'}),
+    url(r'', include('django.contrib.auth.urls')),
+    #url(r'', include('myregistration.backends.default.urls'))
 
 
 

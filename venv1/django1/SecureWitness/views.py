@@ -32,7 +32,8 @@ from django.core.mail import send_mail
 from django.utils import timezone
 import smtplib
 from .forms import *
-
+from django.core.urlresolvers import reverse
+from django.contrib.auth.views import password_reset, password_reset_confirm
 
 class GroupIndexView(generic.ListView):
     template_name = 'SecureWitness/group_index.html'
@@ -226,7 +227,6 @@ def removing_admin_view(request):
         return HttpResponseRedirect('../not_admin')
 
 
-@login_required(login_url="/SecureWitness/account/login")
 def invalid(request):
     return render_to_response('invalid.html')
 
@@ -270,13 +270,40 @@ def register_user(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
             username = form.cleaned_data['username']
-            email = request.POST.get('email', '')
-            user = User.objects.get(username=username)
-            user.email = email
-            user.is_active = False
-            user.save()
+            password = form.cleaned_data['password1']
+            email = request.POST.get('email','')
+            temp = False #to see if the user has been saved into the database
+            try:
+                u = User.objects.get(email=email)
+            except:
+                form.save()
+                user = User.objects.get(username=username)
+                user.email = email
+                user.is_active = False
+                user.save()
+                temp = True
+            if not temp:
+                return render_to_response('duplicate_email.html', {'username':username, 'password':password})
+
+
+            # form.save()
+            # username = form.cleaned_data['username']
+            # email = request.POST.get('email', '')
+            # user = User.objects.get(username=username)
+            # user.is_active = False
+            # user.email = email
+            # user.is_active = False
+            # user.save()
+            # try:
+            #     u = User.objects.get(email = email)
+            # except:
+            #     user.email = email
+            #     user.is_active = False
+            #     user.save()
+            # if u:
+            #     return render_to_response('duplicate_email.html', {'user':user})
+
             # Send email with activation key
             random_string = str(random.random()).encode('utf8')
             salt = hashlib.sha1(random_string).hexdigest()[:5]
@@ -429,27 +456,25 @@ def confirmed(request):
 
 
 def confirm_expired(request):
-    return render_to_response('confirm_expired.htmls')
+    return render_to_response('confirm_expired.html')
+
+
+def duplicate_email(request):
+     return render_to_response('duplicate_email.html')
+
 '''
-def new_folder(request):
-    return render(request, 'new_folder.html')
+def reset_confirm(request, uidb64=None, token=None):
+    return password_reset_confirm(request, template_name='app/reset_confirm.html',
+        uidb64=uidb64, token=token, post_reset_redirect=reverse('app:login'))
 
 
-def add_folder(request):
-    foldername = request.POST.get('Folder Name', '')
+def reset(request):
+    return password_reset(request, template_name='reset.html',
+        email_template_name='reset_email.html',
+        subject_template_name='reset_subject.txt',
+        post_reset_redirect=reverse(success))
 
-    try:
-        folder = Folder.objects.get(folder_name=foldername)
-    except:
-        # Change so that it takes given names and searches for their id
-        User.objects.raw('SELECT user_id FROM USER')
-        this_author_id = request.POST.get('Author ID', '')
-        this_parent = request.POST.get('Parent', '')
-        this_group_id = request.POST.get('Group ID', '')
-        f = Folder(folder_name=foldername, author_id=this_author_id, parent=this_parent,
-                   group_id=this_group_id)
-        f.save()
-        return HttpResponseRedirect('../folder_index.html')
 
-    return HttpResponseRedirect('../add_folder_failed')
+def success(request):
+     return render(request, "success.html")
 '''
