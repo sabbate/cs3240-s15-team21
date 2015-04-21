@@ -1,0 +1,18 @@
+<html>
+<head><title> Submit Report</title></head>
+<body>
+<h2> Submit a Report </h2>
+
+<form action = "/SecureWitness/addfolder/" method = "post">
+    {% csrf_token %}
+
+    <table>
+        <tr><td>Author Name:</td><td><input type = "text" name = "author_name"></td></tr>
+        <tr><td>Folder Name:</td><td><input type = "text" name = "folder_name"></td></tr>
+        <tr><td>Parent Name:</td><td><input type="text" name="parent_name"></td></tr>
+        <tr><td>Group Name:</td><td><input type="text" name="group_name"></td></tr>
+    </table>
+    <input type = "submit" value = "Submit Report">
+</form>
+</body>
+</html>

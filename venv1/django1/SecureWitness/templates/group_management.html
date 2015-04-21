@@ -21,7 +21,7 @@
     {% if groups %}
         <ul>
         {% for group in groups %}
-            <li><p>{{group}}</p></li>
+            <li><a href="../../{{ group.GID }}">{{ group }}</a></li>
         {% endfor %}
         </ul>
     {% else %}

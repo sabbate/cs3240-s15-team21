@@ -23,7 +23,7 @@ class FolderAdmin(admin.ModelAdmin):
 
 
 class UserToGroupAdmin(admin.ModelAdmin):
-    fields = ('user_id', 'group_id', 'leader', 'request_join')
+    fields = ('user_id', 'group_id', 'leader')
 
 
 #admin.site.register(SecureWitness.models.User, UserAdmin)

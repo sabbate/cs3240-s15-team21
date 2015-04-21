@@ -6,28 +6,34 @@
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
+#from SecureWitness.forms import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from SecureWitness.models import Report
 from SecureWitness.models import File
-from SecureWitness.models import Group
+from SecureWitness.models import Group, ActivationProfile
+from django import forms
 # from django import forms
 # from django import forms
 from django.shortcuts import render
-import datetime
+import datetime, hashlib, random
 import time
 from SecureWitness.models import *
 import Crypto
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
 import os
+from django.core.mail import send_mail
+from django.utils import timezone
+import smtplib
 from .forms import *
-
+from django.core.urlresolvers import reverse
+from django.contrib.auth.views import password_reset, password_reset_confirm
 
 class GroupIndexView(generic.ListView):
     template_name = 'SecureWitness/group_index.html'
@@ -136,7 +142,7 @@ def auth_view(request):
         return HttpResponseRedirect('../invalid')
 
 
-@login_required
+@login_required(login_url="/SecureWitness/account/login")
 def loggedin(request):
     try:
         groups = UserToGroup.objects.filter(UID=request.user.username)
@@ -151,7 +157,7 @@ def loggedin(request):
                               {'full_name': request.user.username, 'groups': groups, 'reports': reports})
 
 
-@login_required
+@login_required(login_url="/SecureWitness/account/login")
 def admin(request):
     c = {}
     c.update(csrf(request))
@@ -159,6 +165,25 @@ def admin(request):
     return render_to_response('admin.html', c)
 
 
+
+@login_required(login_url="/SecureWitness/account/login")
+def activate_user_view(request):
+    username = request.POST.get('username_activate', '')
+    try:
+        activate = User.objects.get(username=username)
+    except:
+        return HttpResponseRedirect('../user_activate_failed')
+
+    if not activate.is_active:
+        activate.is_active = True
+        activate.save()
+        if activate.is_active:
+            return HttpResponseRedirect('../user_activated')
+    else:
+        return HttpResponseRedirect('../user_already_activated')
+
+
+@login_required(login_url="/SecureWitness/account/login")
 def suspend_user_view(request):
     username = request.POST.get('username_suspend', '')
     try:
@@ -192,14 +217,33 @@ def assigning_admin_view(request):
         return HttpResponseRedirect('../admin_already_assigned')
 
 
+@login_required(login_url="/SecureWitness/account/login")
+def removing_admin_view(request):
+    username = request.POST.get('username_removeadmin', '')
+
+    try:
+        admin = User.objects.get(username=username)
+    except:
+        return HttpResponseRedirect('../admin_remove_failed')
+
+    if admin.is_superuser:
+        admin.is_superuser = False
+        admin.save()
+        if not admin.is_superuser:
+            return HttpResponseRedirect('../admin_removed')
+    else:
+        return HttpResponseRedirect('../not_admin')
+
+
 def invalid(request):
     return render_to_response('invalid.html')
 
 
-@login_required
+@login_required(login_url="/SecureWitness/account/login")
 def logout(request):
     auth.logout(request)
     return render_to_response('logout.html')
+
 
 
 def encrypt(path, filename, root):
@@ -223,16 +267,77 @@ def encrypt(path, filename, root):
     # in write() instead of just "w".
     with open(path + filename, 'wb') as f:
         # print(ciphertext)
-        f.write(ciphertext);
+        f.write(ciphertext)
     with open(path + "key_" + filename, 'wb') as f:
-        f.write(key);
+        f.write(key)
+
+
 
 
 def register_user(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            email = request.POST.get('email','')
+            temp = False #to see if the user has been saved into the database
+            try:
+                u = User.objects.get(email=email)
+            except:
+                form.save()
+                user = User.objects.get(username=username)
+                user.email = email
+                user.is_active = False
+                user.save()
+                temp = True
+            if not temp:
+                return render_to_response('duplicate_email.html', {'username':username, 'password':password})
+
+
+            # form.save()
+            # username = form.cleaned_data['username']
+            # email = request.POST.get('email', '')
+            # user = User.objects.get(username=username)
+            # user.is_active = False
+            # user.email = email
+            # user.is_active = False
+            # user.save()
+            # try:
+            #     u = User.objects.get(email = email)
+            # except:
+            #     user.email = email
+            #     user.is_active = False
+            #     user.save()
+            # if u:
+            #     return render_to_response('duplicate_email.html', {'user':user})
+
+            # Send email with activation key
+            random_string = str(random.random()).encode('utf8')
+            salt = hashlib.sha1(random_string).hexdigest()[:5]
+            salted = (salt + email).encode('utf8')
+            activation_key = hashlib.sha1(salted).hexdigest()
+            key_expires = datetime.datetime.today() + datetime.timedelta(2)
+            user = User.objects.get(username=username)
+            new_profile = ActivationProfile(user=user, activation_key=activation_key, key_expires=key_expires)
+            new_profile.save()
+
+
+            email_subject = 'Account confirmation'
+            email_body = "Hey %s, thanks for signing up. To activate your account, click this link " \
+                         " http://127.0.0.1:8000/SecureWitness/account/confirm/%s" % (username, activation_key)
+
+            send_mail(email_subject, email_body, 'nyxeliza1107@gmail.com',
+               [email], fail_silently=False)
+            '''
+            s=smtplib.SMTP()
+            s.connect("smtp.gmail.com",587)
+            s.starttls()
+            s.ehlo()
+            s.login("nyxeliza1107@gmail.com", "password")
+            s.sendmail("nyxeliza1107@gmail.com", email, email_body)
+            '''
+
             return HttpResponseRedirect('../register_success')
     args = {}
     args.update(csrf(request))
@@ -245,34 +350,42 @@ def register_success(request):
     return render_to_response('register_success.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def admin_assigned(request):
     return render_to_response('admin_assigned.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def admin_already_assigned(request):
     return render_to_response('admin_already_assigned.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def admin_assign_failed(request):
     return render_to_response('admin_assign_failed.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def user_suspended(request):
     return render_to_response('user_suspended.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def user_not_active(request):
     return render_to_response('user_not_active.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def user_already_suspended(request):
     return render_to_response('user_already_suspended.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def user_suspend_failed(request):
     return render_to_response('user_suspend_failed.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def group_management(request):
     c = {}
     c.update(csrf(request))
@@ -280,13 +393,40 @@ def group_management(request):
     return render_to_response('group_management.html', c)
 
 
+
+@login_required(login_url="/SecureWitness/account/login")
 def create_group_failed(request):
     return render_to_response('create_group_failed.html')
 
 
+def admin_remove_failed(request):
+    return render_to_response('admin_remove_failed.html')
+
+
+def admin_removed(request):
+    return render_to_response('admin_removed.html')
+
+
+def not_admin(request):
+    return render_to_response('not_admin.html')
+
+
+def user_activated(request):
+    return render_to_response('user_activated.html')
+
+
+def user_already_activated(request):
+    return render_to_response('user_already_activated.html')
+
+
+def user_activate_failed(request):
+    return render_to_response('user_activate_failed.html')
+
+
+@login_required(login_url="/SecureWitness/account/login")
 def create_group(request):
     groupname = request.POST.get('groupname', '')
-
+    print(groupname)
     try:
         group = Group.objects.get(group_name=groupname)
     except:
@@ -301,12 +441,48 @@ def create_group(request):
     return HttpResponseRedirect('../create_group_failed')
 
 
-def folder_data(request):
-    if request.method == 'POST':
-        form = FolderForm(request.POST)
-        if form.is_valid():
-            return HttpResponseRedirect('../folders/')
-    else:
-        form = FolderForm()
+def register_confirm(request, activation_key):
+    #check if user is already logged in and if he is redirect him to some other url, e.g. home
+    if request.user.is_authenticated():
+        HttpResponseRedirect('/home')
 
-    return render(request, 'SecureWitness/folder_detail.html', {'form': form})
+    # check if there is UserProfile which matches the activation key (if not then display 404)
+    user_profile = get_object_or_404(ActivationProfile, activation_key=activation_key)
+
+    #check if the activation key has expired, if it hase then render confirm_expired.html
+    if user_profile.key_expires < timezone.now():
+        return render_to_response('../confirm_expired.html')
+    #if the key hasn't expired save user and set him as active and render some template to confirm activation
+    user = user_profile.user
+    user.is_active = True
+    user.save()
+    return HttpResponseRedirect('../../confirmed')
+
+
+def confirmed(request):
+    return render_to_response('confirmed.html')
+
+
+def confirm_expired(request):
+    return render_to_response('confirm_expired.html')
+
+
+def duplicate_email(request):
+     return render_to_response('duplicate_email.html')
+
+'''
+def reset_confirm(request, uidb64=None, token=None):
+    return password_reset_confirm(request, template_name='app/reset_confirm.html',
+        uidb64=uidb64, token=token, post_reset_redirect=reverse('app:login'))
+
+
+def reset(request):
+    return password_reset(request, template_name='reset.html',
+        email_template_name='reset_email.html',
+        subject_template_name='reset_subject.txt',
+        post_reset_redirect=reverse(success))
+
+
+def success(request):
+     return render(request, "success.html")
+'''
