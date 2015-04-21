@@ -49,7 +49,7 @@ class Folder(models.Model):
 
 class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
-    folder_id = models.ForeignKey(Folder)
+    folder_id = models.ForeignKey(Folder, default=0)
     author_id = models.ForeignKey(User)
     create_date = models.DateTimeField('date created')
     last_update_date = models.DateTimeField('date of last modification')

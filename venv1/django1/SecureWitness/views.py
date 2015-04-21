@@ -63,30 +63,30 @@ def newreport(request):
 
 
 def submitreport(request):
-    if request.POST.get('short', False) and request.POST.get('long', False):
-        short = request.POST.get('short', False)
-        long = request.POST.get('long', False)
-        loc = request.POST.get('location', False)
-        date = request.POST.get('date', False)
-        keys = request.POST.get('keys', False)
-        priv = request.POST.get('private', False)
-        password = request.POST.get('pw', False)
+	if request.POST.get('short', False) and request.POST.get('long', False):
+		short = request.POST.get('short', False)
+		long = request.POST.get('long', False)
+		loc = request.POST.get('location', False)
+		date = request.POST.get('date', False)
+		keys = request.POST.get('keys', False)
+		priv = request.POST.get('private', False)
+		password = request.POST.get('pw', False)
         # files = HttpRequest.FILES;
-        cur_time = datetime.now()
-        for key, file in request.FILES.items():
-            path = os.getcwd() + '\\SecureWitness\\files\\'
-            dest = open(path + file.name, 'wb+')
-            dest.write(file.read())
-            encrypt(path, file.name, password)
-            dest.close()
-            f = File(authorID=1, ReportID=1, docfile=path);
-            f.save();
-        r = Report(authorID=1, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
-                   location=loc, folderID=f, incident_date=date, keywords=keys, private=priv)
-        r.save();
-        return HttpResponse('Thank you for submitting a report!')
-    else:
-        return HttpResponse('Your submission was unsuccessful.')
+		cur_time = datetime.now()
+		usr = User.objects.filter(=request.user.username)
+		r = Report(author_id=request.user, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,location=loc, incident_date=date, keywords=keys, private=priv)
+		for key, file in request.FILES.items():
+			path = os.getcwd() + '\\SecureWitness\\files\\'
+			dest = open(path + file.name, 'wb+')
+			dest.write(file.read())
+			encrypt(path, file.name, password)
+			dest.close()
+			f = File(author=request.user, report=r, docfile=path)
+			f.save();
+		r.save();
+		return HttpResponse('Thank you for submitting a report!')
+	else:
+		return HttpResponse('Your submission was unsuccessful.')
 
 
 def search_form(request):
@@ -94,14 +94,22 @@ def search_form(request):
 
 
 def search(request):
-    if 'q' in request.GET and request.GET['q']:
-        q = request.GET['q']
-        r1 = Report.objects.filter(keywords__icontains=q)
-        r2 = Report.objects.filter(short_desc__icontains=q)
-        reports = r1 | r2
-        return render(request, 'search_results.html', {'reports': reports, 'query': q})
-    else:
-        return HttpResponse('No results found. Please try another search term.')
+	if 'q' in request.GET and request.GET['q']:
+		q = request.GET['q']
+		if "AND" in q:
+			terms = q.split(" AND ");
+			r = Report.objects.filter(keywords__icontains=terms[0])
+			for word in terms:
+				r = r.filter(keywords__icontains=word)
+			reports = r
+		if "OR" in q:
+			terms = q.split(" OR ");
+			reports = Report.objects.filter(keywords__icontains=terms[0])
+			for word in terms[1:]:
+				reports = reports | Report.objects.filter(keywords__icontains=word)
+			return render(request, 'search_results.html', {'reports': reports, 'query': q})
+		else:
+			return HttpResponse('No results found. Please try another search term.')
 
 
 def login(request):

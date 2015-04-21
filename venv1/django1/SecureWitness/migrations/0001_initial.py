@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='File',
             fields=[
                 ('file_id', models.AutoField(primary_key=True, serialize=False)),
-                ('docfile', models.FileField(upload_to='files/', default=False)),
+                ('docfile', models.FileField(default=False, upload_to='files/')),
                 ('file_name', models.CharField(max_length=100)),
                 ('author_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                 ('keywords', models.CharField(default='DEFAULT VALUE', max_length=300)),
                 ('private', models.BooleanField(default=False)),
                 ('author_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('folder_id', models.ForeignKey(to='SecureWitness.Folder')),
+                ('folder_id', models.ForeignKey(default=0, to='SecureWitness.Folder')),
             ],
             options={
             },
@@ -91,7 +91,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(primary_key=True, serialize=False)),
                 ('leader', models.BooleanField(default=False)),
-                ('request_join', models.BooleanField(default=False)),
                 ('group_id', models.ForeignKey(to='SecureWitness.Group')),
                 ('user_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
@@ -120,7 +119,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='folder',
             name='parent',
-            field=models.ForeignKey(to='SecureWitness.Folder'),
+            field=models.ForeignKey(null=True, blank=True, to='SecureWitness.Folder'),
             preserve_default=True,
         ),
         migrations.AddField(
