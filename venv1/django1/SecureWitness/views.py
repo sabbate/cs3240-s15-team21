@@ -455,6 +455,20 @@ def edit_group(request, id):
 
 
 @login_required(login_url="/SecureWitness/account/login")
+def edit_folder(request, id):
+    c = {}
+    c.update(csrf(request))
+    folder = Folder.objects.get(folder_id=id)
+    folder_name = folder.folder_name
+
+
+    c['folder_name'] = folder_name
+
+
+    return render_to_response('edit_folder.html', c)
+
+
+@login_required(login_url="/SecureWitness/account/login")
 def create_group(request):
     groupname = request.POST.get('groupname', '')
     # print(groupname)
