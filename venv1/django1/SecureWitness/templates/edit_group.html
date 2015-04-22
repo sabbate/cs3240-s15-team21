@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
+    <p>Click <a href="/SecureWitness/admin/group_management/">here</a> to go back. </p>
+    <h2>{{group_name}}</h2>
+
+
+    <p>Create a new group.</p>
+    <form action="../{{group_id}}/add_user/" method="post">{% csrf_token %}
+        <label for="username">Enter the name of the user to be added: </label>
+        <input type="text" name="username" value="" id="username">
+        <input type="submit" value="Add!"/>
+    </form>
+
+    <p></p>
+    <p></p>
+
+    <p>Users in the group: </p>
+    <div style="height:120px;width:240px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+        {% if users %}
+            <ul>
+            {% for user in users %}
+                <li>{{user}}</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>No user exists in this group.</p>
+        {% endif %}
+
+    </div>
+    <p>All users in the system: </p>
+        <div style="height:120px;width:240px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
+            {% if allusers %}
+                <ul>
+                {% for user in allusers %}
+                    <li>{{user.username}}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No user in this system.</p>
+            {% endif %}
+
+        </div>
+
+{% endblock %}

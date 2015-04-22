@@ -53,6 +53,11 @@ urlpatterns = [
     url(r'^resetpassword/passwordsent/$', django.contrib.auth.views.password_reset_done, {'template_name': 'myregistration/password_reset_done.html'}),
     url(r'^password_reset/done/$', django.contrib.auth.views.password_reset_complete, {'template_name': 'myregistration/password_reset_complete.html'}),
     url(r'', include('django.contrib.auth.urls')),
+    url(r'^admin/group_management/(\d+)/$', views.edit_group, name='edit_group'),
+    url(r'^admin/group_management/(\d+)/add_user/$', views.add_user),
+    url(r'^admin/group_management/(\d+)/add_user_failed/$', views.add_user_failed),
+    url(r'^admin/group_management/(\d+)/add_user_succeeded/$', views.add_user_succeeded),
+
     #url(r'', include('myregistration.backends.default.urls'))
 
 

@@ -27,7 +27,7 @@ class UserToGroupAdmin(admin.ModelAdmin):
 
 
 #admin.site.register(SecureWitness.models.User, UserAdmin)
-admin.site.register(SecureWitness.models.Group, GroupAdmin)
+#admin.site.register(SecureWitness.models.Group, GroupAdmin)
 admin.site.register(SecureWitness.models.File, FileAdmin)
 admin.site.register(SecureWitness.models.Report, ReportAdmin)
 admin.site.register(SecureWitness.models.Folder, FolderAdmin)

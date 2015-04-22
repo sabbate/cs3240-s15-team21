@@ -13,10 +13,10 @@ from django.core.context_processors import csrf
 #from SecureWitness.forms import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from SecureWitness.models import Report
 from SecureWitness.models import File
-from SecureWitness.models import Group, ActivationProfile
+from SecureWitness.models import  ActivationProfile, GroupProfile
 from django import forms
 # from django import forms
 # from django import forms
@@ -377,11 +377,13 @@ def user_suspend_failed(request):
     return render_to_response('user_suspend_failed.html')
 
 
+
 @login_required(login_url="/SecureWitness/account/login")
 def group_management(request):
     c = {}
     c.update(csrf(request))
-    c['groups'] = Group.objects.values_list('group_name')
+    grouplist = Group.objects.all()
+    c['groups'] = grouplist
     return render_to_response('group_management.html', c)
 
 
@@ -389,6 +391,29 @@ def group_management(request):
 @login_required(login_url="/SecureWitness/account/login")
 def create_group_failed(request):
     return render_to_response('create_group_failed.html')
+
+
+def add_user(request, group_id):
+    username = request.POST.get('username', '')
+    user = User()
+    try:
+        user = User.objects.get(username=username)
+    except:
+        return HttpResponseRedirect('../add_user_failed')
+    related_groups = user.groups.all()
+    group = Group.objects.get(id=group_id)
+    if group in related_groups:
+        return HttpResponseRedirect('../add_user_failed')
+    user.groups.add(group)
+    return HttpResponseRedirect('../add_user_succeeded')
+
+
+def add_user_succeeded(request, group_id):
+    return render_to_response('add_user_succeeded.html')
+
+
+def add_user_failed(request, group_id):
+    return render_to_response('add_user_failed.html')
 
 
 def admin_remove_failed(request):
@@ -416,18 +441,40 @@ def user_activate_failed(request):
 
 
 @login_required(login_url="/SecureWitness/account/login")
+def edit_group(request, id):
+    c = {}
+    c.update(csrf(request))
+    group = Group.objects.get(id=id)
+    users = group.user_set.all()
+    groupname = group.name
+    usernames = []
+    for u in users:
+        usernames.append(u.username)
+    allusers = User.objects.all()
+    c['group_id'] = id
+    c['group_name'] = groupname
+    c['users'] = usernames
+    c['allusers'] = allusers
+
+    return render_to_response('edit_group.html', c )
+
+
+
+@login_required(login_url="/SecureWitness/account/login")
 def create_group(request):
     groupname = request.POST.get('groupname', '')
-    print(groupname)
+    #print(groupname)
     try:
-        group = Group.objects.get(group_name=groupname)
+        group = Group.objects.get(name=groupname)
     except:
-        f = '%Y%m%d%H%M%S'
-        now = time.localtime()
-        timeString = time.strftime(f, now)
-        timeInt = int(timeString)
-        g = Group(group_name=groupname, group_id=timeInt)  # use datetime of created as id
+        #f = '%Y%m%d%H%M%S'
+        #now = time.localtime()
+        # timeString = time.strftime(f, now)
+        # timeInt = int(timeString)
+        cur_time = datetime.datetime.now()
+        g = Group(name=groupname)  # use datetime of created as id
         g.save()
+
         return HttpResponseRedirect('../../group_management')
 
     return HttpResponseRedirect('../create_group_failed')

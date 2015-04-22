@@ -1,6 +1,7 @@
 from django.db import models
 import datetime
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
+#notes: django's default group model has two fields, id and name. which is enough for our implementation
 
 '''
 class User(models.Model):
@@ -17,10 +18,9 @@ class User(models.Model):
 '''
 
 
-class Group(models.Model):
-    group_id = models.AutoField(primary_key=True)
-    group_name = models.CharField(max_length=100)
-    users = models.ManyToManyField(User, through='UserToGroup')
+class GroupProfile(models.Model):
+    group = models.OneToOneField(Group, unique=True) #Group model imported from django
+    datetime = models.DateTimeField('date created')
 
     def __str__(self):
         return self.group_name
