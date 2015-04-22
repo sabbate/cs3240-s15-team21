@@ -1,5 +1,5 @@
 from django.db import models
-import datetime
+from datetime import *
 from django.contrib.auth.models import User, Group, Permission
 # notes: django's default group model has two fields, id and name. which is enough for our implementation
 
@@ -50,11 +50,11 @@ class Folder(models.Model):
 
 class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
-    folder_id = models.ForeignKey(Folder)
-    group_id = models.ForeignKey(Group)
+    folder_id = models.ForeignKey(Folder, blank=True, null=True)
+    group_id = models.ForeignKey(Group, blank=True, null=True)
     author_id = models.ForeignKey(User)
-    create_date = models.DateTimeField('date created')
-    last_update_date = models.DateTimeField('date of last modification')
+    create_date = models.DateTimeField('date created', default=datetime.now())
+    last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
     report_name = models.CharField(max_length=200)
     short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
     long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
@@ -64,7 +64,7 @@ class Report(models.Model):
     private = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.report_name
+        return self.report_name + " by " + self.author_id.username
 
 
 class File(models.Model):
@@ -104,5 +104,7 @@ class ReportSharingGroup(models.Model):
 class ActivationProfile(models.Model):
     activation_key = models.CharField(max_length=300, default='DEFAULT VALUE')
     user = models.OneToOneField(User, primary_key=True)
-    key_expires = models.DateTimeField(default=datetime.date.today())
+    key_expires = models.DateTimeField(default=datetime.today())
+    # I commented out the old one, because it was giving me errors - Grant
+    # key_expires = models.DateTimeField(default=datetime.date.today())
 
