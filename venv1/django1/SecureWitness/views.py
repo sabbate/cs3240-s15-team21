@@ -42,7 +42,7 @@ class GroupIndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published groups."""
-        return Group.objects.order_by('-group_id')[:5]
+        return Group.objects.order_by('-id')[:5]
 
 
 class GroupDetailView(generic.DetailView):
@@ -439,6 +439,7 @@ def edit_group(request, id):
     c.update(csrf(request))
     group = Group.objects.get(id=id)
     users = UserToGroup.objects.filter(group_id=id)
+    folder_list = Folder.objects.filter(GID=id)
     groupname = group.name
     usernames = []
     for u in users:
@@ -448,6 +449,7 @@ def edit_group(request, id):
     c['group_name'] = groupname
     c['users'] = usernames
     c['allusers'] = allusers
+    c['folders'] = folder_list
 
     return render_to_response('edit_group.html', c)
 
@@ -466,7 +468,6 @@ def create_group(request):
         cur_time = datetime.datetime.now()
         g = Group(name=groupname)  # use datetime of created as id
         g.save()
-
         return HttpResponseRedirect('../../group_management')
 
     return HttpResponseRedirect('../create_group_failed')
