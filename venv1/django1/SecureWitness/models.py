@@ -1,7 +1,7 @@
 from django.db import models
 import datetime
 from django.contrib.auth.models import User, Group, Permission
-#notes: django's default group model has two fields, id and name. which is enough for our implementation
+# notes: django's default group model has two fields, id and name. which is enough for our implementation
 
 '''
 class User(models.Model):
@@ -19,11 +19,12 @@ class User(models.Model):
 
 
 class GroupProfile(models.Model):
-    group = models.OneToOneField(Group, unique=True) #Group model imported from django
+    group = models.OneToOneField(Group, unique=True)  # Group model imported from django
     datetime = models.DateTimeField('date created')
 
     def __str__(self):
         return self.group_name
+
 
 '''
 class File(models.Model):
@@ -82,6 +83,9 @@ class UserToGroup(models.Model):
     user_id = models.ForeignKey(User)
     group_id = models.ForeignKey(Group)
     leader = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user_id.username + " of " + self.group_id.name
 
 
 class ReportSharingUser(models.Model):
