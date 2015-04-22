@@ -15,7 +15,7 @@ class FileAdmin(admin.ModelAdmin):
 
 
 class ReportAdmin(admin.ModelAdmin):
-    fields = ('report_name', 'short_desc', 'long_desc', 'location', 'keywords', 'private')
+    fields = ('report_name', 'folder_id', 'group_id', 'short_desc', 'long_desc', 'location', 'keywords', 'private')
 
 
 class FolderAdmin(admin.ModelAdmin):
