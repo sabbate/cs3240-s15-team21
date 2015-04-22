@@ -439,7 +439,7 @@ def edit_group(request, id):
     c.update(csrf(request))
     group = Group.objects.get(id=id)
     users = UserToGroup.objects.filter(group_id=id)
-    folder_list = Folder.objects.filter(GID=id)
+    folder_list = Folder.objects.filter(GID=id).filter(parent=None)
     groupname = group.name
     usernames = []
     for u in users:
@@ -459,10 +459,9 @@ def edit_folder(request, id):
     c = {}
     c.update(csrf(request))
     folder = Folder.objects.get(folder_id=id)
-    folder_name = folder.folder_name
 
 
-    c['folder_name'] = folder_name
+    c['folder_name'] = folder.folder_name
 
 
     return render_to_response('edit_folder.html', c)

@@ -51,19 +51,17 @@ urlpatterns = [
     url(r'^assigning_admin_view/$', views.assigning_admin_view),
     url(r'^removing_admin_view/$', views.removing_admin_view),
 
+    url(r'^admin/folders/(\d+)/$', views.edit_folder, name='edit_folder'),
+
     url(r'newreport/$', views.newreport, name='newreport'),
     url(r'^submitreport/$', views.submitreport),
-
-    url(r'^groups', views.GroupDetailView.as_view(), name='group'),
-    url(r'^(?P<pk>\d+)/$', views.GroupDetailView.as_view(), name='group'),
-    url(r'^(?P<pk>\d+)/$', views.ReportIndexView.as_view(), name='report_index'),
 
     url(r'^search_form/$', views.search_form),
     url(r'^search/$', views.search),
 
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
-            django.contrib.auth.views.password_reset_confirm,
-            {'template_name': 'myregistration/password_reset_confirm.html'}),
+        django.contrib.auth.views.password_reset_confirm,
+        {'template_name': 'myregistration/password_reset_confirm.html'}),
     url(r'^resetpassword/passwordsent/$', django.contrib.auth.views.password_reset_done,
         {'template_name': 'myregistration/password_reset_done.html'}),
     url(r'^password_reset/done/$', django.contrib.auth.views.password_reset_complete,
@@ -78,3 +76,9 @@ urlpatterns = [
 url(r'^newfolder/', views.new_folder),
 url(r'^addfolder/', views.add_folder),
 '''
+# These are the old url paths I use
+"""
+url(r'^groups', views.GroupDetailView.as_view(), name='group'),
+url(r'^(?P<pk>\d+)/$', views.GroupDetailView.as_view(), name='group'),
+url(r'^(?P<pk>\d+)/$', views.ReportIndexView.as_view(), name='report_index'),
+"""
