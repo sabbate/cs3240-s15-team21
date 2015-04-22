@@ -445,18 +445,18 @@ def edit_group(request, id):
     c = {}
     c.update(csrf(request))
     group = Group.objects.get(id=id)
-    users = group.user_set.all()
+    users = UserToGroup.objects.filter(group_id=id)
     groupname = group.name
     usernames = []
     for u in users:
-        usernames.append(u.username)
+        usernames.append(u.user_id.username)
     allusers = User.objects.all()
     c['group_id'] = id
     c['group_name'] = groupname
     c['users'] = usernames
     c['allusers'] = allusers
 
-    return render_to_response('edit_group.html', c )
+    return render_to_response('edit_group.html', c)
 
 
 
