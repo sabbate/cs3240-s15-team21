@@ -57,6 +57,12 @@ urlpatterns = [
     url(r'^admin/group_management/(\d+)/add_user/$', views.add_user),
     url(r'^admin/group_management/(\d+)/add_user_failed/$', views.add_user_failed),
     url(r'^admin/group_management/(\d+)/add_user_succeeded/$', views.add_user_succeeded),
+    url(r'^account/loggedin/(\d+)/$', views.member_edit_group, name='member_edit_group'),
+    url(r'^account/loggedin/(\d+)/add_user/$', views.add_user),
+    url(r'^account/loggedin/(\d+)/add_user_failed/$', views.member_add_user_failed),
+    url(r'^account/loggedin/(\d+)/add_user_succeeded/$', views.member_add_user_succeeded),
+
+
 
     #url(r'', include('myregistration.backends.default.urls'))
 

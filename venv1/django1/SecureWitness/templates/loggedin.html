@@ -17,7 +17,7 @@
         <p>Found {{ groups|length }} groups{{ reports|pluralize }}.</p>
         <ul>
             {% for group in groups %}
-            <li>{{ group.GID }}</li>
+                <li><a href="{% url 'member_edit_group' group.id%}" >{{ group }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
