@@ -522,6 +522,27 @@ def duplicate_email(request):
     return render_to_response('duplicate_email.html')
 
 
+def change_parent(request, id):
+    if request.method == 'POST':
+        if request.POST.get('parent'):
+            parent_name = request.POST.get('parent')
+            parent = Folder.objects.filter(folder_name=parent_name)
+            folder = Folder.objects.get(folder_id=id)
+            # TODO finish posting new data and reloading the page
+
+        else:
+            # TODO add making it so that the folder has no parent
+            pass
+
+
+
+def rename_folder(request, id):
+    pass
+
+
+def add_subfolder(request, id):
+    pass
+
 '''
 def reset_confirm(request, uidb64=None, token=None):
     return password_reset_confirm(request, template_name='app/reset_confirm.html',

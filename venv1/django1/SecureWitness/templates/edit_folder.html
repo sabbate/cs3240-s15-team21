@@ -6,13 +6,29 @@
     <h2>{{folder_name}}</h2>
 
     <p>Group: <a href="../../group_management/{{ group_id }}">{{ group_name }}</a></p>
-    
-    {% if parent_name %}
-        <p>Parent: <a href="../{{ parent_id }}">{{ parent_name }}</a></p>
-    {% else %}
-        <p>Parent: None</p>
-    {% endif %}
 
+    <form action="change_parent/" method="post">
+        {% csrf_token %}
+
+        <label for="parent">Parent:</label>
+        <input type="text" name="parent" value="{{ parent_name }}" id="parent">
+        {% if parent_name %}
+            <a href="../{{ parent_id }}">Link</a>
+        {% endif %}
+        <input type="submit" value="Update"/>
+    </form>
+
+    <br />
+    <br />
+    <form action="add_subfolder/" method="post">
+        {% csrf_token %}
+
+        <label for="child_name">Add a new Sub-Folder</label>
+        <input type="text" name="child_name" value="" id="child_name">
+        <input type="submit" value="Add"/>
+    </form>
+
+    <h4>Current Sub-Folders:</h4>
     {% if children %}
         {% for child in children %}
             <p><a href="../{{ child.folder_id }}">{{ child.folder_name }}</a></p>
