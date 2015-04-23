@@ -39,6 +39,10 @@ urlpatterns = [
     url(r'^admin/group_management/(\d+)/add_user/$', views.add_user),
     url(r'^admin/group_management/(\d+)/add_user_failed/$', views.add_user_failed),
     url(r'^admin/group_management/(\d+)/add_user_succeeded/$', views.add_user_succeeded),
+    url(r'^account/loggedin/(\d+)/$', views.member_edit_group, name='member_edit_group'),
+    url(r'^account/loggedin/(\d+)/add_user/$', views.add_user),
+    url(r'^account/loggedin/(\d+)/add_user_failed/$', views.member_add_user_failed),
+    url(r'^account/loggedin/(\d+)/add_user_succeeded/$', views.member_add_user_succeeded),
     url(r'^admin_assigned/$', views.admin_assigned),
     url(r'^admin_assign_failed/$', views.admin_assign_failed),
     url(r'^admin_already_assigned/$', views.admin_already_assigned),
@@ -50,7 +54,6 @@ urlpatterns = [
     url(r'^not_admin/$', views.not_admin),
     url(r'^assigning_admin_view/$', views.assigning_admin_view),
     url(r'^removing_admin_view/$', views.removing_admin_view),
-
     url(r'^admin/folders/(\d+)/$', views.edit_folder, name='edit_folder'),
     url(r'^admin/folders/(\d+)/add_folder/$', views.add_subfolder),
     url(r'^admin/folders/(\d+)/change_parent/$', views.change_parent),

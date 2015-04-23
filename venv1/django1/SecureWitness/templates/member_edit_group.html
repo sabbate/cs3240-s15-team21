@@ -2,7 +2,7 @@
 
 {% block content %}
     <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
-    <p>Click <a href="/SecureWitness/admin/group_management/">here</a> to go back. </p>
+    <p>Click <a href="/SecureWitness/account/loggedin/">here</a> to go back. </p>
     <h2>{{group_name}}</h2>
 
 
@@ -41,18 +41,5 @@
             {% endif %}
 
         </div>
-
-    <p>Folders of this group</p>
-    <div style="height:120px;width:240px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
-    {% if folders %}
-        <ul>
-            {% for folder in folders %}
-                <li><a href="../../folders/{{ folder.folder_id }}">{{ folder }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No folders are available.</p>
-    {% endif %}
-    </div>
 
 {% endblock %}

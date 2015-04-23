@@ -8,7 +8,6 @@
 
     <ul>
         <p>Create a new group.</p>
-        <!-- TODO Implement creating a new group -->
         <form action="../group_management/create_group/" method="post">{% csrf_token %}
             <label for="groupname">Enter a name for the new group: </label>
             <input type="text" name="groupname" value="" id="groupname">
@@ -22,7 +21,7 @@
     {% if groups %}
         <ul>
             {% for group in groups %}
-                <li><a href="{% url 'edit_group' group.id%}" >{{ group }}</a></li>
+                <li><a href="{% url 'member_edit_group' group.id%}" >{{ group }}</a></li>
             {% endfor %}
         </ul>
     {% else %}

@@ -138,7 +138,7 @@ def auth_view(request):
 @login_required(login_url="/SecureWitness/account/login")
 def loggedin(request):
     try:
-        groups = UserToGroup.objects.filter(UID=request.user.username)
+        groups = request.user.groups.all()
     except:
         groups = None
 
@@ -401,6 +401,15 @@ def add_user(request, group_id):
     return HttpResponseRedirect('../add_user_succeeded')
 
 
+
+def member_add_user_succeeded(request, group_id):
+    return render_to_response('member_add_user_succeeded.html')
+
+
+def member_add_user_failed(request, group_id):
+    return render_to_response('member_add_user_failed.html')
+
+
 def add_user_succeeded(request, group_id):
     return render_to_response('add_user_succeeded.html')
 
@@ -472,6 +481,23 @@ def edit_folder(request, id):
 
     return render_to_response('edit_folder.html', c)
 
+@login_required(login_url="/SecureWitness/account/login")
+def member_edit_group(request, id):
+    c = {}
+    c.update(csrf(request))
+    group = Group.objects.get(id=id)
+    users = group.user_set.all()
+    groupname = group.name
+    usernames = []
+    for u in users:
+        usernames.append(u.username)
+    allusers = User.objects.all()
+    c['group_id'] = id
+    c['group_name'] = groupname
+    c['users'] = usernames
+    c['allusers'] = allusers
+
+    return render_to_response('member_edit_group.html', c )
 
 @login_required(login_url="/SecureWitness/account/login")
 def create_group(request):
