@@ -1,7 +1,7 @@
 from django.db import models
-import datetime
+from datetime import *
 from django.contrib.auth.models import User, Group, Permission
-#notes: django's default group model has two fields, id and name. which is enough for our implementation
+# notes: django's default group model has two fields, id and name. which is enough for our implementation
 
 '''
 class User(models.Model):
@@ -19,11 +19,12 @@ class User(models.Model):
 
 
 class GroupProfile(models.Model):
-    group = models.OneToOneField(Group, unique=True) #Group model imported from django
+    group = models.OneToOneField(Group, unique=True)  # Group model imported from django
     datetime = models.DateTimeField('date created')
 
     def __str__(self):
         return self.group_name
+
 
 '''
 class File(models.Model):
@@ -49,10 +50,11 @@ class Folder(models.Model):
 
 class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
-    folder_id = models.ForeignKey(Folder)
+    folder_id = models.ForeignKey(Folder, blank=True, null=True)
+    group_id = models.ForeignKey(Group, blank=True, null=True)
     author_id = models.ForeignKey(User)
-    create_date = models.DateTimeField('date created')
-    last_update_date = models.DateTimeField('date of last modification')
+    create_date = models.DateTimeField('date created', default=datetime.now())
+    last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
     report_name = models.CharField(max_length=200)
     short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
     long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
@@ -62,7 +64,7 @@ class Report(models.Model):
     private = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.report_name
+        return self.report_name + " by " + self.author_id.username
 
 
 class File(models.Model):
@@ -83,7 +85,10 @@ class UserToGroup(models.Model):
     group_id = models.ForeignKey(Group)
     leader = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.user_id.username + " of " + self.group_id.name
 
+"""
 class ReportSharingUser(models.Model):
     id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(User)
@@ -94,10 +99,12 @@ class ReportSharingGroup(models.Model):
     id = models.AutoField(primary_key=True)
     group_id = models.ForeignKey(Group)
     sharing_date = models.DateTimeField()
-
+"""
 
 class ActivationProfile(models.Model):
     activation_key = models.CharField(max_length=300, default='DEFAULT VALUE')
     user = models.OneToOneField(User, primary_key=True)
-    key_expires = models.DateTimeField(default=datetime.date.today())
+    key_expires = models.DateTimeField(default=datetime.today())
+    # I commented out the old one, because it was giving me errors - Grant
+    # key_expires = models.DateTimeField(default=datetime.date.today())
 

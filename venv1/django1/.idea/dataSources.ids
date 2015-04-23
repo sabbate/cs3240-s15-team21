@@ -5,9 +5,9 @@
     <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed"/>
     <schema name="" catalog=""/>
     <table name="SecureWitness_activationprofile" schema="" catalog="" type="TABLE">
+      <column name="key_expires" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="activation_key" sqlType="VARCHAR(300)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="user_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="key_expires" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <primary-key columns="user_id"/>
       <foreign-key name="#FAKE_SecureWitness_activationprofile_1" columns="user_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
     </table>
@@ -26,31 +26,29 @@
     <table name="SecureWitness_folder" schema="" catalog="" type="TABLE">
       <column name="folder_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="folder_name" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <column name="GID_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="author_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="parent_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <column name="GID_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <primary-key columns="folder_id"/>
-      <foreign-key name="#FAKE_SecureWitness_folder_1" columns="parent_id" ref-table="SecureWitness_folder" ref-schema="" ref-catalog="" ref-columns="folder_id" update-rule="3" delete-rule="3" deferrability="1"/>
-      <foreign-key name="#FAKE_SecureWitness_folder_2" columns="author_id_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
-      <foreign-key name="#FAKE_SecureWitness_folder_3" columns="GID_id" ref-table="SecureWitness_group" ref-schema="" ref-catalog="" ref-columns="group_id" update-rule="3" delete-rule="3" deferrability="1"/>
-      <exported-key name="#FAKE_SecureWitness_folder_1" table="SecureWitness_folder" schema="" catalog="" columns="parent_id"/>
-      <exported-key name="#FAKE_SecureWitness_report_1" table="SecureWitness_report" schema="" catalog="" columns="folder_id_id"/>
+      <foreign-key name="#FAKE_SecureWitness_folder_1" columns="GID_id" ref-table="auth_group" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_SecureWitness_folder_2" columns="parent_id" ref-table="SecureWitness_folder" ref-schema="" ref-catalog="" ref-columns="folder_id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_SecureWitness_folder_3" columns="author_id_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <exported-key name="#FAKE_SecureWitness_folder_2" table="SecureWitness_folder" schema="" catalog="" columns="parent_id"/>
+      <exported-key name="#FAKE_SecureWitness_report_2" table="SecureWitness_report" schema="" catalog="" columns="folder_id_id"/>
+      <index name="SecureWitness_folder_1ca8fbbe" unique="true" columns="GID_id"/>
       <index name="SecureWitness_folder_6be37982" unique="true" columns="parent_id"/>
       <index name="SecureWitness_folder_e616221e" unique="true" columns="author_id_id"/>
-      <index name="SecureWitness_folder_1ca8fbbe" unique="true" columns="GID_id"/>
     </table>
-    <table name="SecureWitness_group" schema="" catalog="" type="TABLE">
+    <table name="SecureWitness_groupprofile" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="group_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="group_name" sqlType="VARCHAR(100)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <primary-key columns="group_id"/>
-      <exported-key name="#FAKE_SecureWitness_folder_3" table="SecureWitness_folder" schema="" catalog="" columns="GID_id"/>
-      <exported-key name="#FAKE_SecureWitness_reportsharinggroup_1" table="SecureWitness_reportsharinggroup" schema="" catalog="" columns="group_id_id"/>
-      <exported-key name="#FAKE_SecureWitness_usertogroup_2" table="SecureWitness_usertogroup" schema="" catalog="" columns="group_id_id"/>
+      <column name="datetime" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
+      <primary-key columns="id"/>
+      <foreign-key name="#FAKE_SecureWitness_groupprofile_1" columns="group_id" ref-table="auth_group" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
     </table>
     <table name="SecureWitness_report" schema="" catalog="" type="TABLE">
       <column name="report_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="create_date" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <column name="last_update_date" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="report_name" sqlType="VARCHAR(200)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="short_desc" sqlType="VARCHAR(150)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="long_desc" sqlType="VARCHAR(300)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
@@ -59,45 +57,37 @@
       <column name="keywords" sqlType="VARCHAR(300)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <column name="private" sqlType="BOOL" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="author_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="folder_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="folder_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <column name="group_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="true" jdbcType="4"/>
+      <column name="last_update_date" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <primary-key columns="report_id"/>
-      <foreign-key name="#FAKE_SecureWitness_report_1" columns="folder_id_id" ref-table="SecureWitness_folder" ref-schema="" ref-catalog="" ref-columns="folder_id" update-rule="3" delete-rule="3" deferrability="1"/>
-      <foreign-key name="#FAKE_SecureWitness_report_2" columns="author_id_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_SecureWitness_report_1" columns="group_id_id" ref-table="auth_group" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_SecureWitness_report_2" columns="folder_id_id" ref-table="SecureWitness_folder" ref-schema="" ref-catalog="" ref-columns="folder_id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_SecureWitness_report_3" columns="author_id_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
       <exported-key name="#FAKE_SecureWitness_file_1" table="SecureWitness_file" schema="" catalog="" columns="report_id_id"/>
+      <index name="SecureWitness_report_850f1288" unique="true" columns="group_id_id"/>
       <index name="SecureWitness_report_382c1158" unique="true" columns="folder_id_id"/>
       <index name="SecureWitness_report_e616221e" unique="true" columns="author_id_id"/>
-    </table>
-    <table name="SecureWitness_reportsharinggroup" schema="" catalog="" type="TABLE">
-      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="sharing_date" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <column name="group_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <primary-key columns="id"/>
-      <foreign-key name="#FAKE_SecureWitness_reportsharinggroup_1" columns="group_id_id" ref-table="SecureWitness_group" ref-schema="" ref-catalog="" ref-columns="group_id" update-rule="3" delete-rule="3" deferrability="1"/>
-      <index name="SecureWitness_reportsharinggroup_850f1288" unique="true" columns="group_id_id"/>
-    </table>
-    <table name="SecureWitness_reportsharinguser" schema="" catalog="" type="TABLE">
-      <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="sharing_date" sqlType="DATETIME" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
-      <column name="user_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <primary-key columns="id"/>
-      <foreign-key name="#FAKE_SecureWitness_reportsharinguser_1" columns="user_id_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
-      <index name="SecureWitness_reportsharinguser_18624dd3" unique="true" columns="user_id_id"/>
     </table>
     <table name="SecureWitness_usertogroup" schema="" catalog="" type="TABLE">
       <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="leader" sqlType="BOOL" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
-      <column name="group_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="user_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
+      <column name="group_id_id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <primary-key columns="id"/>
-      <foreign-key name="#FAKE_SecureWitness_usertogroup_1" columns="user_id_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
-      <foreign-key name="#FAKE_SecureWitness_usertogroup_2" columns="group_id_id" ref-table="SecureWitness_group" ref-schema="" ref-catalog="" ref-columns="group_id" update-rule="3" delete-rule="3" deferrability="1"/>
-      <index name="SecureWitness_usertogroup_18624dd3" unique="true" columns="user_id_id"/>
+      <foreign-key name="#FAKE_SecureWitness_usertogroup_1" columns="group_id_id" ref-table="auth_group" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+      <foreign-key name="#FAKE_SecureWitness_usertogroup_2" columns="user_id_id" ref-table="auth_user" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
       <index name="SecureWitness_usertogroup_850f1288" unique="true" columns="group_id_id"/>
+      <index name="SecureWitness_usertogroup_18624dd3" unique="true" columns="user_id_id"/>
     </table>
     <table name="auth_group" schema="" catalog="" type="TABLE">
       <column name="id" sqlType="INTEGER" precision="2000000000" scale="10" nullable="false" jdbcType="4"/>
       <column name="name" sqlType="VARCHAR(80)" precision="2000000000" scale="10" nullable="false" jdbcType="12"/>
       <primary-key columns="id"/>
+      <exported-key name="#FAKE_SecureWitness_folder_1" table="SecureWitness_folder" schema="" catalog="" columns="GID_id"/>
+      <exported-key name="#FAKE_SecureWitness_groupprofile_1" table="SecureWitness_groupprofile" schema="" catalog="" columns="group_id"/>
+      <exported-key name="#FAKE_SecureWitness_report_1" table="SecureWitness_report" schema="" catalog="" columns="group_id_id"/>
+      <exported-key name="#FAKE_SecureWitness_usertogroup_1" table="SecureWitness_usertogroup" schema="" catalog="" columns="group_id_id"/>
       <exported-key name="#FAKE_auth_group_permissions_2" table="auth_group_permissions" schema="" catalog="" columns="group_id"/>
       <exported-key name="#FAKE_auth_user_groups_1" table="auth_user_groups" schema="" catalog="" columns="group_id"/>
     </table>
@@ -137,10 +127,9 @@
       <primary-key columns="id"/>
       <exported-key name="#FAKE_SecureWitness_activationprofile_1" table="SecureWitness_activationprofile" schema="" catalog="" columns="user_id"/>
       <exported-key name="#FAKE_SecureWitness_file_2" table="SecureWitness_file" schema="" catalog="" columns="author_id_id"/>
-      <exported-key name="#FAKE_SecureWitness_folder_2" table="SecureWitness_folder" schema="" catalog="" columns="author_id_id"/>
-      <exported-key name="#FAKE_SecureWitness_report_2" table="SecureWitness_report" schema="" catalog="" columns="author_id_id"/>
-      <exported-key name="#FAKE_SecureWitness_reportsharinguser_1" table="SecureWitness_reportsharinguser" schema="" catalog="" columns="user_id_id"/>
-      <exported-key name="#FAKE_SecureWitness_usertogroup_1" table="SecureWitness_usertogroup" schema="" catalog="" columns="user_id_id"/>
+      <exported-key name="#FAKE_SecureWitness_folder_3" table="SecureWitness_folder" schema="" catalog="" columns="author_id_id"/>
+      <exported-key name="#FAKE_SecureWitness_report_3" table="SecureWitness_report" schema="" catalog="" columns="author_id_id"/>
+      <exported-key name="#FAKE_SecureWitness_usertogroup_2" table="SecureWitness_usertogroup" schema="" catalog="" columns="user_id_id"/>
       <exported-key name="#FAKE_auth_user_groups_2" table="auth_user_groups" schema="" catalog="" columns="user_id"/>
       <exported-key name="#FAKE_auth_user_user_permissions_2" table="auth_user_user_permissions" schema="" catalog="" columns="user_id"/>
       <exported-key name="#FAKE_django_admin_log_1" table="django_admin_log" schema="" catalog="" columns="user_id"/>

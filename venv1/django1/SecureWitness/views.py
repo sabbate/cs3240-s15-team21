@@ -3,6 +3,9 @@
 
 # sys.path.append(os.path.join(os.path.dirname('views.py'), '..'))
 # import gen_py.lib
+# from SecureWitness.forms import *
+# from django import forms
+# from django import forms
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponse
@@ -10,16 +13,13 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
-#from SecureWitness.forms import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from SecureWitness.models import Report
 from SecureWitness.models import File
-from SecureWitness.models import  ActivationProfile, GroupProfile
+from SecureWitness.models import ActivationProfile, GroupProfile
 from django import forms
-# from django import forms
-# from django import forms
 from django.shortcuts import render
 import datetime, hashlib, random
 import time
@@ -35,13 +35,14 @@ from .forms import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth.views import password_reset, password_reset_confirm
 
+
 class GroupIndexView(generic.ListView):
     template_name = 'SecureWitness/group_index.html'
     context_object_name = 'group_list'
 
     def get_queryset(self):
         """Return the last five published groups."""
-        return Group.objects.order_by('-group_id')[:5]
+        return Group.objects.order_by('-id')[:5]
 
 
 class GroupDetailView(generic.DetailView):
@@ -85,11 +86,11 @@ def submitreport(request):
             dest.write(file.read())
             encrypt(path, file.name, password)
             dest.close()
-            f = File(authorID=1, ReportID=1, docfile=path);
-            f.save();
+            f = File(authorID=1, ReportID=1, docfile=path)
+            f.save()
         r = Report(authorID=1, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
                    location=loc, folderID=f, incident_date=date, keywords=keys, private=priv)
-        r.save();
+        r.save()
         return HttpResponse('Thank you for submitting a report!')
     else:
         return HttpResponse('Your submission was unsuccessful.')
@@ -155,7 +156,6 @@ def admin(request):
     c.update(csrf(request))
     # c['username'] =  request.newAdmin.username
     return render_to_response('admin.html', c)
-
 
 
 @login_required(login_url="/SecureWitness/account/login")
@@ -237,7 +237,6 @@ def logout(request):
     return render_to_response('logout.html')
 
 
-
 def encrypt(path, filename, root):
     # Open up unencrypted file and read the plaintext into a buffer.
     with open(path + filename, 'r') as f:
@@ -264,16 +263,14 @@ def encrypt(path, filename, root):
         f.write(key)
 
 
-
-
 def register_user(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
-            email = request.POST.get('email','')
-            temp = False #to see if the user has been saved into the database
+            email = request.POST.get('email', '')
+            temp = False  # to see if the user has been saved into the database
             try:
                 u = User.objects.get(email=email)
             except:
@@ -284,8 +281,7 @@ def register_user(request):
                 user.save()
                 temp = True
             if not temp:
-                return render_to_response('duplicate_email.html', {'username':username, 'password':password})
-
+                return render_to_response('duplicate_email.html', {'username': username, 'password': password})
 
             # form.save()
             # username = form.cleaned_data['username']
@@ -296,13 +292,13 @@ def register_user(request):
             # user.is_active = False
             # user.save()
             # try:
-            #     u = User.objects.get(email = email)
+            # u = User.objects.get(email = email)
             # except:
-            #     user.email = email
-            #     user.is_active = False
-            #     user.save()
+            # user.email = email
+            # user.is_active = False
+            # user.save()
             # if u:
-            #     return render_to_response('duplicate_email.html', {'user':user})
+            # return render_to_response('duplicate_email.html', {'user':user})
 
             # Send email with activation key
             random_string = str(random.random()).encode('utf8')
@@ -314,13 +310,12 @@ def register_user(request):
             new_profile = ActivationProfile(user=user, activation_key=activation_key, key_expires=key_expires)
             new_profile.save()
 
-
             email_subject = 'Account confirmation'
             email_body = "Hey %s, thanks for signing up. To activate your account, click this link " \
                          " http://127.0.0.1:8000/SecureWitness/account/confirm/%s" % (username, activation_key)
 
             send_mail(email_subject, email_body, 'nyxeliza1107@gmail.com',
-               [email], fail_silently=False)
+                      [email], fail_silently=False)
             '''
             s=smtplib.SMTP()
             s.connect("smtp.gmail.com",587)
@@ -377,7 +372,6 @@ def user_suspend_failed(request):
     return render_to_response('user_suspend_failed.html')
 
 
-
 @login_required(login_url="/SecureWitness/account/login")
 def group_management(request):
     c = {}
@@ -385,7 +379,6 @@ def group_management(request):
     grouplist = Group.objects.all()
     c['groups'] = grouplist
     return render_to_response('group_management.html', c)
-
 
 
 @login_required(login_url="/SecureWitness/account/login")
@@ -454,19 +447,39 @@ def edit_group(request, id):
     c = {}
     c.update(csrf(request))
     group = Group.objects.get(id=id)
-    users = group.user_set.all()
+    users = UserToGroup.objects.filter(group_id=id)
+    folder_list = Folder.objects.filter(GID=id).filter(parent=None)
     groupname = group.name
     usernames = []
     for u in users:
-        usernames.append(u.username)
+        usernames.append(u.user_id.username)
     allusers = User.objects.all()
     c['group_id'] = id
     c['group_name'] = groupname
     c['users'] = usernames
     c['allusers'] = allusers
+    c['folders'] = folder_list
 
-    return render_to_response('edit_group.html', c )
+    return render_to_response('edit_group.html', c)
 
+
+@login_required(login_url="/SecureWitness/account/login")
+def edit_folder(request, id):
+    c = {}
+    c.update(csrf(request))
+    folder = Folder.objects.get(folder_id=id)
+    children = Folder.objects.filter(parent=id)
+    group = Group.objects.get(id=folder.GID.id)
+
+    c['folder_name'] = folder.folder_name
+    c['children'] = children
+    c['group_name'] = group.name
+    c['group_id'] = group.id
+    if None != folder.parent:
+        c['parent_name'] = folder.parent.folder_name
+        c['parent_id'] = folder.parent.folder_id
+
+    return render_to_response('edit_folder.html', c)
 
 @login_required(login_url="/SecureWitness/account/login")
 def member_edit_group(request, id):
@@ -489,35 +502,34 @@ def member_edit_group(request, id):
 @login_required(login_url="/SecureWitness/account/login")
 def create_group(request):
     groupname = request.POST.get('groupname', '')
-    #print(groupname)
+    # print(groupname)
     try:
         group = Group.objects.get(name=groupname)
     except:
-        #f = '%Y%m%d%H%M%S'
-        #now = time.localtime()
+        # f = '%Y%m%d%H%M%S'
+        # now = time.localtime()
         # timeString = time.strftime(f, now)
         # timeInt = int(timeString)
         cur_time = datetime.datetime.now()
         g = Group(name=groupname)  # use datetime of created as id
         g.save()
-
         return HttpResponseRedirect('../../group_management')
 
     return HttpResponseRedirect('../create_group_failed')
 
 
 def register_confirm(request, activation_key):
-    #check if user is already logged in and if he is redirect him to some other url, e.g. home
+    # check if user is already logged in and if he is redirect him to some other url, e.g. home
     if request.user.is_authenticated():
         HttpResponseRedirect('/home')
 
     # check if there is UserProfile which matches the activation key (if not then display 404)
     user_profile = get_object_or_404(ActivationProfile, activation_key=activation_key)
 
-    #check if the activation key has expired, if it hase then render confirm_expired.html
+    # check if the activation key has expired, if it hase then render confirm_expired.html
     if user_profile.key_expires < timezone.now():
         return render_to_response('../confirm_expired.html')
-    #if the key hasn't expired save user and set him as active and render some template to confirm activation
+    # if the key hasn't expired save user and set him as active and render some template to confirm activation
     user = user_profile.user
     user.is_active = True
     user.save()
@@ -533,7 +545,8 @@ def confirm_expired(request):
 
 
 def duplicate_email(request):
-     return render_to_response('duplicate_email.html')
+    return render_to_response('duplicate_email.html')
+
 
 '''
 def reset_confirm(request, uidb64=None, token=None):
