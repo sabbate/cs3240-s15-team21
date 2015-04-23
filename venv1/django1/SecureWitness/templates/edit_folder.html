@@ -2,7 +2,22 @@
 
 {% block content %}
     <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
-    <p>Click <a href="/SecureWitness/admin/group_management/">here</a> to go back. </p>
+
     <h2>{{folder_name}}</h2>
+
+    <p>Group: <a href="../../group_management/{{ group_id }}">{{ group_name }}</a></p>
+
+    <!-- TODO add link for parent -->
+    {% if parent_name %}
+        <p>Parent: <a href="../{{ parent_id }}">{{ parent_name }}</a></p>
+    {% else %}
+        <p>Parent: None</p>
+    {% endif %}
+
+    {% if children %}
+        {% for child in children %}
+            <p><a href="../{{ child.folder_id }}">{{ child.folder_name }}</a></p>
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}

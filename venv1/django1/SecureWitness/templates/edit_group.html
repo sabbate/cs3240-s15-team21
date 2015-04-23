@@ -48,7 +48,7 @@
     {% if folders %}
         <ul>
             {% for folder in folders %}
-                <li>{{ folder }}</li>
+                <li><a href="../../folders/{{ folder.folder_id }}">{{ folder }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
