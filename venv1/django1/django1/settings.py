@@ -30,14 +30,20 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# TEMPLATE_DIRS = (
+#     "/SecureWitness/templates/registration"
+# )
+
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
+    'SecureWitness',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'SecureWitness',
+    'django.contrib.auth',
+    'django.contrib.admin',
+
+
 )
 
 MIDDLEWARE_CLASSES = (
