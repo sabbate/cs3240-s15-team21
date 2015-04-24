@@ -489,6 +489,7 @@ def member_edit_group(request, id):
     users = group.user_set.all()
     groupname = group.name
     usernames = []
+    folder_list = Folder.objects.filter(GID=id).filter(parent=None)
     for u in users:
         usernames.append(u.username)
     allusers = User.objects.all()
@@ -496,6 +497,7 @@ def member_edit_group(request, id):
     c['group_name'] = groupname
     c['users'] = usernames
     c['allusers'] = allusers
+    c['folders'] = folder_list
 
     return render_to_response('member_edit_group.html', c )
 
@@ -550,11 +552,15 @@ def duplicate_email(request):
 
 def change_parent(request, id):
     if request.method == 'POST':
+        # TODO Check if parent inputted is correct
         if request.POST.get('parent'):
+            folder = Folder.objects.get(folder_id=id)
             parent_name = request.POST.get('parent')
             parent = Folder.objects.filter(folder_name=parent_name)
-            folder = Folder.objects.get(folder_id=id)
+            folder.parent = parent[0]
+            folder.save()
             # TODO finish posting new data and reloading the page
+            return render_to_response('edit_folder.html')
 
         else:
             # TODO add making it so that the folder has no parent
