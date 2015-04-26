@@ -21,7 +21,7 @@
     {% if groups %}
         <ul>
             {% for group in groups %}
-                <li><a href="{% url 'member_edit_group' group.id%}" >{{ group }}</a></li>
+                <li><a href="{% url 'edit_group' group.id%}" >{{ group }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
