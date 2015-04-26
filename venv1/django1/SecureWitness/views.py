@@ -607,6 +607,9 @@ def add_subfolder(request, id):
     pass
 
 
+def copy_folder(request, id):
+    pass
+
 '''
 def reset_confirm(request, uidb64=None, token=None):
     return password_reset_confirm(request, template_name='app/reset_confirm.html',
