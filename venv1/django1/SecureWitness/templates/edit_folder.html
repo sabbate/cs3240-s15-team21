@@ -5,6 +5,14 @@
 
     <h2>{{folder_name}}</h2>
 
+    <form action="rename/" method="post">
+        {% csrf_token %}
+
+        <label for="new_name">Rename the folder</label>
+        <input type="text" name="new_name" value="{{ folder_name }}" id="new_name">
+        <input type="submit" value="Rename"/>
+    </form>
+
     <p>Group: <a href="{% url 'SecureWitness.views.edit_group' group_id %}">{{ group_name }}</a></p>
 
     <form action="change_parent/" method="post">

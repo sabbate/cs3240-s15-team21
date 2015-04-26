@@ -38,8 +38,8 @@
       <file leaf-file-name="edit_folder.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SecureWitness/templates/edit_folder.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.807693" vertical-offset="0" max-vertical-offset="731">
-              <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
+            <state vertical-scroll-proportion="-6.5384617" vertical-offset="0" max-vertical-offset="867">
+              <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -58,11 +58,10 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SecureWitness/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.35083532" vertical-offset="9294" max-vertical-offset="10574">
-              <caret line="564" column="0" selection-start-line="564" selection-start-column="0" selection-end-line="564" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.49284008" vertical-offset="9226" max-vertical-offset="10421">
+              <caret line="584" column="47" selection-start-line="584" selection-start-column="47" selection-end-line="584" selection-end-column="47" />
               <folding>
-                <element signature="e#208#243#0" expanded="true" />
-                <marker date="1430058303476" expanded="true" signature="1978:2013" placeholder="SELECT * FRO..SecureWitness_reports..." />
+                <marker date="1430060084674" expanded="true" signature="1469:1504" placeholder="SELECT * FRO..SecureWitness_reports..." />
               </folding>
             </state>
           </provider>
@@ -81,9 +80,11 @@
       <file leaf-file-name="urls.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SecureWitness/urls.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="1700">
-              <caret line="43" column="55" selection-start-line="43" selection-start-column="55" selection-end-line="43" selection-end-column="55" />
-              <folding />
+            <state vertical-scroll-proportion="0.0" vertical-offset="612" max-vertical-offset="1717">
+              <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#51#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -136,8 +137,8 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/SecureWitness/templates/edit_group.html" />
         <option value="$PROJECT_DIR$/SecureWitness/templates/member_edit_group.html" />
-        <option value="$PROJECT_DIR$/SecureWitness/templates/edit_folder.html" />
         <option value="$PROJECT_DIR$/SecureWitness/urls.py" />
+        <option value="$PROJECT_DIR$/SecureWitness/templates/edit_folder.html" />
         <option value="$PROJECT_DIR$/SecureWitness/views.py" />
       </list>
     </option>
@@ -185,6 +186,20 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="django1" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="django1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="django1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="django1" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="django1" />
@@ -553,7 +568,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="5" />
+      <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -585,8 +600,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="425">
           <caret line="13" column="25" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
           <folding>
-            <element signature="e#208#243#0" expanded="true" />
-            <marker date="1430058303476" expanded="true" signature="1978:2013" placeholder="SELECT * FRO..SecureWitness_reports..." />
+            <marker date="1430060084674" expanded="true" signature="1469:1504" placeholder="SELECT * FRO..SecureWitness_reports..." />
           </folding>
         </state>
       </provider>
@@ -602,7 +616,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="187">
           <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -626,8 +642,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="221" max-vertical-offset="425">
           <caret line="13" column="25" selection-start-line="13" selection-start-column="25" selection-end-line="13" selection-end-column="25" />
           <folding>
-            <element signature="e#208#243#0" expanded="true" />
-            <marker date="1430058303476" expanded="true" signature="1978:2013" placeholder="SELECT * FRO..SecureWitness_reports..." />
+            <marker date="1430060084674" expanded="true" signature="1469:1504" placeholder="SELECT * FRO..SecureWitness_reports..." />
           </folding>
         </state>
       </provider>
@@ -643,7 +658,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="187">
           <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -667,8 +684,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="357">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#208#243#0" expanded="true" />
-            <marker date="1430058303476" expanded="true" signature="1978:2013" placeholder="SELECT * FRO..SecureWitness_reports..." />
+            <marker date="1430060084674" expanded="true" signature="1469:1504" placeholder="SELECT * FRO..SecureWitness_reports..." />
           </folding>
         </state>
       </provider>
@@ -677,7 +693,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="85" max-vertical-offset="187">
           <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
-          <folding />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -694,8 +712,7 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="391">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#208#243#0" expanded="true" />
-            <marker date="1430058303476" expanded="true" signature="1978:2013" placeholder="SELECT * FRO..SecureWitness_reports..." />
+            <marker date="1430060084674" expanded="true" signature="1469:1504" placeholder="SELECT * FRO..SecureWitness_reports..." />
           </folding>
         </state>
       </provider>
@@ -917,22 +934,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SecureWitness/templates/edit_folder.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.807693" vertical-offset="0" max-vertical-offset="731">
-          <caret line="15" column="24" selection-start-line="15" selection-start-column="24" selection-end-line="15" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SecureWitness/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="408" max-vertical-offset="1700">
-          <caret line="43" column="55" selection-start-line="43" selection-start-column="55" selection-end-line="43" selection-end-column="55" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SecureWitness/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="361" max-vertical-offset="1938">
@@ -941,13 +942,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/SecureWitness/templates/edit_folder.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.5384617" vertical-offset="0" max-vertical-offset="867">
+          <caret line="10" column="13" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SecureWitness/urls.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1717">
+          <caret line="72" column="0" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#51#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/SecureWitness/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35083532" vertical-offset="9294" max-vertical-offset="10574">
-          <caret line="564" column="0" selection-start-line="564" selection-start-column="0" selection-end-line="564" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.49284008" vertical-offset="9226" max-vertical-offset="10421">
+          <caret line="584" column="47" selection-start-line="584" selection-start-column="47" selection-end-line="584" selection-end-column="47" />
           <folding>
-            <element signature="e#208#243#0" expanded="true" />
-            <marker date="1430058303476" expanded="true" signature="1978:2013" placeholder="SELECT * FRO..SecureWitness_reports..." />
+            <marker date="1430060084674" expanded="true" signature="1469:1504" placeholder="SELECT * FRO..SecureWitness_reports..." />
           </folding>
         </state>
       </provider>
