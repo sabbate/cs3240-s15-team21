@@ -56,7 +56,7 @@
     {% if reports %}
         <ul>
             {% for report in reports %}
-                <li>{{ report }}</li>
+                <li><a href="../../reports/{{ report.report_id }}">{{ report }}</a></li>
             {% endfor %}
         </ul>
     {% endif %}
