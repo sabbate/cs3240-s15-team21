@@ -49,29 +49,30 @@ class Folder(models.Model):
 
 
 class Report(models.Model):
-	report_id = models.AutoField(primary_key=True)
-	#<<<<<<< HEAD
-	folder = models.ForeignKey(Folder, default=0)
-	author = models.ForeignKey(User)
-	create_date = models.DateTimeField('date created')
-	last_update_date = models.DateTimeField('date of last modification')
-	#=======
-	#folder_id = models.ForeignKey(Folder, blank=True, null=True)
-	#group_id = models.ForeignKey(Group, blank=True, null=True)
-	group = models.ForeignKey(Group, blank=True, null=True)
-	#author_id = models.ForeignKey(User)
-    #create_date = models.DateTimeField('date created', default=datetime.now())
-    #last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
-#>>>>>>> 34f645a9f0350f3f3fe5b36d71f7902221a8cfbf
-	report_name = models.CharField(max_length=200)
-	short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
-	long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
-	location = models.CharField(max_length=300, default='DEFAULT VALUE')
-	incident_date = models.CharField(max_length=300, default='DEFAULT VALUE')
-	keywords = models.CharField(max_length=300, default='DEFAULT VALUE')
-	private = models.BooleanField(default=False)
-	def __str__(self):
-		return self.report_name + " by " + self.author_id.username
+    report_id = models.AutoField(primary_key=True)
+    # <<<<<<< HEAD
+    #folder = models.ForeignKey(Folder, default=0)
+    #author = models.ForeignKey(User)
+    #create_date = models.DateTimeField('date created')
+    #last_update_date = models.DateTimeField('date of last modification')
+    # =======
+    folder_id = models.ForeignKey(Folder, blank=True, null=True)
+    group_id = models.ForeignKey(Group, blank=True, null=True)
+    #group = models.ForeignKey(Group, blank=True, null=True)
+    author_id = models.ForeignKey(User)
+    create_date = models.DateTimeField('date created', default=datetime.now())
+    last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
+    # >>>>>>> 34f645a9f0350f3f3fe5b36d71f7902221a8cfbf
+    report_name = models.CharField(max_length=200)
+    short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
+    long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
+    location = models.CharField(max_length=300, default='DEFAULT VALUE')
+    incident_date = models.CharField(max_length=300, default='DEFAULT VALUE')
+    keywords = models.CharField(max_length=300, default='DEFAULT VALUE')
+    private = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.report_name + " by " + self.author_id.username
 
 
 class File(models.Model):
@@ -95,18 +96,6 @@ class UserToGroup(models.Model):
     def __str__(self):
         return self.user_id.username + " of " + self.group_id.name
 
-"""
-class ReportSharingUser(models.Model):
-    id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User)
-    sharing_date = models.DateTimeField()
-
-
-class ReportSharingGroup(models.Model):
-    id = models.AutoField(primary_key=True)
-    group_id = models.ForeignKey(Group)
-    sharing_date = models.DateTimeField()
-"""
 
 class ActivationProfile(models.Model):
     activation_key = models.CharField(max_length=300, default='DEFAULT VALUE')
