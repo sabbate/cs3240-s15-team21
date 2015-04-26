@@ -50,11 +50,18 @@ class Folder(models.Model):
 
 class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
+#<<<<<<< HEAD
+    folder = models.ForeignKey(Folder, default=0)
+    author = models.ForeignKey(User)
+    create_date = models.DateTimeField('date created')
+    last_update_date = models.DateTimeField('date of last modification')
+#=======
     folder_id = models.ForeignKey(Folder, blank=True, null=True)
     group_id = models.ForeignKey(Group, blank=True, null=True)
     author_id = models.ForeignKey(User)
-    create_date = models.DateTimeField('date created', default=datetime.now())
-    last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
+    #create_date = models.DateTimeField('date created', default=datetime.now())
+    #last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
+#>>>>>>> 34f645a9f0350f3f3fe5b36d71f7902221a8cfbf
     report_name = models.CharField(max_length=200)
     short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
     long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
@@ -69,8 +76,8 @@ class Report(models.Model):
 
 class File(models.Model):
     file_id = models.AutoField(primary_key=True)
-    author_id = models.ForeignKey(User)
-    report_id = models.ForeignKey(Report)
+    author = models.ForeignKey(User)
+    report = models.ForeignKey(Report)
     docfile = models.FileField(upload_to='files/', default=False)
     file_name = models.CharField(max_length=100)
 
