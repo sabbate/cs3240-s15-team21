@@ -57,7 +57,7 @@ urlpatterns = [
     url(r'^removing_admin_view/$', views.removing_admin_view),
     url(r'^admin/folders/(\d+)/$', views.edit_folder, name='edit_folder'),
     url(r'^admin/folders/(\d+)/add_folder/$', views.add_subfolder),
-    url(r'^account/folders/(\d+)/change_parent/$', views.change_parent),
+    url(r'^admin/folders/(\d+)/change_parent/$', views.change_parent),
     url(r'^admin/folders/(\d+)/rename/$', views.rename_folder),
 
     url(r'newreport/$', views.newreport, name='newreport'),

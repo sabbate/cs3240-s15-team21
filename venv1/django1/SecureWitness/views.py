@@ -580,7 +580,24 @@ def change_parent(request, id):
 
         else:
             # TODO add making it so that the folder has no parent
-            pass
+            folder = Folder.objects.get(folder_id=id)
+            folder.parent = None
+            folder.save()
+            c = {}
+            c.update(csrf(request))
+            folder = Folder.objects.get(folder_id=id)
+            children = Folder.objects.filter(parent=id)
+            group = Group.objects.get(id=folder.GID.id)
+
+            c['folder_name'] = folder.folder_name
+            c['children'] = children
+            c['group_name'] = group.name
+            c['group_id'] = group.id
+            if None != folder.parent:
+                c['parent_name'] = folder.parent.folder_name
+                c['parent_id'] = folder.parent.folder_id
+
+            return render_to_response('edit_folder.html', c)
 
 
 def rename_folder(request, id):
