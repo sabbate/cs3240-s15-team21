@@ -604,7 +604,34 @@ def rename_folder(request, id):
 
 
 def add_subfolder(request, id):
-    pass
+    if request.method == 'POST':
+        cur_folder = Folder.objects.get(folder_id=id)
+        try:
+            sub_folder = Folder.objects.filter(GID=cur_folder.GID).get(folder_name=request.POST.get('child_name'))
+            sub_folder.parent = cur_folder
+            sub_folder.save()
+        except:
+            # Make the new folder
+            sub_folder = Folder(folder_name=request.POST.get('child_name'), author_id=request.user, parent=cur_folder,
+                                GID=cur_folder.GID)
+            sub_folder.save()
+
+        # Redirect back
+        c = {}
+        c.update(csrf(request))
+        folder = Folder.objects.get(folder_id=id)
+        children = Folder.objects.filter(parent=id)
+        group = Group.objects.get(id=folder.GID.id)
+
+        c['folder_name'] = folder.folder_name
+        c['children'] = children
+        c['group_name'] = group.name
+        c['group_id'] = group.id
+        if None != folder.parent:
+            c['parent_name'] = folder.parent.folder_name
+            c['parent_id'] = folder.parent.folder_id
+
+        return render_to_response('edit_folder.html', c)
 
 
 def copy_folder(request, id):
