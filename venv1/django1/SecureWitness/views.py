@@ -634,8 +634,58 @@ def add_subfolder(request, id):
         return render_to_response('edit_folder.html', c)
 
 
-def copy_folder(request, id):
-    pass
+def copy_folder(request, id, recursive=False):
+    if request.method == 'POST':
+        cur_folder = Folder.objects.get(folder_id=id)
+        copy = Folder(folder_name=("{0} (copy)".format(cur_folder.folder_name)),
+                      author_id=request.user, GID=cur_folder.GID)
+
+        if recursive:
+            copy.parent = Folder.objects.filter(GID=cur_folder.GID.id).get(folder_name=(
+                cur_folder.parent.folder_name + "( copy)"))
+        else:
+            copy.parent = cur_folder.parent
+
+        copy.save()
+
+        try:
+            copy_children = Folder.objects.filter(parent=id)
+            for child in copy_children:
+                copy_folder(request, child.folder_id, True)
+
+            # Redirect to new copied folder
+            c = {}
+            c.update(csrf(request))
+            folder = Folder.objects.get(folder_id=copy.folder_id)
+            children = Folder.objects.filter(parent=copy.folder_id)
+            group = Group.objects.get(id=folder.GID.id)
+
+            c['folder_name'] = folder.folder_name
+            c['children'] = children
+            c['group_name'] = group.name
+            c['group_id'] = group.id
+            if None != folder.parent:
+                c['parent_name'] = folder.parent.folder_name
+                c['parent_id'] = folder.parent.folder_id
+
+            return render_to_response('edit_folder.html', c)
+        except:
+            # Redirect to new copied folder
+            c = {}
+            c.update(csrf(request))
+            folder = Folder.objects.get(folder_id=copy.folder_id)
+            children = Folder.objects.filter(parent=copy.folder_id)
+            group = Group.objects.get(id=folder.GID.id)
+
+            c['folder_name'] = folder.folder_name
+            c['children'] = children
+            c['group_name'] = group.name
+            c['group_id'] = group.id
+            if None != folder.parent:
+                c['parent_name'] = folder.parent.folder_name
+                c['parent_id'] = folder.parent.folder_id
+
+            return render_to_response('edit_folder.html', c)
 
 '''
 def reset_confirm(request, uidb64=None, token=None):

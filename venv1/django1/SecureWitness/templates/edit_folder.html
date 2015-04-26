@@ -5,10 +5,19 @@
 
     <h2>{{folder_name}}</h2>
 
+    <form action="copy_folder/" method="post">
+        {% csrf_token %}
+
+        <label for="copy_folder">Copy this folder</label>
+        <input type="submit" value="Copy" />
+    </form>
+
+    <br />
+
     <form action="rename/" method="post">
         {% csrf_token %}
 
-        <label for="new_name">Rename the folder</label>
+        <label for="new_name">Rename this folder</label>
         <input type="text" name="new_name" value="{{ folder_name }}" id="new_name">
         <input type="submit" value="Rename"/>
     </form>
