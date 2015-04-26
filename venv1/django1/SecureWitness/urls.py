@@ -61,6 +61,7 @@ urlpatterns = [
     url(r'^admin/folders/(\d+)/change_parent/$', views.change_parent),
     url(r'^admin/folders/(\d+)/rename/$', views.rename_folder),
     url(r'^admin/folders/(\d+)/copy_folder/', views.copy_folder),
+    url(r'^admin/folders/(\d+)/remove/', views.remove_folder),
 
     url(r'newreport/$', views.newreport, name='newreport'),
     url(r'^submitreport/$', views.submitreport),

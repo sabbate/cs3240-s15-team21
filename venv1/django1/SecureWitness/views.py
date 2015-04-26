@@ -685,7 +685,38 @@ def copy_folder(request, id, recursive=False):
                 c['parent_name'] = folder.parent.folder_name
                 c['parent_id'] = folder.parent.folder_id
 
-            return render_to_response('edit_folder.html', c)
+            return render_to_response('edit_group.html', c)
+
+
+def remove_folder(request, id):
+    group = Folder.objects.get(folder_id=id).GID
+    if request.method == 'POST':
+        cur_folder = Folder.objects.get(folder_id=id)
+        # Move children up one level
+        try:
+            children = Folder.objects.filter(parent=id)
+            for child in children:
+                child.parent = cur_folder.parent
+                child.save()
+        except:
+            # No children, so skip this step
+            pass
+
+        # Delete this folder
+        cur_folder.delete()
+        # TODO Remove reports and put them at the top level of the group
+        pass
+
+    # TODO Redirect to the group management page
+    c = {}
+    c.update(csrf(request))
+
+    c['group_id'] = group.id
+    c['group_name'] = group.name
+    c['users'] = UserToGroup.objects.filter(group_id=group.id)
+    c['allusers'] = UserToGroup.objects.all()
+    c['folders'] = Folder.objects.filter(GID=group.id)
+    return render_to_response('edit_folder.html', c)
 
 '''
 def reset_confirm(request, uidb64=None, token=None):

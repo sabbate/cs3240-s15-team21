@@ -52,4 +52,14 @@
         {% endfor %}
     {% endif %}
 
+    <br />
+    <br />
+    <br />
+    <form action="remove/" method="post">
+        {% csrf_token %}
+
+        <label for="remove">Remove this folder</label>
+        <input type="submit" value="REMOVE"/>
+    </form>
+
 {% endblock %}
