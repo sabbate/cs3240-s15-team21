@@ -400,6 +400,10 @@ def add_user(request, group_id):
     user.groups.add(group)
     return HttpResponseRedirect('../add_user_succeeded')
 
+#TODO: Pass private files into request
+def grant_access_to_files(request, group_id):
+    return render_to_response('grant_access_to_files.html')
+#    return render_to_response('grant_access_to_files.html', {'files':})
 
 
 def member_add_user_succeeded(request, group_id):
