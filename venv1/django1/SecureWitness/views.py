@@ -17,6 +17,12 @@ from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group, Permission
+from SecureWitness.models import Report
+from SecureWitness.models import File
+from SecureWitness.models import ActivationProfile, GroupProfile
+from django import forms
+
 from django.shortcuts import render
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
@@ -24,6 +30,10 @@ from django.core.mail import send_mail
 
 from SecureWitness.models import *
 from .forms import *
+from django.core.urlresolvers import reverse
+from django.contrib.auth.views import password_reset, password_reset_confirm
+from django.contrib.contenttypes.models import ContentType
+
 
 
 class GroupIndexView(generic.ListView):
@@ -127,6 +137,9 @@ def auth_view(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def loggedin(request):
+    c = {}
+    c.update(csrf(request))
+
     try:
         groups = request.user.groups.all()
     except:
@@ -136,8 +149,10 @@ def loggedin(request):
         reports = UserToReports.objects.filter(authorID=request.user.username)
     except:
         reports = None
-    return render_to_response('loggedin.html',
-                              {'full_name': request.user.username, 'groups': groups, 'reports': reports})
+    c['full_name'] = request.user.username
+    c['groups'] = groups
+    c['reports'] =  reports
+    return render_to_response('loggedin.html',c)
 
 
 @login_required(login_url="/SecureWitness/account/login")
@@ -390,6 +405,31 @@ def add_user(request, group_id):
     user.groups.add(group)
     return HttpResponseRedirect('../add_user_succeeded')
 
+#TODO: Pass private files into request
+def grant_access_to_files(request):
+    #give access to the group
+    content_type = ContentType.objects.get_for_model(Group)
+    code_name = 'can_access_report_' + request.report_id
+    name = 'Can Access Report ' + request.report_id
+    permission = Permission.objects.create(condename=code_name, name=name, content_type=content_type)
+    group = Group.objects.get(id=request.group_id)
+    if group.has_perm('SecureWitness.'+code_name):
+        render_to_response('grant_access_to_files_failed.html')
+    group.permissions.add(permission)
+
+    #give access to every group member
+    users_in_group = group.user_set.all()
+    content_type = ContentType.objects.get_for_model(User)
+    permission = Permission.objects.create(codename=code_name, name=name, content_type=content_type)
+    for user in users_in_group:
+        if not user == request.user:
+            user.user_permissions.add(permission)
+    return render_to_response('grant_access_to_files.html')
+#    return render_to_response('grant_access_to_files.html', {'files':})
+
+
+def grant_access_to_files_failed(request):
+    return render_to_response('grant_access_to_files.html')
 
 def member_add_user_succeeded(request, group_id):
     return render_to_response('member_add_user_succeeded.html')
@@ -436,13 +476,13 @@ def edit_group(request, id):
     c = {}
     c.update(csrf(request))
     group = Group.objects.get(id=id)
-    users = UserToGroup.objects.filter(group_id=id)
+    users = group.user_set.all()
     folder_list = Folder.objects.filter(GID=id).filter(parent=None)
     report_list = Report.objects.filter(group_id=id).filter(folder_id=None)
     groupname = group.name
     usernames = []
     for u in users:
-        usernames.append(u.user_id.username)
+        usernames.append(u.username)
     allusers = User.objects.all()
     c['group_id'] = id
     c['group_name'] = groupname
@@ -473,6 +513,20 @@ def edit_folder(request, id):
         c['parent_id'] = folder.parent.folder_id
 
     return render_to_response('edit_folder.html', c)
+
+
+@login_required(login_url="/SecureWitness/account/login")
+def quit_group(request):
+    group_id = request.POST.get('group_id', '')
+    try:
+        group = Group.objects.get(id=group_id)
+    except:
+        return HttpResponseRedirect('..')
+    group = Group.objects.get(id=group_id)
+    if not request.user.groups.filter(name=group.name):
+        return HttpResponseRedirect('..')
+    group.user_set.remove(request.user)
+    return render_to_response('quit_group.html', {'group_name': group.name})
 
 
 @login_required(login_url="/SecureWitness/account/login")
@@ -509,7 +563,7 @@ def create_group(request):
         # now = time.localtime()
         # timeString = time.strftime(f, now)
         # timeInt = int(timeString)
-        cur_time = datetime.datetime.now()
+        #cur_time = datetime.datetime.now()
         g = Group(name=groupname)  # use datetime of created as id
         g.save()
         return HttpResponseRedirect('../../group_management')
