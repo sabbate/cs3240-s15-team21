@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
+
+    <h2>{{folder_name}}</h2>
+
+    <form action="copy_folder/" method="post">
+        {% csrf_token %}
+
+        <label for="copy_folder">Copy this folder</label>
+        <input type="submit" value="Copy" />
+    </form>
+
+    <br />
+
+    <form action="rename/" method="post">
+        {% csrf_token %}
+
+        <label for="new_name">Rename this folder</label>
+        <input type="text" name="new_name" value="{{ folder_name }}" id="new_name">
+        <input type="submit" value="Rename"/>
+    </form>
+
+    <p>Group: <a href="{% url 'SecureWitness.views.edit_group' group_id %}">{{ group_name }}</a></p>
+
+    <form action="change_parent/" method="post">
+        {% csrf_token %}
+
+        <label for="parent">Parent:</label>
+        <input type="text" name="parent" value="{{ parent_name }}" id="parent">
+        {% if parent_name %}
+            <a href="../{{ parent_id }}">Link</a>
+        {% endif %}
+        <input type="submit" value="Update"/>
+    </form>
+
+    <br />
+    <br />
+    <form action="add_folder/" method="post">
+        {% csrf_token %}
+
+        <label for="child_name">Add a new Sub-Folder</label>
+        <input type="text" name="child_name" value="" id="child_name">
+        <input type="submit" value="Add"/>
+    </form>
+
+    <h4>Reports in this Folder:</h4>
+    {% if reports %}
+        {% for report in reports %}
+            <p>{{ report }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <h4>Current Sub-Folders:</h4>
+    {% if children %}
+        {% for child in children %}
+            <p><a href="../{{ child.folder_id }}">{{ child.folder_name }}</a></p>
+        {% endfor %}
+    {% endif %}
+
+    <br />
+    <br />
+    <br />
+    <form action="remove/" method="post">
+        {% csrf_token %}
+
+        <label for="remove">Remove this folder</label>
+        <input type="submit" value="REMOVE"/>
+    </form>
+
+{% endblock %}

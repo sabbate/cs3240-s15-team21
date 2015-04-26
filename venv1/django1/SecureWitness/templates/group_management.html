@@ -20,9 +20,9 @@
     <p>All groups in the system: </p>
     {% if groups %}
         <ul>
-        {% for group in groups %}
-            <li><a href="../../{{ group.GID }}">{{ group }}</a></li>
-        {% endfor %}
+            {% for group in groups %}
+                <li><a href="{% url 'edit_group' group.id%}" >{{ group }}</a></li>
+            {% endfor %}
         </ul>
     {% else %}
         <p>No groups are available.</p>

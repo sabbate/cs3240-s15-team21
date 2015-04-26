@@ -11,11 +11,13 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class FileAdmin(admin.ModelAdmin):
-    fields = ('docfile', 'file_name')
+    fields = ('docfile', 'file_name', 'author_id', 'report_id')
 
 
 class ReportAdmin(admin.ModelAdmin):
-    fields = ('report_name', 'short_desc', 'long_desc', 'location', 'keywords', 'private')
+    fields = (
+        'report_name', 'author_id', 'folder_id', 'group_id', 'short_desc', 'long_desc', 'location', 'keywords',
+        'private')
 
 
 class FolderAdmin(admin.ModelAdmin):
@@ -26,8 +28,8 @@ class UserToGroupAdmin(admin.ModelAdmin):
     fields = ('user_id', 'group_id', 'leader')
 
 
-#admin.site.register(SecureWitness.models.User, UserAdmin)
-admin.site.register(SecureWitness.models.Group, GroupAdmin)
+# admin.site.register(SecureWitness.models.User, UserAdmin)
+# admin.site.register(SecureWitness.models.Group, GroupAdmin)
 admin.site.register(SecureWitness.models.File, FileAdmin)
 admin.site.register(SecureWitness.models.Report, ReportAdmin)
 admin.site.register(SecureWitness.models.Folder, FolderAdmin)
