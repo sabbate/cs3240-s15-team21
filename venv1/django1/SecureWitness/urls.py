@@ -5,7 +5,7 @@ import django
 from . import views
 
 urlpatterns = [
-    url(r'^$', views.GroupIndexView.as_view(), name='index'),
+    #url(r'^$', views.GroupIndexView.as_view(), name='index'),
     url(r'^groups', views.GroupDetailView.as_view(), name='group'),
     url(r'^(?P<pk>\d+)/$', views.GroupDetailView.as_view(), name='group'),
     url(r'^(?P<pk>\d+)/$', views.ReportIndexView.as_view(), name='report_index'),
@@ -53,7 +53,9 @@ urlpatterns = [
     url(r'^resetpassword/passwordsent/$', django.contrib.auth.views.password_reset_done, {'template_name': 'myregistration/password_reset_done.html'}),
     url(r'^password_reset/done/$', django.contrib.auth.views.password_reset_complete, {'template_name': 'myregistration/password_reset_complete.html'}),
     url(r'', include('django.contrib.auth.urls')),
+	url(r'^$', views.index, name='index'),
     #url(r'', include('myregistration.backends.default.urls'))
+	url(r'map/$', views.map),
 
 
 

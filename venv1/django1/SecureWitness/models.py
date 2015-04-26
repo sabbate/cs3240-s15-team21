@@ -49,8 +49,8 @@ class Folder(models.Model):
 
 class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
-    folder_id = models.ForeignKey(Folder, default=0)
-    author_id = models.ForeignKey(User)
+    folder = models.ForeignKey(Folder, default=0)
+    author = models.ForeignKey(User)
     create_date = models.DateTimeField('date created')
     last_update_date = models.DateTimeField('date of last modification')
     report_name = models.CharField(max_length=200)
@@ -67,8 +67,8 @@ class Report(models.Model):
 
 class File(models.Model):
     file_id = models.AutoField(primary_key=True)
-    author_id = models.ForeignKey(User)
-    report_id = models.ForeignKey(Report)
+    author = models.ForeignKey(User)
+    report = models.ForeignKey(Report)
     docfile = models.FileField(upload_to='files/', default=False)
     file_name = models.CharField(max_length=100)
 

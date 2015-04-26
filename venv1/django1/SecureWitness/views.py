@@ -34,6 +34,8 @@ import smtplib
 from .forms import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth.views import password_reset, password_reset_confirm
+from django.core import serializers
+import json
 
 class GroupIndexView(generic.ListView):
     template_name = 'SecureWitness/group_index.html'
@@ -59,7 +61,7 @@ class ReportIndexView(generic.ListView):
 
 
 def index(request):
-    reports = Report.objects.raw('SELECT * FROM SecureWitness_reports')
+    reports = Report.objects.raw('SELECT * FROM SecureWitness_report')
     return render(request, 'all-reports.html', {'reports': reports})
     # return HttpResponse("Welcome to SecureWitness!")
 
@@ -78,18 +80,20 @@ def submitreport(request):
 		priv = request.POST.get('private', False)
 		password = request.POST.get('pw', False)
         # files = HttpRequest.FILES;
-		cur_time = datetime.now()
-		usr = User.objects.filter(=request.user.username)
-		r = Report(author_id=request.user, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,location=loc, incident_date=date, keywords=keys, private=priv)
+		cur_time = datetime.datetime.now()
+		usr = User.objects.get(username=request.user.username)
+		r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,location=loc, incident_date=date, keywords=keys, private=priv)
+		r.save();
+		r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
 		for key, file in request.FILES.items():
 			path = os.getcwd() + '\\SecureWitness\\files\\'
 			dest = open(path + file.name, 'wb+')
 			dest.write(file.read())
-			encrypt(path, file.name, password)
 			dest.close()
-			f = File(author=request.user, report=r, docfile=path)
+			encrypt(path, file.name, password)
+			f = File(author_id=usr.id, report_id=r.report_id, docfile=path)
 			f.save();
-		r.save();
+		#r.save();
 		return HttpResponse('Thank you for submitting a report!')
 	else:
 		return HttpResponse('Your submission was unsuccessful.')
@@ -271,7 +275,7 @@ def encrypt(path, filename, root):
     with open(path + "key_" + filename, 'wb') as f:
         f.write(key)
 
-
+	
 
 
 def register_user(request):
@@ -470,6 +474,10 @@ def confirm_expired(request):
 def duplicate_email(request):
      return render_to_response('duplicate_email.html')
 
+def map(request):
+	reports = Report.objects.raw('SELECT * FROM SecureWitness_report')
+	#json_list = serializers.serialize('json', reports)
+	return render(request, 'map.html', {'reports': reports})
 '''
 def reset_confirm(request, uidb64=None, token=None):
     return password_reset_confirm(request, template_name='app/reset_confirm.html',
