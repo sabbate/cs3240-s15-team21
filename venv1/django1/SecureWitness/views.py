@@ -778,6 +778,45 @@ def remove_folder(request, id):
     c['folders'] = Folder.objects.filter(GID=group.id)
     return render_to_response('edit_folder.html', c)
 
+
+def edit_report(request, id):
+    c = {}
+    c.update(csrf(request))
+
+    report = Report.objects.get(report_id=id)
+    if report.folder_id:
+        c['folder_name'] = report.folder_id.folder_name
+        c['folder_id'] = report.folder_id.folder_id
+    if report.group_id:
+        c['group_name'] = report.group_id.name
+        c['group_id'] = report.group_id.id
+    c['report_name'] = report.report_name
+    c['author_name'] = report.author_id.username
+    c['author_id'] = report.author_id.id
+    c['report'] = report
+
+    return render_to_response('edit_report.html', c)
+
+
+def report_change_group(request, id):
+    pass
+
+
+def report_change_folder(request, id):
+    pass
+
+
+def remove_report(request, id):
+    pass
+
+
+def rename_report(request, id):
+    pass
+
+
+def copy_report(request, id):
+    pass
+
 '''
 def reset_confirm(request, uidb64=None, token=None):
     return password_reset_confirm(request, template_name='app/reset_confirm.html',
