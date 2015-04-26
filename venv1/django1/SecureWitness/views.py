@@ -438,6 +438,7 @@ def edit_group(request, id):
     group = Group.objects.get(id=id)
     users = UserToGroup.objects.filter(group_id=id)
     folder_list = Folder.objects.filter(GID=id).filter(parent=None)
+    report_list = Report.objects.filter(group_id=id).filter(folder_id=None)
     groupname = group.name
     usernames = []
     for u in users:
@@ -448,6 +449,7 @@ def edit_group(request, id):
     c['users'] = usernames
     c['allusers'] = allusers
     c['folders'] = folder_list
+    c['reports'] = report_list
 
     return render_to_response('edit_group.html', c)
 
@@ -459,11 +461,13 @@ def edit_folder(request, id):
     folder = Folder.objects.get(folder_id=id)
     children = Folder.objects.filter(parent=id)
     group = Group.objects.get(id=folder.GID.id)
+    reports = Report.objects.filter(group_id=folder.GID.id).filter(folder_id=id)
 
     c['folder_name'] = folder.folder_name
     c['children'] = children
     c['group_name'] = group.name
     c['group_id'] = group.id
+    c['reports'] = reports
     if None != folder.parent:
         c['parent_name'] = folder.parent.folder_name
         c['parent_id'] = folder.parent.folder_id
@@ -480,6 +484,7 @@ def member_edit_group(request, id):
     groupname = group.name
     usernames = []
     folder_list = Folder.objects.filter(GID=id).filter(parent=None)
+    report_list = Report.objects.filter(group_id=id).filter(folder_id=None)
     for u in users:
         usernames.append(u.username)
     allusers = User.objects.all()
@@ -488,6 +493,7 @@ def member_edit_group(request, id):
     c['users'] = usernames
     c['allusers'] = allusers
     c['folders'] = folder_list
+    c['reports'] = report_list
 
     return render_to_response('member_edit_group.html', c)
 

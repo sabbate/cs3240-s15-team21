@@ -42,7 +42,7 @@
 
         </div>
 
-    <p>Folders of this group</p>
+    <p>Folders and reports of this group</p>
     <div style="height:120px;width:240px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
     {% if folders %}
         <ul>
@@ -52,6 +52,15 @@
         </ul>
     {% else %}
         <p>No folders are available.</p>
+    {% endif %}
+    {% if reports %}
+        <ul>
+            {% for report in reports %}
+                <li>{{ report }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No reports are available.</p>
     {% endif %}
     </div>
 

@@ -45,6 +45,13 @@
         <input type="submit" value="Add"/>
     </form>
 
+    <h4>Reports in this Folder:</h4>
+    {% if reports %}
+        {% for report in reports %}
+            <p>{{ report }}</p>
+        {% endfor %}
+    {% endif %}
+
     <h4>Current Sub-Folders:</h4>
     {% if children %}
         {% for child in children %}
