@@ -5,7 +5,7 @@
 
     <h2>{{folder_name}}</h2>
 
-    <p>Group: <a href="../../group_management/{{ group_id }}">{{ group_name }}</a></p>
+    <p>Group: <a href="{% url 'SecureWitness.views.edit_group' group_id %}">{{ group_name }}</a></p>
 
     <form action="change_parent/" method="post">
         {% csrf_token %}

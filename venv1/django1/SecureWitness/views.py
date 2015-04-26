@@ -401,7 +401,6 @@ def add_user(request, group_id):
     return HttpResponseRedirect('../add_user_succeeded')
 
 
-
 def member_add_user_succeeded(request, group_id):
     return render_to_response('member_add_user_succeeded.html')
 
@@ -481,6 +480,7 @@ def edit_folder(request, id):
 
     return render_to_response('edit_folder.html', c)
 
+
 @login_required(login_url="/SecureWitness/account/login")
 def member_edit_group(request, id):
     c = {}
@@ -499,7 +499,8 @@ def member_edit_group(request, id):
     c['allusers'] = allusers
     c['folders'] = folder_list
 
-    return render_to_response('member_edit_group.html', c )
+    return render_to_response('member_edit_group.html', c)
+
 
 @login_required(login_url="/SecureWitness/account/login")
 def create_group(request):
@@ -561,12 +562,25 @@ def change_parent(request, id):
             folder.parent = Folder.objects.filter(folder_name=parent_name).get(GID=group)
             folder.save()
             # finish posting new data and reloading the page
-            return edit_folder(request, id)
+            c = {}
+            c.update(csrf(request))
+            folder = Folder.objects.get(folder_id=id)
+            children = Folder.objects.filter(parent=id)
+            group = Group.objects.get(id=folder.GID.id)
+
+            c['folder_name'] = folder.folder_name
+            c['children'] = children
+            c['group_name'] = group.name
+            c['group_id'] = group.id
+            if None != folder.parent:
+                c['parent_name'] = folder.parent.folder_name
+                c['parent_id'] = folder.parent.folder_id
+
+            return render_to_response('edit_folder.html', c)
 
         else:
             # TODO add making it so that the folder has no parent
             pass
-
 
 
 def rename_folder(request, id):
@@ -575,6 +589,7 @@ def rename_folder(request, id):
 
 def add_subfolder(request, id):
     pass
+
 
 '''
 def reset_confirm(request, uidb64=None, token=None):
