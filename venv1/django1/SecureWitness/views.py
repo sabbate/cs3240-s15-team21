@@ -555,12 +555,13 @@ def change_parent(request, id):
         # TODO Check if parent inputted is correct
         if request.POST.get('parent'):
             folder = Folder.objects.get(folder_id=id)
+            group = folder.GID.id
             parent_name = request.POST.get('parent')
-            parent = Folder.objects.filter(folder_name=parent_name)
-            folder.parent = parent[0]
+            # Make sure it is the correct parent in that group as well
+            folder.parent = Folder.objects.filter(folder_name=parent_name).get(GID=group)
             folder.save()
-            # TODO finish posting new data and reloading the page
-            return render_to_response('edit_folder.html')
+            # finish posting new data and reloading the page
+            return edit_folder(request, id)
 
         else:
             # TODO add making it so that the folder has no parent
