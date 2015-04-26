@@ -32,6 +32,8 @@ from SecureWitness.models import *
 from .forms import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth.views import password_reset, password_reset_confirm
+from django.core import serializers
+import json
 from django.contrib.contenttypes.models import ContentType
 
 
@@ -59,7 +61,7 @@ class ReportIndexView(generic.ListView):
 
 
 def index(request):
-    reports = Report.objects.raw('SELECT * FROM SecureWitness_reports')
+    reports = Report.objects.raw('SELECT * FROM SecureWitness_report')
     return render(request, 'all-reports.html', {'reports': reports})
     # return HttpResponse("Welcome to SecureWitness!")
 
@@ -78,18 +80,22 @@ def submitreport(request):
         priv = request.POST.get('private', False)
         password = request.POST.get('pw', False)
         # files = HttpRequest.FILES;
-        cur_time = datetime.now()
+
+        cur_time = datetime.datetime.now()
+        usr = User.objects.get(username=request.user.username)
+        r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
+                   location=loc, incident_date=date, keywords=keys, private=priv)
+        r.save();
+        r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
         for key, file in request.FILES.items():
             path = os.getcwd() + '\\SecureWitness\\files\\'
             dest = open(path + file.name, 'wb+')
             dest.write(file.read())
-            encrypt(path, file.name, password)
             dest.close()
-            f = File(authorID=1, ReportID=1, docfile=path)
-            f.save()
-        r = Report(authorID=1, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
-                   location=loc, folderID=f, incident_date=date, keywords=keys, private=priv)
-        r.save()
+            encrypt(path, file.name, password)
+            f = File(author_id=usr.id, report_id=r.report_id, docfile=path)
+            f.save();
+        # r.save();
         return HttpResponse('Thank you for submitting a report!')
     else:
         return HttpResponse('Your submission was unsuccessful.')
@@ -102,12 +108,20 @@ def search_form(request):
 def search(request):
     if 'q' in request.GET and request.GET['q']:
         q = request.GET['q']
-        r1 = Report.objects.filter(keywords__icontains=q)
-        r2 = Report.objects.filter(short_desc__icontains=q)
-        reports = r1 | r2
-        return render(request, 'search_results.html', {'reports': reports, 'query': q})
-    else:
-        return HttpResponse('No results found. Please try another search term.')
+        if "AND" in q:
+            terms = q.split(" AND ");
+            r = Report.objects.filter(keywords__icontains=terms[0])
+            for word in terms:
+                r = r.filter(keywords__icontains=word)
+            reports = r
+        if "OR" in q:
+            terms = q.split(" OR ");
+            reports = Report.objects.filter(keywords__icontains=terms[0])
+            for word in terms[1:]:
+                reports = reports | Report.objects.filter(keywords__icontains=word)
+            return render(request, 'search_results.html', {'reports': reports, 'query': q})
+        else:
+            return HttpResponse('No results found. Please try another search term.')
 
 
 def login(request):
@@ -407,7 +421,7 @@ def add_user(request, group_id):
 
 # TODO: Pass private files into request
 def grant_access_to_files(request):
-    #give access to the group
+    # give access to the group
     content_type = ContentType.objects.get_for_model(Group)
     code_name = 'can_access_report_' + request.report_id
     name = 'Can Access Report ' + request.report_id
@@ -417,7 +431,7 @@ def grant_access_to_files(request):
         render_to_response('grant_access_to_files_failed.html')
     group.permissions.add(permission)
 
-    #give access to every group member
+    # give access to every group member
     users_in_group = group.user_set.all()
     content_type = ContentType.objects.get_for_model(User)
     permission = Permission.objects.create(codename=code_name, name=name, content_type=content_type)
@@ -427,7 +441,7 @@ def grant_access_to_files(request):
     return render_to_response('grant_access_to_files.html')
 
 
-#    return render_to_response('grant_access_to_files.html', {'files':})
+# return render_to_response('grant_access_to_files.html', {'files':})
 
 
 def grant_access_to_files_failed(request):
@@ -566,7 +580,7 @@ def create_group(request):
         # now = time.localtime()
         # timeString = time.strftime(f, now)
         # timeInt = int(timeString)
-        #cur_time = datetime.datetime.now()
+        # cur_time = datetime.datetime.now()
         g = Group(name=groupname)  # use datetime of created as id
         g.save()
         return HttpResponseRedirect('../../group_management')
@@ -866,6 +880,12 @@ def rename_report(request, id):
 
 def copy_report(request, id):
     pass
+
+
+def map(request):
+    reports = Report.objects.raw('SELECT * FROM SecureWitness_report')
+    # json_list = serializers.serialize('json', reports)
+    return render(request, 'map.html', {'reports': reports})
 
 
 '''
