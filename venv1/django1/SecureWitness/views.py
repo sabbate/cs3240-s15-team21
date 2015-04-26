@@ -6,35 +6,34 @@
 # from SecureWitness.forms import *
 # from django import forms
 # from django import forms
-from django.shortcuts import render
+import hashlib
+import random
+import os
+
 from django.views import generic
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib import auth
 from django.core.context_processors import csrf
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group, Permission
 from SecureWitness.models import Report
 from SecureWitness.models import File
 from SecureWitness.models import ActivationProfile, GroupProfile
 from django import forms
+
 from django.shortcuts import render
-import datetime, hashlib, random
-import time
-from SecureWitness.models import *
-import Crypto
 from Crypto.Hash import SHA256
 from Crypto.Cipher import AES
-import os
 from django.core.mail import send_mail
-from django.utils import timezone
-import smtplib
+
+from SecureWitness.models import *
 from .forms import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth.views import password_reset, password_reset_confirm
 from django.contrib.contenttypes.models import ContentType
+
 
 
 class GroupIndexView(generic.ListView):
@@ -128,7 +127,7 @@ def auth_view(request):
         if not user.is_active:
             return HttpResponseRedirect('../user_not_active')
         else:
-            if (user.is_superuser):
+            if user.is_superuser:
                 return HttpResponseRedirect('../../admin')
             else:
                 return HttpResponseRedirect('../loggedin')
@@ -432,7 +431,6 @@ def grant_access_to_files(request):
 def grant_access_to_files_failed(request):
     return render_to_response('grant_access_to_files.html')
 
-
 def member_add_user_succeeded(request, group_id):
     return render_to_response('member_add_user_succeeded.html')
 
@@ -526,6 +524,7 @@ def quit_group(request):
     group.user_set.remove(request.user)
     return render_to_response('quit_group.html', {'group_name': group.name})
 
+
 @login_required(login_url="/SecureWitness/account/login")
 def member_edit_group(request, id):
     c = {}
@@ -544,7 +543,8 @@ def member_edit_group(request, id):
     c['allusers'] = allusers
     c['folders'] = folder_list
 
-    return render_to_response('member_edit_group.html', c )
+    return render_to_response('member_edit_group.html', c)
+
 
 @login_required(login_url="/SecureWitness/account/login")
 def create_group(request):
@@ -595,30 +595,182 @@ def duplicate_email(request):
     return render_to_response('duplicate_email.html')
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def change_parent(request, id):
     if request.method == 'POST':
         # TODO Check if parent inputted is correct
         if request.POST.get('parent'):
             folder = Folder.objects.get(folder_id=id)
+            group = folder.GID.id
             parent_name = request.POST.get('parent')
-            parent = Folder.objects.filter(folder_name=parent_name)
-            folder.parent = parent[0]
+            # Make sure it is the correct parent in that group as well
+            folder.parent = Folder.objects.filter(folder_name=parent_name).get(GID=group)
             folder.save()
-            # TODO finish posting new data and reloading the page
-            return render_to_response('edit_folder.html')
 
         else:
-            # TODO add making it so that the folder has no parent
-            pass
+            # Folder no longer has a parent
+            folder = Folder.objects.get(folder_id=id)
+            folder.parent = None
+            folder.save()
+
+        # finish posting new data and reloading the page
+        c = {}
+        c.update(csrf(request))
+        folder = Folder.objects.get(folder_id=id)
+        children = Folder.objects.filter(parent=id)
+        group = Group.objects.get(id=folder.GID.id)
+
+        c['folder_name'] = folder.folder_name
+        c['children'] = children
+        c['group_name'] = group.name
+        c['group_id'] = group.id
+        if None != folder.parent:
+            c['parent_name'] = folder.parent.folder_name
+            c['parent_id'] = folder.parent.folder_id
+
+        return render_to_response('edit_folder.html', c)
 
 
-
+@login_required(login_url="/SecureWitness/account/login")
 def rename_folder(request, id):
-    pass
+    if request.method == 'POST':
+        if request.POST.get('new_name'):
+            folder = Folder.objects.get(folder_id=id)
+            folder.folder_name = request.POST.get('new_name')
+            folder.save()
+
+        # Redirect back
+        c = {}
+        c.update(csrf(request))
+        folder = Folder.objects.get(folder_id=id)
+        children = Folder.objects.filter(parent=id)
+        group = Group.objects.get(id=folder.GID.id)
+
+        c['folder_name'] = folder.folder_name
+        c['children'] = children
+        c['group_name'] = group.name
+        c['group_id'] = group.id
+        if None != folder.parent:
+            c['parent_name'] = folder.parent.folder_name
+            c['parent_id'] = folder.parent.folder_id
+
+        return render_to_response('edit_folder.html', c)
 
 
 def add_subfolder(request, id):
-    pass
+    if request.method == 'POST':
+        cur_folder = Folder.objects.get(folder_id=id)
+        try:
+            sub_folder = Folder.objects.filter(GID=cur_folder.GID).get(folder_name=request.POST.get('child_name'))
+            sub_folder.parent = cur_folder
+            sub_folder.save()
+        except:
+            # Make the new folder
+            sub_folder = Folder(folder_name=request.POST.get('child_name'), author_id=request.user, parent=cur_folder,
+                                GID=cur_folder.GID)
+            sub_folder.save()
+
+        # Redirect back
+        c = {}
+        c.update(csrf(request))
+        folder = Folder.objects.get(folder_id=id)
+        children = Folder.objects.filter(parent=id)
+        group = Group.objects.get(id=folder.GID.id)
+
+        c['folder_name'] = folder.folder_name
+        c['children'] = children
+        c['group_name'] = group.name
+        c['group_id'] = group.id
+        if None != folder.parent:
+            c['parent_name'] = folder.parent.folder_name
+            c['parent_id'] = folder.parent.folder_id
+
+        return render_to_response('edit_folder.html', c)
+
+
+def copy_folder(request, id, recursive=False):
+    if request.method == 'POST':
+        cur_folder = Folder.objects.get(folder_id=id)
+        copy = Folder(folder_name=("{0} (copy)".format(cur_folder.folder_name)),
+                      author_id=request.user, GID=cur_folder.GID)
+
+        if recursive:
+            copy.parent = Folder.objects.filter(GID=cur_folder.GID.id).get(folder_name=(
+                cur_folder.parent.folder_name + "( copy)"))
+        else:
+            copy.parent = cur_folder.parent
+
+        copy.save()
+
+        try:
+            copy_children = Folder.objects.filter(parent=id)
+            for child in copy_children:
+                copy_folder(request, child.folder_id, True)
+
+            # Redirect to new copied folder
+            c = {}
+            c.update(csrf(request))
+            folder = Folder.objects.get(folder_id=copy.folder_id)
+            children = Folder.objects.filter(parent=copy.folder_id)
+            group = Group.objects.get(id=folder.GID.id)
+
+            c['folder_name'] = folder.folder_name
+            c['children'] = children
+            c['group_name'] = group.name
+            c['group_id'] = group.id
+            if None != folder.parent:
+                c['parent_name'] = folder.parent.folder_name
+                c['parent_id'] = folder.parent.folder_id
+
+            return render_to_response('edit_folder.html', c)
+        except:
+            # Redirect to new copied folder
+            c = {}
+            c.update(csrf(request))
+            folder = Folder.objects.get(folder_id=copy.folder_id)
+            children = Folder.objects.filter(parent=copy.folder_id)
+            group = Group.objects.get(id=folder.GID.id)
+
+            c['folder_name'] = folder.folder_name
+            c['children'] = children
+            c['group_name'] = group.name
+            c['group_id'] = group.id
+            if None != folder.parent:
+                c['parent_name'] = folder.parent.folder_name
+                c['parent_id'] = folder.parent.folder_id
+
+            return render_to_response('edit_group.html', c)
+
+
+def remove_folder(request, id):
+    group = Folder.objects.get(folder_id=id).GID
+    if request.method == 'POST':
+        cur_folder = Folder.objects.get(folder_id=id)
+        # Move children up one level
+        try:
+            children = Folder.objects.filter(parent=id)
+            for child in children:
+                child.parent = cur_folder.parent
+                child.save()
+        except:
+            # No children, so skip this step
+            pass
+
+        # Delete this folder
+        cur_folder.delete()
+        # TODO Remove reports and put them at the top level of the group
+        pass
+
+    # TODO Redirect to the group management page
+    c = {}
+    c.update(csrf(request))
+
+    c['group_id'] = group.id
+    c['group_name'] = group.name
+    c['users'] = UserToGroup.objects.filter(group_id=group.id)
+    c['allusers'] = UserToGroup.objects.all()
+    c['folders'] = Folder.objects.filter(GID=group.id)
+    return render_to_response('edit_folder.html', c)
 
 '''
 def reset_confirm(request, uidb64=None, token=None):

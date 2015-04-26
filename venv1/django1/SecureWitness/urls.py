@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, url, include
+from django.contrib.auth.views import login
 # from django.contrib import admin
 # admin.autodiscover()
 import django
@@ -50,7 +51,7 @@ urlpatterns = [
     url(r'^admin_assigned/$', views.admin_assigned),
     url(r'^admin_assign_failed/$', views.admin_assign_failed),
     url(r'^admin_already_assigned/$', views.admin_already_assigned),
-    url(r'^admin/group_management/$', views.group_management),
+    url(r'^admin/group_management/', views.group_management, name='group_management'),
     url(r'^admin/group_management/create_group/$', views.create_group),
     url(r'^admin/group_management/create_group_failed/$', views.create_group_failed),
     url(r'^admin_remove_failed/$', views.admin_remove_failed),
@@ -62,6 +63,8 @@ urlpatterns = [
     url(r'^admin/folders/(\d+)/add_folder/$', views.add_subfolder),
     url(r'^admin/folders/(\d+)/change_parent/$', views.change_parent),
     url(r'^admin/folders/(\d+)/rename/$', views.rename_folder),
+    url(r'^admin/folders/(\d+)/copy_folder/', views.copy_folder),
+    url(r'^admin/folders/(\d+)/remove/', views.remove_folder),
 
     url(r'newreport/$', views.newreport, name='newreport'),
     url(r'^submitreport/$', views.submitreport),
