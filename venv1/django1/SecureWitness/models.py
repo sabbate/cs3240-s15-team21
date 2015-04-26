@@ -63,6 +63,7 @@ class Report(models.Model):
     create_date = models.DateTimeField('date created', default=datetime.now())
     last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
     # >>>>>>> 34f645a9f0350f3f3fe5b36d71f7902221a8cfbf
+
     report_name = models.CharField(max_length=200)
     short_desc = models.CharField(max_length=150, default='DEFAULT VALUE')
     long_desc = models.CharField(max_length=300, default='DEFAULT VALUE')
