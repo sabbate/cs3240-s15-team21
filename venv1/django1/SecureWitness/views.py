@@ -871,7 +871,16 @@ def report_change_folder(request, id):
 
 
 def remove_report(request, id):
-    pass
+    if request.method == 'POST':
+        cur_report = Report.objects.get(report_id=id)
+        group_id = cur_report.group_id.id
+        cur_report.delete()
+
+        c = {}
+        c.update(csrf(request))
+        group_list = Group.objects.all()
+        c['groups'] = group_list
+        return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
 
 
 def rename_report(request, id):

@@ -15,7 +15,7 @@
     </form>
     <br />
 
-    <!-- TODO Copy the report -->
+    <!-- Copy the report -->
     <form action="copy/" method="post">
         {% csrf_token %}
 
@@ -53,5 +53,11 @@
     <br />
 
     <!-- TODO Remove the report -->
+    <form action="remove/" method="post">
+        {% csrf_token %}
+
+        <label for="remove_report">Remove this report: </label>
+        <input type="submit" value="Remove"/>
+    </form>
 
 {% endblock %}
