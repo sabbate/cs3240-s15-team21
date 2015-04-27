@@ -26,14 +26,15 @@
 
     <p>Grant access to your private files to any group above.</p>
     <form action="../loggedin/grant_access_to_files/" method="post">{% csrf_token %}
-        <label for="report_id">Enter report you want to share with the group: </label>
+        <label for="report_id">Enter the ID of report you want to share with the group: </label>
         <input type="text" name="report_id" value="" id="report_id">
-        <label for="group_id">Enter the id of group you want to share with: </label>
+        <label for="group_id">Enter the ID of group you want to share with: </label>
         <input type="text" name="group_id" value="" id="group_id">
 
         <input type="submit" value="OK"/>
     </form>
 
+    <br />
     <p>Quit from a group above.</p>
     <form action="../loggedin/quit_group/" method="post">
         {% csrf_token %}
@@ -53,9 +54,9 @@
         <ul>
             {% for report in reports %}
                 {% if report.private %}
-                    <li>({{ report.report_id }})<a href="/SecureWitness/admin/reports/{{ report.report_id }}">{{ report.short_desc }} </a> by {{ report.author_id }} ------> Private</li>
+                    <li>({{ report.report_id }})<a href="/SecureWitness/account/loggedin/reports/{{ report.report_id }}">{{ report.short_desc }} </a> by {{ report.author }} ------> Private</li>
                 {% else %}
-                    <li>({{ report.report_id }})<a href="/SecureWitness/admin/reports/{{ report.report_id }}">{{ report.short_desc }} </a> by {{ report.author_id }} ------> Public</li>
+                    <li>({{ report.report_id }})<a href="/SecureWitness/account/loggedin/reports/{{ report.report_id }}">{{ report.short_desc }} </a> by {{ report.author }} ------> Public</li>
                 {% endif %}
 
 

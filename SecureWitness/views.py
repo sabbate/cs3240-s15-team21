@@ -37,6 +37,7 @@ import json
 from django.contrib.contenttypes.models import ContentType
 import datetime
 from django.views.static import serve
+from django.utils import timezone
 
 
 class GroupIndexView(generic.ListView):
@@ -396,10 +397,6 @@ def register_user(request):
 
 
 def register_success(request):
-    user = request.user
-    if user.is_superuser == False:
-        auth.logout(request)
-        return HttpResponseRedirect('/SecureWitness/account/login')
 
     return render_to_response('register_success.html')
 
@@ -973,7 +970,7 @@ def report_change_group(request, id):
         cur_report = Report.objects.get(report_id=id)
         groups = Group.objects.filter(name=request.POST.get('new_group_name'))
         # Change the group and save
-        cur_report.group_id = groups[0]
+        cur_report.group = groups[0]
         cur_report.save()
 
     c = {}
@@ -1006,11 +1003,11 @@ def report_change_folder(request, id):
 
     report = Report.objects.get(report_id=id)
     if report.folder_id:
-        c['folder_name'] = report.folder_id.folder_name
-        c['folder_id'] = report.folder_id.folder_id
+        c['folder_name'] = report.folder.folder_name
+        c['folder_id'] = report.folder.folder_id
     if report.group_id:
-        c['group_name'] = report.group_id.name
-        c['group_id'] = report.group_id.id
+        c['group_name'] = report.group.name
+        c['group_id'] = report.group.id
     c['report_name'] = report.short_desc
     c['author_name'] = report.author.username
     c['author_id'] = report.author.id
@@ -1022,7 +1019,7 @@ def report_change_folder(request, id):
 def remove_report(request, id):
     if request.method == 'POST':
         cur_report = Report.objects.get(report_id=id)
-        group_id = cur_report.group_id.id
+        group_id = cur_report.group.id
         cur_report.delete()
 
         c = {}
@@ -1065,8 +1062,8 @@ def copy_report(request, id):
                             author=request.user,
                             create_date=datetime.datetime.now(),
                             last_update_date=datetime.datetime.now(),
-                            report_name="{0} (copy)".format(cur_report.short_desc),
-                            short_desc=cur_report.short_desc,
+                            short_desc="{0} (copy)".format(cur_report.short_desc),
+                            report_name=cur_report.report_name,
                             long_desc=cur_report.long_desc,
                             location=cur_report.location,
                             incident_date=cur_report.incident_date,
