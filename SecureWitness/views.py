@@ -1088,11 +1088,14 @@ def copy_report(request, id):
 
 
 def map(request):
-	reports = Report.objects.filter(private=0)
+	reports = Report.objects.filter(private = 0)
+	user_reports = Report.objects.filter(author = request.user.id)
+	user_private = user_reports.filter(private = 1)
+	reports = reports | user_private
 	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
 	for s in shared:
 		reports = reports | Report.objects.get(report_id = s.report_id)	
-		return render(request, 'map.html', {'reports': reports})
+	return render(request, 'map.html', {'reports': reports})
 
 def getreport(request):
 	if (request.GET['rid']):
@@ -1100,16 +1103,14 @@ def getreport(request):
 		try:
 			r = Report.objects.get(report_id=reportID)
 			f = File.objects.filter(report_id=reportID)
-			if (r.private == 0) {
+			if (r.private == 0):
 				return render(request, 'getreport.html', {'report': r, 'files': f})
-			} else {
-			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-			for s in shared:
-				if (s.report_id == r.report_id) {
-					return render(request, 'getreport.html', {'report': r, 'files': f})
-					}
+			else:
+				shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+				for s in shared:
+					if (s.report_id == r.report_id):
+						return render(request, 'getreport.html', {'report': r, 'files': f})
 			return HttpResponse("You are not authorized to view this report")
-			}
 		except Report.DoesNotExist:
 			return HttpResponse("No report with this ID was found")
 		"""
@@ -1139,7 +1140,10 @@ def download(request):
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 def allreports(request):
-	reports = reports | Report.objects.filter(author = request.user.id)
+	reports = Report.objects.filter(private = 0)
+	user_reports = Report.objects.filter(author = request.user.id)
+	user_private = user_reports.filter(private = 1)
+	reports = reports | user_private
 	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
 	for s in shared:
 		reports = reports | Report.objects.get(report_id = s.report_id)
