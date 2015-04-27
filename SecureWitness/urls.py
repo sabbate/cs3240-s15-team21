@@ -96,6 +96,7 @@ urlpatterns = [
 	{'template_name': 'registration/password_reset_done.html'}),
 	url(r'^getreport/$', views.getreport),
 	url(r'^download/$', views.download),
+	url(r'^allreports/$', views.allreports),
 
 ]
 

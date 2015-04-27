@@ -1,7 +1,5 @@
 <head>
-<script type = 'text/javascript'>
-var report_array = '{{reports}}';
-</script>
+
 <script type = 'text/javascript'>
 function sort(option) {
 	var table = document.getElementById("rtable");
@@ -32,12 +30,11 @@ function sort(option) {
 <input type='button' name='sort' id='1' onclick = 'sort(2)' value = 'Sort by Description'>
 {% if reports %}
 
-    <p>Found {{ reports|length }} reports{{ reports|pluralize }}.</p>
     <ul>
 	<table id='rtable' border = '1'>
 		<tr><td>RID</td><td>Date of Incident</td><td>Report Description</td></tr>
         {% for report in reports %}
-        <tr><td>{{ report.RID }}</td><td>{{ report.incident_date }}</td>
+        <tr><td><a href="http://localhost:8000/SecureWitness/getreport/?rid={{report.report_id }}">{{report.report_id }}</a></td><td>{{ report.incident_date }}</td>
 		<td>{{ report.short_desc }}</td></tr>
         {% endfor %}
 	</table>
