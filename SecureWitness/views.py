@@ -1064,12 +1064,24 @@ def map(request):
 
 
 def getreport(request):
-    if (request.GET['rid']):
-        reportID = request.GET['rid'];
-        r = Report.objects.get(report_id=reportID);
-        f = File.objects.filter(report_id=reportID);
-        return render(request, 'getreport.html', {'report': r, 'files': f})
-
+	if (request.GET['rid']):
+		reportID = request.GET['rid'];
+		try:
+			r = Report.objects.get(report_id=reportID);
+			f = File.objects.filter(report_id=reportID);
+			
+			if (r.private == 0):
+				return render(request, 'getreport.html', {'report': r, 'files': f})
+			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+			for s in shared:
+				if (s.report_id == r.report_id):
+					shared_r = Report.objects.get(report_id=s.report_id)
+					r = r | shared_r
+					return render(request, 'getreport.html', {'report': r, 'files': f})
+			else:
+				return HttpResponse("You are not authorized to view this report.");
+		except Report.DoesNotExist:
+			return HttpResponse("No report with this ID was found.");
 
 def download(request):
     if (request.GET['f']):
@@ -1077,7 +1089,13 @@ def download(request):
         filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
-
+def allreports(request):
+	reports = Report.objects.filter(private=0)
+	reports = reports | Report.objects.filter(author_id = request.user.id)
+	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+	for s in shared:
+		reports = reports | Report.objects.get(report_id = s.report_id)
+	return render(request, 'all-reports.html', {'reports': reports})
 '''
 def reset_confirm(request, uidb64=None, token=None):
     return password_reset_confirm(request, template_name='app/reset_confirm.html',
