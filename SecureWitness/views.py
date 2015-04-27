@@ -1113,14 +1113,17 @@ def copy_report(request, id):
 
 
 def map(request):
-	reports = Report.objects.filter(private = 0)
-	user_reports = Report.objects.filter(author = request.user.id)
-	user_private = user_reports.filter(private = 1)
-	reports = reports | user_private
-	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-	for s in shared:
-		reports = reports | Report.objects.get(report_id = s.report_id)	
-	return render(request, 'map.html', {'reports': reports})
+	if(request.user.is_authenticated()):
+		reports = Report.objects.filter(private = 0)
+		user_reports = Report.objects.filter(author = request.user.id)
+		user_private = user_reports.filter(private = 1)
+		reports = reports | user_private
+		shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+		for s in shared:
+			reports = reports | Report.objects.get(report_id = s.report_id)	
+		return render(request, 'map.html', {'reports': reports})
+	else:
+		return HttpResponseRedirect('/SecureWitness/account/login')
 
 def getreport(request):
 	if (request.GET['rid']):
@@ -1168,14 +1171,17 @@ def download(request):
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 def allreports(request):
-	reports = Report.objects.filter(private = 0)
-	user_reports = Report.objects.filter(author = request.user.id)
-	user_private = user_reports.filter(private = 1)
-	reports = reports | user_private
-	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-	for s in shared:
-		reports = reports | Report.objects.get(report_id = s.report_id)
-	return render(request, 'all-reports.html', {'reports': reports})
+	if(request.user.is_authenticated()):
+		reports = Report.objects.filter(private = 0)
+		user_reports = Report.objects.filter(author = request.user.id)
+		user_private = user_reports.filter(private = 1)
+		reports = reports | user_private
+		shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+		for s in shared:
+			reports = reports | Report.objects.get(report_id = s.report_id)
+		return render(request, 'all-reports.html', {'reports': reports})
+	else:
+		return HttpResponseRedirect('/SecureWitness/account/login')
 """
 	reports = Report.objects.filter(private=0)
 	private_reports = Report.objects.filter(private=1);
