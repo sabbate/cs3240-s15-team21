@@ -115,7 +115,7 @@ class ReportUserSharing(models.Model):
 
     def __str__(self):
         return str(self.report) + " SHARED WITH " + str(self.user)
-
+"""
 
 class ReportGroupSharing(models.Model):
     # Stores sharing pairs of report-group
@@ -124,4 +124,3 @@ class ReportGroupSharing(models.Model):
 
     def __str__(self):
         return str(self.report) + " SHARED WITH " + str(self.group)
-"""
