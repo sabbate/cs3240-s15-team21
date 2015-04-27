@@ -124,3 +124,4 @@ class ReportGroupSharing(models.Model):
 
     def __str__(self):
         return str(self.report) + " SHARED WITH " + str(self.group)
+		"""
