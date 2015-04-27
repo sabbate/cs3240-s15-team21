@@ -490,11 +490,19 @@ def add_user(request, group_id):
         user = User.objects.get(username=username)
     except:
         return HttpResponseRedirect('../add_user_failed')
-    related_groups = user.groups.all()
+
     group = Group.objects.get(id=group_id)
+
+
+    user_to_groups = UserToGroup.objects.filter(group_id=group)
+    related_groups = []
+    for u in user_to_groups:
+        related_groups.append(u.group_id)
+
     if group in related_groups:
         return HttpResponseRedirect('../add_user_failed')
-    user.groups.add(group)
+    user_to_group = UserToGroup(user_id=user, group_id=group)
+    user_to_group.save()
     return HttpResponseRedirect('../add_user_succeeded')
 
 
@@ -607,7 +615,10 @@ def edit_group(request, id):
     c = {}
     c.update(csrf(request))
     group = Group.objects.get(id=id)
-    users = group.user_set.all()
+    user_to_groups = UserToGroup.objects.filter(group_id=group)
+    users = []
+    for user in user_to_groups:
+        users.append(user.user_id)
     folder_list = Folder.objects.filter(GID=id).filter(parent=None)
     report_list = Report.objects.filter(group_id=id).filter(folder_id=None)
     groupname = group.name
@@ -654,9 +665,17 @@ def quit_group(request):
     except:
         return HttpResponseRedirect('..')
     group = Group.objects.get(id=group_id)
-    if not request.user.groups.filter(name=group.name):
+    user = request.user
+    user_to_groups = UserToGroup.objects.filter(group_id=group)
+    users = []
+    for u in user_to_groups:
+        users.append(u.user_id)
+    if not user in users:
         return HttpResponseRedirect('..')
-    group.user_set.remove(request.user)
+    
+    for u in user_to_groups:
+        if user == u.user_id:
+            u.delete()
     return render_to_response('quit_group.html', {'group_name': group.name})
 
 
