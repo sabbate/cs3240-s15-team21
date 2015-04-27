@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2>Hi {{full_name}} you are now logged in!</h2>
+    <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
+    <p></p>
+
+    <!--Todo: report creation and administration/-->
+    <p>Click <a href="/SecureWitness/newreport/">here</a> to create a report. </p>
+
+    <!--todo: label the groups owned by this user -->
+        <!--display groups related to this user-->
+    <p>The groups you are affiliated to: </p>
+
+    {% if groups %}
+        <p>Found {{ groups|length }} groups{{ reports|pluralize }}.</p>
+        <ul>
+            {% for group in groups %}
+                <li><a href="{% url 'member_edit_group' group.id%}" >{{ group }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No group found.</p>
+    {% endif %}
+
+    <p>Grant access to your private files to any group above.</p>
+    <form action="../loggedin/grant_access_to_files/" method="post">{% csrf_token %}
+        <label for="report_id">Enter report you want to share with the group: </label>
+        <input type="text" name="report_id" value="" id="report_id">
+        <label for="group_id">Enter the id of group you want to share with: </label>
+        <input type="text" name="group_id" value="" id="group_id">
+
+        <input type="submit" value="OK"/>
+    </form>
+
+    <p>Quit from a group above.</p>
+    <form action="../loggedin/quit_group/" method="post">
+        {% csrf_token %}
+        <label for="group_id">Enter the id of group you want to quit from: </label>
+        <input type="text" name="group_id" value="" id="group_id">
+
+        <input type="submit" value="OK"/>
+    </form>
+
+
+
+    <p></p>
+    <p></p>
+        <!--display reports related to this user-->
+    <p>The reports you are affiliated to: </p>
+
+    {% if reports %}
+        <p>Found {{ reports|length }} groups{{ reports|pluralize }}.</p>
+        <ul>
+            {% for report in reports %}
+            <li>{{ report.report_name}}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No report found.</p>
+    {% endif %}
+
+
+{% endblock %}

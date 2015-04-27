@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
+    <p>Click <a href="/SecureWitness/admin/">here</a> to go back. </p>
+    <h2>Hi {{full_name}} this is the group management page.</h2>
+
+
+    <ul>
+        <p>Create a new group.</p>
+        <form action="../group_management/create_group/" method="post">{% csrf_token %}
+            <label for="groupname">Enter a name for the new group: </label>
+            <input type="text" name="groupname" value="" id="groupname">
+
+            <input type="submit" value="OK"/>
+        </form>
+
+    </ul>
+
+    <p>All groups in the system: </p>
+    {% if groups %}
+        <ul>
+            {% for group in groups %}
+                <li><a href="{% url 'edit_group' group.id%}" >{{ group }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No groups are available.</p>
+    {% endif %}
+
+{% endblock %}
+

@@ -1,0 +1,5 @@
+*.sqlite3
+/SecureWitness/migrations/*
+/__pycache__/*
+/SecureWitness/__pycache__/*
+.idea/*

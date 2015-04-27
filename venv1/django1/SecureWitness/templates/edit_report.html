@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
+
+    <h2>{{report_name}}</h2>
+
+    <!-- TODO Rename the report -->
+
+    <br />
+
+    <!-- TODO Copy the report -->
+
+    <br />
+
+    <!-- Show and change the group -->
+    <form action="change_group/" method="post">
+        {% csrf_token %}
+
+        <label for="new_group_name">Group: </label>
+        <input type="text" name="new_group_name" value="{{ group_name }}" id="new_group_name">
+        <a href="../../group_management/{{ group_id }}">Link</a>
+        <input type="submit" value="Change"/>
+    </form>
+
+    <br />
+
+    <!-- Show and change the folder -->
+    <form action="change_folder/" method="post">
+        {% csrf_token %}
+        <label for="new_folder_name">Folder: </label>
+        <input type="text" name="new_folder_name" value="{{ folder_name }}" id="new_folder_name">
+        <a href="../../folders/{{ folder_id }}">Link</a>
+        <input type="submit" value="Change"/>
+    </form>
+
+    <br />
+
+    <!-- TODO Show other info for the report -->
+
+    <br />
+
+    <!-- TODO Remove the report -->
+
+{% endblock %}

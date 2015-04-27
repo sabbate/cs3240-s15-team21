@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h2>Hi {{full_name}} this is admin page</h2>
+    <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
+
+    <ul>
+
+        <form action="../suspend_user_view/" method="post">
+            {% csrf_token %}
+            <label for="username_suspend">Enter the username if you want to suspend someone: </label>
+            <input type="text" name="username_suspend" value="" id="username_suspend">
+
+            <input type="submit" value="OK"/>
+        </form>
+
+        <p></p>
+
+        <form action="../activate_user_view/" method="post">
+            {% csrf_token %}
+            <label for="username_suspend">Enter the username if you want to activate someone: </label>
+            <input type="text" name="username_activate" value="" id="username_activate">
+
+            <input type="submit" value="OK"/>
+        </form>
+
+        <p></p>
+
+         <form action="../assigning_admin_view/" method="post">
+            {% csrf_token %}
+            <label for="username_admin">Enter the username if you want to assign someone to be a new admin: </label>
+            <input type="text" name="username_admin" value="" id="username_admin">
+
+            <input type="submit" value="OK"/>
+        </form>
+
+        <p></p>
+
+         <form action="../removing_admin_view/" method="post">
+            {% csrf_token %}
+            <label for="username_admin">Enter the username if you want to cancel someone's admin status: </label>
+            <input type="text" name="username_removeadmin" value="" id="username_removeadmin">
+
+            <input type="submit" value="OK"/>
+        </form>
+
+        <p><a href="/SecureWitness/admin/group_management/">Group management.</a> </p>
+		<p><a href="/SecureWitness/newreport/">Submit a report.</a> </p>
+		
+
+    </ul>
+
+{% endblock %}

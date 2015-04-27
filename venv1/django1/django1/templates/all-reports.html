@@ -1,0 +1,48 @@
+<head>
+<script type = 'text/javascript'>
+var report_array = '{{reports}}';
+</script>
+<script type = 'text/javascript'>
+function sort(option) {
+	var table = document.getElementById("rtable");
+	var tableArray = [];
+	for(i=1;i<table.rows.length;i++) {
+		var row = [];
+		for(j=0;j<table.rows[i].cells.length;j++){
+			row.push(table.rows[i].cells[j].innerHTML)
+		}
+		tableArray.push(row);
+	}
+	
+		tableArray = tableArray.sort(function(x,y) { return x[option] > y[option];});
+	
+	for(i=1;i<table.rows.length;i++){
+		for(j=0;j<table.rows[i].cells.length;j++){
+			document.getElementById('rtable').rows[i].cells[j].innerHTML = tableArray[i-1][j]
+			//alert(document.getElementById('theTable').rows[i].cells[j]);
+			//alert(tableArray[i][j]);
+		}
+	}
+}
+</script>
+</head>
+<body>
+<input type='button' name='sort' id='0' onclick = 'sort(0)' value = 'Sort by RID'>
+<input type='button' name='sort' id='1' onclick = 'sort(1)' value = 'Sort by Date'>
+<input type='button' name='sort' id='1' onclick = 'sort(2)' value = 'Sort by Description'>
+{% if reports %}
+
+    <p>Found {{ reports|length }} reports{{ reports|pluralize }}.</p>
+    <ul>
+	<table id='rtable' border = '1'>
+		<tr><td>RID</td><td>Date of Incident</td><td>Report Description</td></tr>
+        {% for report in reports %}
+        <tr><td>{{ report.RID }}</td><td>{{ report.incident_date }}</td>
+		<td>{{ report.short_desc }}</td></tr>
+        {% endfor %}
+	</table>
+    </ul>
+{% else %}
+    <p>No reports.</p>
+{% endif %}
+</body>

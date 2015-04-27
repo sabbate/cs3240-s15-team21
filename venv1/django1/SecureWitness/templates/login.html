@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    {% if form.errors %}
+        <p class="error">Sorry, this is not a valid username or password.</p>
+    {% endif %}
+    <p> Are you a new user to the system? Register <a href="/SecureWitness/account/register/">here</a> !</p>
+    <form action="../auth/" method="post">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" name="username" value="" id="username">
+        <label for="password">Password:</label>
+        <input type="password" name="password" value="" id="password">
+
+        <input type="submit" value="login"/>
+    </form>
+
+    <p>Forget your password? Reset <a href="/SecureWitness/account/resetpassword/">here</a> !</p>
+
+{% endblock %}
