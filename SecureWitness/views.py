@@ -40,7 +40,7 @@ from django.views.static import serve
 
 
 class GroupIndexView(generic.ListView):
-    template_name = 'SecureWitness/group_index.html'
+    template_name = 'group_index.html'
     context_object_name = 'group_list'
 
     def get_queryset(self):
@@ -269,7 +269,7 @@ def assigning_admin_view(request):
 @login_required(login_url="/SecureWitness/account/login")
 def removing_admin_view(request):
     user = request.user
-    if user.is_superuser == False:
+    if not user.is_superuser:
         auth.logout(request)
         return HttpResponseRedirect('/SecureWitness/account/login')
 
