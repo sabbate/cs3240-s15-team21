@@ -4,3 +4,4 @@
 /SecureWitness/__pycache__/*
 .idea/*
 files/*
+db.sqlite3

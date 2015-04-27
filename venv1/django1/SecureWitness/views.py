@@ -154,15 +154,29 @@ def loggedin(request):
     c.update(csrf(request))
 
     try:
-        groups = request.user.groups.all()
+        groups = []
+        user_to_groups = UserToGroup.objects.filter(user_id=request.user.id)
+        for group in user_to_groups:
+            groups.append(Group.objects.get(id=group.group_id.id))
     except:
         groups = None
 
     try:
-        # TODO Talk with Eliza over what this is
-        # reports = UserToReports.objects.filter(authorID=request.user.username)
-        
-        pass
+        reports = set()
+
+        # Need to check ReportUserSharing for every instance of this user
+        shared_with_user = ReportUserSharing.objects.filter(user=request.user)
+        for item in shared_with_user:
+            reports.add(Report.objects.get(report_id=item.report.report_id))
+        # Need to check ReportGroupSharing for every instance of a group that the user is in
+        if groups:
+            for group in groups:
+                reports_for_group = Report.objects.filter(group_id=group)
+                for item in reports_for_group:
+                    reports.add(item)
+                reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
+                for item in reports_shared_with_group:
+                    reports.add(item)
     except:
         reports = None
     c['full_name'] = request.user.username

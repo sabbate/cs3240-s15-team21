@@ -8,8 +8,9 @@
 <div id="sidebar">
     {% block sidebar %}
     <ul>
-        <li><a href="/">Home</a></li>
+        <li><a href="/SecureWitness/">Home</a></li>
 
+        <!-- TODO Add other home buttons, etc. to this header -->
         {% if user.is_authenticated %}
             <li><a href="/SecureWitness/account/logout">Logout</a></li>
         {% else %}
