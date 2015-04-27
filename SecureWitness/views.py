@@ -1077,14 +1077,31 @@ def copy_report(request, id):
 
 
 def map(request):
-    reports = Report.objects.raw('SELECT * FROM SecureWitness_report')
-    # json_list = serializers.serialize('json', reports)
-    return render(request, 'map.html', {'reports': reports})
+	reports = Report.objects.filter(private=0)
+	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+	for s in shared:
+		reports = reports | Report.objects.get(report_id = s.report_id)	
+		return render(request, 'map.html', {'reports': reports})
 
 def getreport(request):
 	if (request.GET['rid']):
-		reportID = request.GET['rid'];
+		reportID = request.GET['rid']
 		try:
+			r = Report.objects.get(report_id=reportID)
+			f = File.objects.filter(report_id=reportID)
+			if (r.private == 0) {
+				return render(request, 'getreport.html', {'report': r, 'files': f})
+			} else {
+			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+			for s in shared:
+				if (s.report_id == r.report_id) {
+					return render(request, 'getreport.html', {'report': r, 'files': f})
+					}
+			return HttpResponse("You are not authorized to view this report")
+			}
+		except Report.DoesNotExist:
+			return HttpResponse("No report with this ID was found")
+		"""
 			r = Report.objects.get(report_id=reportID);
 			f = File.objects.filter(report_id=reportID);
 			
@@ -1103,7 +1120,7 @@ def getreport(request):
 			return HttpResponse("You are not authorized to view this report.");
 		except Report.DoesNotExist:
 			return HttpResponse("No report with this ID was found.");
-
+		"""
 def download(request):
     if (request.GET['f']):
         fname = request.GET['f'];
