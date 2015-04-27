@@ -165,7 +165,7 @@ def loggedin(request):
         groups = []
         user_to_groups = UserToGroup.objects.filter(user_id=request.user.id)
         for group in user_to_groups:
-            groups.append(Group.objects.get(id=group.group_id.id))
+            groups.append(Group.objects.get(id=group.group.id))
     except:
         groups = None
 
@@ -177,19 +177,19 @@ def loggedin(request):
         for report in reports_author:
             reports.append(report)
 
-        # Need to check ReportUserSharing for every instance of this user
-        shared_with_user = ReportUserSharing.objects.filter(user=request.user)
-        for item in shared_with_user:
-            reports.append(Report.objects.get(report_id=item.report.report_id))
-        # Need to check ReportGroupSharing for every instance of a group that the user is in
-        if groups:
-            for group in groups:
-                reports_for_group = Report.objects.filter(group_id=group)
-                for item in reports_for_group:
-                    reports.append(item)
-                reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
-                for item in reports_shared_with_group:
-                    reports.append(item)
+        # # Need to check ReportUserSharing for every instance of this user
+        # shared_with_user = ReportUserSharing.objects.filter(user=request.user)
+        # for item in shared_with_user:
+        #     reports.append(Report.objects.get(report_id=item.report.report_id))
+        # # Need to check ReportGroupSharing for every instance of a group that the user is in
+        # if groups:
+        #     for group in groups:
+        #         reports_for_group = Report.objects.filter(group_id=group)
+        #         for item in reports_for_group:
+        #             reports.append(item)
+        #         reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
+        #         for item in reports_shared_with_group:
+        #             reports.append(item)
     except:
         reports = None
     c['full_name'] = request.user.username
@@ -513,7 +513,7 @@ def grant_access_to_files(request):
     code_name = 'can_access_report_' + request.report_id
     name = 'Can Access Report ' + request.report_id
     permission = Permission.objects.create(condename=code_name, name=name, content_type=content_type)
-    group = Group.objects.get(id=request.group_id)
+    group = Group.objects.get(id=request.POST.get(group_id))
     if group.has_perm('SecureWitness.' + code_name):
         render_to_response('grant_access_to_files_failed.html')
     group.permissions.add(permission)
@@ -620,7 +620,7 @@ def edit_group(request, id):
     for user in user_to_groups:
         users.append(user.user_id)
     folder_list = Folder.objects.filter(GID=id).filter(parent=None)
-    report_list = Report.objects.filter(group_id=id).filter(folder_id=None)
+    report_list = Report.objects.filter(group=group).filter(folder=None)
     groupname = group.name
     usernames = []
     for u in users:
@@ -688,7 +688,7 @@ def member_edit_group(request, id):
     groupname = group.name
     usernames = []
     folder_list = Folder.objects.filter(GID=id).filter(parent=None)
-    report_list = Report.objects.filter(group_id=id).filter(folder_id=None)
+    report_list = Report.objects.filter(group=group).filter(folder=None)
     for u in users:
         usernames.append(u.username)
     allusers = User.objects.all()
@@ -937,14 +937,14 @@ def edit_report(request, id):
 
     report = Report.objects.get(report_id=id)
     if report.folder_id:
-        c['folder_name'] = report.folder_id.folder_name
-        c['folder_id'] = report.folder_id.folder_id
-    if report.group_id:
-        c['group_name'] = report.group_id.name
-        c['group_id'] = report.group_id.id
+        c['folder_name'] = report.folder.folder_name
+        c['folder_id'] = report.folder.folder_id
+    if report.group:
+        c['group_name'] = report.group.name
+        c['group_id'] = report.group.id
     c['report_name'] = report.report_name
-    c['author_name'] = report.author_id.username
-    c['author_id'] = report.author_id.id
+    c['author'] = report.author_id
+    #c['author_id'] = report.author_id.id
     c['report'] = report
 
     return render_to_response('edit_report.html', c)
@@ -971,7 +971,7 @@ def report_change_group(request, id):
         c['group_name'] = report.group_id.name
         c['group_id'] = report.group_id.id
     c['report_name'] = report.report_name
-    c['author_name'] = report.author_id.username
+    c['author_name'] = report.author.username
     c['author_id'] = report.author_id.id
     c['report'] = report
 
@@ -996,8 +996,8 @@ def report_change_folder(request, id):
         c['group_name'] = report.group_id.name
         c['group_id'] = report.group_id.id
     c['report_name'] = report.report_name
-    c['author_name'] = report.author_id.username
-    c['author_id'] = report.author_id.id
+    c['author_name'] = report.author.username
+    c['author_id'] = report.author.id
     c['report'] = report
 
     return render_to_response('edit_report.html', c)
@@ -1034,8 +1034,8 @@ def rename_report(request, id):
         c['group_name'] = report.group_id.name
         c['group_id'] = report.group_id.id
     c['report_name'] = report.report_name
-    c['author_name'] = report.author_id.username
-    c['author_id'] = report.author_id.id
+    c['author_name'] = report.author.username
+    c['author_id'] = report.author.id
     c['report'] = report
 
     return render_to_response('edit_report.html', c)
@@ -1046,7 +1046,7 @@ def copy_report(request, id):
         cur_report = Report.objects.get(report_id=id)
         new_report = Report(folder_id=cur_report.folder_id,
                             group_id=cur_report.group_id,
-                            author_id=request.user,
+                            author=request.user,
                             create_date=datetime.now(),
                             last_update_date=datetime.now(),
                             report_name="{0} (copy)".format(cur_report.report_name),
@@ -1069,8 +1069,8 @@ def copy_report(request, id):
             c['group_name'] = report.group_id.name
             c['group_id'] = report.group_id.id
         c['report_name'] = report.report_name
-        c['author_name'] = report.author_id.username
-        c['author_id'] = report.author_id.id
+        c['author_name'] = report.author.username
+        c['author_id'] = report.author.id
         c['report'] = report
 
         return HttpResponseRedirect('/SecureWitness/admin/reports/' + str(report.report_id), c)
@@ -1110,7 +1110,7 @@ def download(request):
 
 def allreports(request):
 	reports = Report.objects.filter(private=0)
-	reports = reports | Report.objects.filter(author_id = request.user.id)
+	reports = reports | Report.objects.filter(author = request.user.id)
 	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
 	for s in shared:
 		reports = reports | Report.objects.get(report_id = s.report_id)
