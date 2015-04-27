@@ -6,8 +6,16 @@ import django
 from . import views
 
 urlpatterns = [
-    url(r'', include('django.contrib.auth.urls')),
-    url(r'^$', views.GroupIndexView.as_view(), name='index'),
+
+    # url(r'^$', views.GroupIndexView.as_view(), name='index'),
+    url(r'^groups', views.GroupDetailView.as_view(), name='group'),
+    url(r'^(?P<pk>\d+)/$', views.GroupDetailView.as_view(), name='group'),
+    url(r'^(?P<pk>\d+)/$', views.ReportIndexView.as_view(), name='report_index'),
+    url(r'newreport/$', views.newreport, name='newreport'),
+    url(r'^search_form/$', views.search_form),
+    url(r'^search/$', views.search),
+    url(r'^submitreport/$', views.submitreport),
+
 
     url(r'^account/login/$', views.login),
     url(r'^account/auth/$', views.auth_view),
@@ -43,7 +51,8 @@ urlpatterns = [
     url(r'^account/loggedin/quit_group/$', views.quit_group, name='quit_group'),
     url(r'^account/loggedin/(\d+)/$', views.member_edit_group, name='member_edit_group'),
     url(r'^account/loggedin/grant_access_to_files/$', views.grant_access_to_files, name='grant_access_to_files'),
-    url(r'^account/loggedin/grant_access_to_files_failed/$', views.grant_access_to_files_failed, name='grant_access_to_files_failed'),
+    url(r'^account/loggedin/grant_access_to_files_failed/$', views.grant_access_to_files_failed,
+        name='grant_access_to_files_failed'),
     url(r'^account/folders/(\d+)/$', views.edit_folder),
     url(r'^account/loggedin/(\d+)/add_user/$', views.add_user),
     url(r'^account/loggedin/(\d+)/add_user_failed/$', views.member_add_user_failed),
@@ -59,23 +68,24 @@ urlpatterns = [
     url(r'^not_admin/$', views.not_admin),
     url(r'^assigning_admin_view/$', views.assigning_admin_view),
     url(r'^removing_admin_view/$', views.removing_admin_view),
+
+    url(r'', include('django.contrib.auth.urls')),
+    url(r'^$', views.index, name='index'),
+    # url(r'', include('myregistration.backends.default.urls'))
+    url(r'map/$', views.map),
+
     url(r'^admin/folders/(\d+)/$', views.edit_folder, name='edit_folder'),
     url(r'^admin/folders/(\d+)/add_folder/$', views.add_subfolder),
     url(r'^admin/folders/(\d+)/change_parent/$', views.change_parent),
     url(r'^admin/folders/(\d+)/rename/$', views.rename_folder),
-    url(r'^admin/folders/(\d+)/copy_folder/', views.copy_folder),
-    url(r'^admin/folders/(\d+)/remove/', views.remove_folder),
-    url(r'^admin/reports/(\d+)/', views.edit_report),
-    url(r'^admin/reports/(\d+)/change_group/', views.report_change_group),
-    url(r'^admin/reports/(\d+)/change_folder/', views.report_change_folder),
-    url(r'^admin/reports/(\d+)/rename/', views.rename_report),
-    url(r'^admin/reports/(\d+)/copy/', views.copy_report),
-
-    url(r'newreport/$', views.newreport, name='newreport'),
-    url(r'^submitreport/$', views.submitreport),
-
-    url(r'^search_form/$', views.search_form),
-    url(r'^search/$', views.search),
+    url(r'^admin/folders/(\d+)/copy_folder/$', views.copy_folder),
+    url(r'^admin/folders/(\d+)/remove/$', views.remove_folder),
+    url(r'^admin/reports/(\d+)/$', views.edit_report),
+    url(r'^admin/reports/(\d+)/change_group/$', views.report_change_group),
+    url(r'^admin/reports/(\d+)/change_folder/$', views.report_change_folder),
+    url(r'^admin/reports/(\d+)/rename/$', views.rename_report),
+    url(r'^admin/reports/(\d+)/copy/$', views.copy_report),
+    url(r'^admin/reports/(\d+)/remove/$', views.remove_report),
 
 
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',

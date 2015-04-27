@@ -11,7 +11,7 @@ class GroupAdmin(admin.ModelAdmin):
 
 
 class FileAdmin(admin.ModelAdmin):
-    fields = ('docfile', 'file_name', 'author_id', 'report_id')
+    fields = ('docfile', 'file_name', 'author', 'report')
 
 
 class ReportAdmin(admin.ModelAdmin):

@@ -32,8 +32,9 @@ from SecureWitness.models import *
 from .forms import *
 from django.core.urlresolvers import reverse
 from django.contrib.auth.views import password_reset, password_reset_confirm
+from django.core import serializers
+import json
 from django.contrib.contenttypes.models import ContentType
-
 
 
 class GroupIndexView(generic.ListView):
@@ -60,7 +61,7 @@ class ReportIndexView(generic.ListView):
 
 
 def index(request):
-    reports = Report.objects.raw('SELECT * FROM SecureWitness_reports')
+    reports = Report.objects.raw('SELECT * FROM SecureWitness_report')
     return render(request, 'all-reports.html', {'reports': reports})
     # return HttpResponse("Welcome to SecureWitness!")
 
@@ -79,18 +80,22 @@ def submitreport(request):
         priv = request.POST.get('private', False)
         password = request.POST.get('pw', False)
         # files = HttpRequest.FILES;
-        cur_time = datetime.now()
+
+        cur_time = datetime.datetime.now()
+        usr = User.objects.get(username=request.user.username)
+        r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
+                   location=loc, incident_date=date, keywords=keys, private=priv)
+        r.save();
+        r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
         for key, file in request.FILES.items():
             path = os.getcwd() + '\\SecureWitness\\files\\'
             dest = open(path + file.name, 'wb+')
             dest.write(file.read())
-            encrypt(path, file.name, password)
             dest.close()
-            f = File(authorID=1, ReportID=1, docfile=path)
-            f.save()
-        r = Report(authorID=1, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
-                   location=loc, folderID=f, incident_date=date, keywords=keys, private=priv)
-        r.save()
+            encrypt(path, file.name, password)
+            f = File(author_id=usr.id, report_id=r.report_id, docfile=path)
+            f.save();
+        # r.save();
         return HttpResponse('Thank you for submitting a report!')
     else:
         return HttpResponse('Your submission was unsuccessful.')
@@ -103,12 +108,20 @@ def search_form(request):
 def search(request):
     if 'q' in request.GET and request.GET['q']:
         q = request.GET['q']
-        r1 = Report.objects.filter(keywords__icontains=q)
-        r2 = Report.objects.filter(short_desc__icontains=q)
-        reports = r1 | r2
-        return render(request, 'search_results.html', {'reports': reports, 'query': q})
-    else:
-        return HttpResponse('No results found. Please try another search term.')
+        if "AND" in q:
+            terms = q.split(" AND ");
+            r = Report.objects.filter(keywords__icontains=terms[0])
+            for word in terms:
+                r = r.filter(keywords__icontains=word)
+            reports = r
+        if "OR" in q:
+            terms = q.split(" OR ");
+            reports = Report.objects.filter(keywords__icontains=terms[0])
+            for word in terms[1:]:
+                reports = reports | Report.objects.filter(keywords__icontains=word)
+            return render(request, 'search_results.html', {'reports': reports, 'query': q})
+        else:
+            return HttpResponse('No results found. Please try another search term.')
 
 
 def login(request):
@@ -151,8 +164,8 @@ def loggedin(request):
         reports = None
     c['full_name'] = request.user.username
     c['groups'] = groups
-    c['reports'] =  reports
-    return render_to_response('loggedin.html',c)
+    c['reports'] = reports
+    return render_to_response('loggedin.html', c)
 
 
 @login_required(login_url="/SecureWitness/account/login")
@@ -454,19 +467,20 @@ def add_user(request, group_id):
     user.groups.add(group)
     return HttpResponseRedirect('../add_user_succeeded')
 
-#TODO: Pass private files into request
+
+# TODO: Pass private files into request
 def grant_access_to_files(request):
-    #give access to the group
+    # give access to the group
     content_type = ContentType.objects.get_for_model(Group)
     code_name = 'can_access_report_' + request.report_id
     name = 'Can Access Report ' + request.report_id
     permission = Permission.objects.create(condename=code_name, name=name, content_type=content_type)
     group = Group.objects.get(id=request.group_id)
-    if group.has_perm('SecureWitness.'+code_name):
+    if group.has_perm('SecureWitness.' + code_name):
         render_to_response('grant_access_to_files_failed.html')
     group.permissions.add(permission)
 
-    #give access to every group member
+    # give access to every group member
     users_in_group = group.user_set.all()
     content_type = ContentType.objects.get_for_model(User)
     permission = Permission.objects.create(codename=code_name, name=name, content_type=content_type)
@@ -474,11 +488,14 @@ def grant_access_to_files(request):
         if not user == request.user:
             user.user_permissions.add(permission)
     return render_to_response('grant_access_to_files.html')
-#    return render_to_response('grant_access_to_files.html', {'files':})
+
+
+# return render_to_response('grant_access_to_files.html', {'files':})
 
 
 def grant_access_to_files_failed(request):
     return render_to_response('grant_access_to_files.html')
+
 
 def member_add_user_succeeded(request, group_id):
     return render_to_response('member_add_user_succeeded.html')
@@ -647,7 +664,7 @@ def create_group(request):
         # now = time.localtime()
         # timeString = time.strftime(f, now)
         # timeInt = int(timeString)
-        #cur_time = datetime.datetime.now()
+        # cur_time = datetime.datetime.now()
         g = Group(name=groupname)  # use datetime of created as id
         g.save()
         return HttpResponseRedirect('../../group_management')
@@ -832,6 +849,7 @@ def copy_folder(request, id, recursive=False):
             return render_to_response('edit_group.html', c)
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def remove_folder(request, id):
     group = Folder.objects.get(folder_id=id).GID
     if request.method == 'POST':
@@ -863,6 +881,7 @@ def remove_folder(request, id):
     return render_to_response('edit_folder.html', c)
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def edit_report(request, id):
     c = {}
     c.update(csrf(request))
@@ -882,19 +901,15 @@ def edit_report(request, id):
     return render_to_response('edit_report.html', c)
 
 
+@login_required(login_url="/SecureWitness/account/login")
 def report_change_group(request, id):
     if request.method == 'POST':
         # TODO Check if valid group name
         cur_report = Report.objects.get(report_id=id)
-        group = Group.objects.get(name=request.POST.get('group'))
+        groups = Group.objects.filter(name=request.POST.get('new_group_name'))
         # Change the group and save
-        cur_report.group_id = group
+        cur_report.group_id = groups[0]
         cur_report.save()
-
-    cur_report = Report.objects.get(report_id=id)
-    testGroup = Group.objects.get(name='Group3')
-    cur_report.group_id = testGroup
-    cur_report.save()
 
     c = {}
     c.update(csrf(request))
@@ -915,19 +930,108 @@ def report_change_group(request, id):
 
 
 def report_change_folder(request, id):
-    pass
+    if request.method == 'POST':
+        cur_report = Report.objects.get(report_id=id)
+        new_folder = Folder.objects.get(folder_name=request.POST.get('new_folder_name'))
+        cur_report.folder_id = new_folder
+        cur_report.save()
+
+    c = {}
+    c.update(csrf(request))
+
+    report = Report.objects.get(report_id=id)
+    if report.folder_id:
+        c['folder_name'] = report.folder_id.folder_name
+        c['folder_id'] = report.folder_id.folder_id
+    if report.group_id:
+        c['group_name'] = report.group_id.name
+        c['group_id'] = report.group_id.id
+    c['report_name'] = report.report_name
+    c['author_name'] = report.author_id.username
+    c['author_id'] = report.author_id.id
+    c['report'] = report
+
+    return render_to_response('edit_report.html', c)
 
 
 def remove_report(request, id):
-    pass
+    if request.method == 'POST':
+        cur_report = Report.objects.get(report_id=id)
+        group_id = cur_report.group_id.id
+        cur_report.delete()
+
+        c = {}
+        c.update(csrf(request))
+        group_list = Group.objects.all()
+        c['groups'] = group_list
+        return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
 
 
 def rename_report(request, id):
-    pass
+    if request.method == 'POST':
+        cur_report = Report.objects.get(report_id=id)
+        new_name = request.POST.get('new_name')
+        cur_report.report_name = new_name
+        cur_report.save()
+
+    c = {}
+    c.update(csrf(request))
+
+    report = Report.objects.get(report_id=id)
+    if report.folder_id:
+        c['folder_name'] = report.folder_id.folder_name
+        c['folder_id'] = report.folder_id.folder_id
+    if report.group_id:
+        c['group_name'] = report.group_id.name
+        c['group_id'] = report.group_id.id
+    c['report_name'] = report.report_name
+    c['author_name'] = report.author_id.username
+    c['author_id'] = report.author_id.id
+    c['report'] = report
+
+    return render_to_response('edit_report.html', c)
 
 
 def copy_report(request, id):
-    pass
+    if request.method == 'POST':
+        cur_report = Report.objects.get(report_id=id)
+        new_report = Report(folder_id=cur_report.folder_id,
+                            group_id=cur_report.group_id,
+                            author_id=request.user,
+                            create_date=datetime.now(),
+                            last_update_date=datetime.now(),
+                            report_name="{0} (copy)".format(cur_report.report_name),
+                            short_desc=cur_report.short_desc,
+                            long_desc=cur_report.long_desc,
+                            location=cur_report.location,
+                            incident_date=cur_report.incident_date,
+                            keywords=cur_report.keywords,
+                            private=cur_report.private)
+        new_report.save()
+
+        c = {}
+        c.update(csrf(request))
+
+        report = new_report
+        if report.folder_id:
+            c['folder_name'] = report.folder_id.folder_name
+            c['folder_id'] = report.folder_id.folder_id
+        if report.group_id:
+            c['group_name'] = report.group_id.name
+            c['group_id'] = report.group_id.id
+        c['report_name'] = report.report_name
+        c['author_name'] = report.author_id.username
+        c['author_id'] = report.author_id.id
+        c['report'] = report
+
+        return HttpResponseRedirect('/SecureWitness/admin/reports/' + str(report.report_id), c)
+
+
+def map(request):
+    reports = Report.objects.raw('SELECT * FROM SecureWitness_report')
+    # json_list = serializers.serialize('json', reports)
+    return render(request, 'map.html', {'reports': reports})
+
 
 '''
 def reset_confirm(request, uidb64=None, token=None):
