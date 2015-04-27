@@ -157,6 +157,10 @@ def loggedin(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def admin(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
     c = {}
     c.update(csrf(request))
     # c['username'] =  request.newAdmin.username
@@ -198,6 +202,11 @@ def suspend_user_view(request):
 
 
 def assigning_admin_view(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     username = request.POST.get('username_admin', '')
 
     try:
@@ -216,6 +225,11 @@ def assigning_admin_view(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def removing_admin_view(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     username = request.POST.get('username_removeadmin', '')
 
     try:
@@ -339,26 +353,51 @@ def register_user(request):
 
 
 def register_success(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('register_success.html')
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def admin_assigned(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_assigned.html')
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def admin_already_assigned(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_already_assigned.html')
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def admin_assign_failed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_assign_failed.html')
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def user_suspended(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('user_suspended.html')
 
 
@@ -379,6 +418,11 @@ def user_suspend_failed(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def group_management(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     c = {}
     c.update(csrf(request))
     grouplist = Group.objects.all()
@@ -388,6 +432,11 @@ def group_management(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def create_group_failed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('create_group_failed.html')
 
 
@@ -440,18 +489,38 @@ def member_add_user_failed(request, group_id):
 
 
 def add_user_succeeded(request, group_id):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('add_user_succeeded.html')
 
 
 def add_user_failed(request, group_id):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('add_user_failed.html')
 
 
 def admin_remove_failed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_remove_failed.html')
 
 
 def admin_removed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_removed.html')
 
 
@@ -460,14 +529,29 @@ def not_admin(request):
 
 
 def user_activated(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('user_activated.html')
 
 
 def user_already_activated(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('user_already_activated.html')
 
 
 def user_activate_failed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('user_activate_failed.html')
 
 
