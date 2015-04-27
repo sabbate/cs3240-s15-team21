@@ -74,34 +74,33 @@ def newreport(request):
 
 
 def submitreport(request):
-    if request.POST.get('short', False) and request.POST.get('long', False):
-        short = request.POST.get('short', False)
-        long = request.POST.get('long', False)
-        loc = request.POST.get('location', False)
-        date = request.POST.get('date', False)
-        keys = request.POST.get('keys', False)
-        priv = request.POST.get('private', False)
-        password = request.POST.get('pw', False)
-        # files = HttpRequest.FILES;
-
-        cur_time = datetime.datetime.now()
-        usr = User.objects.get(username=request.user.username)
-        r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
-                   location=loc, incident_date=date, keywords=keys, private=priv)
-        r.save();
-        r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
-        for file in request.FILES.getlist('files'):
-            path = os.getcwd() + '\\SecureWitness\\files\\'
-            dest = open(path + file.name, 'wb+')
-            dest.write(file.read())
-            dest.close()
-            encrypt(path, file.name, password)
-            f = File(author_id=usr.id, report_id=r.report_id, docfile=path, file_name=file.name)
-            f.save();
-        # r.save();
-        return HttpResponse('Thank you for submitting a report!')
-    else:
-        return HttpResponse('Your submission was unsuccessful.')
+	if request.POST.get('short', False) and request.POST.get('long', False):
+		short = request.POST.get('short', False)
+		long = request.POST.get('long', False)
+		loc = request.POST.get('location', False)
+		date = request.POST.get('date', False)
+		keys = request.POST.get('keys', False)
+		priv = request.POST.get('private', False)
+		encrypt = request.POST.get('encrypt', False)
+		password = request.POST.get('pw', False)
+		cur_time = datetime.datetime.now()
+		usr = User.objects.get(username=request.user.username)
+		r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
+			location=loc, incident_date=date, keywords=keys, private=priv)
+		r.save();
+		r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
+		for file in request.FILES.getlist('files'):
+			path = os.getcwd() + '\\SecureWitness\\files\\'
+			dest = open(path + file.name, 'wb+')
+			dest.write(file.read())
+			dest.close()
+			if (encrypt and password):
+				encrypt(path, file.name, password)
+			f = File(author_id=usr.id, report_id=r.report_id, docfile=path, file_name=file.name)
+			f.save();
+		return HttpResponse('Thank you for submitting a report!')
+	else:
+		return HttpResponse('Your submission was unsuccessful.')
 
 
 def search_form(request):

@@ -1,0 +1,22 @@
+DB	ID	Splice	Symbol	Taxon	Qualifier	GO ID	GO Name	Reference	Evidence	With	Aspect	Date	Source
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0004364	glutathione transferase activity	GO_REF:0000002	IEA	InterPro:IPR003081	Function	20150411	InterPro
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0004364	glutathione transferase activity	GO_REF:0000003	IEA	EC:2.5.1.18	Function	20150411	UniProt
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0004364	glutathione transferase activity	PMID:8373352	IDA	-	Function	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0004364	glutathione transferase activity	PMID:8403204	TAS	-	Function	20030904	PINC
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0005737	cytoplasm	GO_REF:0000037	IEA	UniProtKB-KW:KW-0963	Component	20150411	UniProt
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0005737	cytoplasm	GO_REF:0000039	IEA	UniProtKB-SubCell:SL-0086	Component	20150411	UniProt
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0005737	cytoplasm	PMID:8373352	IDA	-	Component	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0005829	cytosol	Reactome:REACT_6854	TAS	-	Component	20130423	Reactome
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0006749	glutathione metabolic process	PMID:8373352	IDA	-	Process	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0006805	xenobiotic metabolic process	Reactome:REACT_13433	TAS	-	Process	20130423	Reactome
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0006805	xenobiotic metabolic process	Reactome:REACT_6959	TAS	-	Process	20130423	Reactome
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0008152	metabolic process	GO_REF:0000002	IEA	InterPro:IPR003081	Process	20150411	InterPro
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0016740	transferase activity	GO_REF:0000037	IEA	UniProtKB-KW:KW-0808	Function	20150411	UniProt
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0018916	nitrobenzene metabolic process	PMID:8373352	IDA	-	Process	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0019899	enzyme binding	PMID:8373352	IPI	UniProtKB:P09488	Function	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0042178	xenobiotic catabolic process	PMID:8373352	IDA	-	Process	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0042803	protein homodimerization activity	PMID:8373352	IPI	UniProtKB:P09488	Function	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0043295	glutathione binding	PMID:8373352	IDA	-	Function	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0044281	small molecule metabolic process	Reactome:REACT_111217	TAS	-	Process	20130423	Reactome
+UniProtKB	P09488	-	GSTM1	9606	-	GO:0070458	cellular detoxification of nitrogen compound	PMID:8373352	IDA	-	Process	20121214	BHF-UCL
+UniProtKB	P09488	-	GSTM1	9606	-	GO:1901687	glutathione derivative biosynthetic process	Reactome:REACT_6926	TAS	-	Process	20130423	Reactome
