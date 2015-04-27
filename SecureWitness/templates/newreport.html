@@ -1,20 +1,35 @@
 <html>
-<head><title> Submit Report</title></head>
+<head><title> Submit Report</title>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script type="text/javascript">
+
+	function toggle_encrypt() {
+		var isChecked = $('#encrypt').prop('checked');
+		if(isChecked) {
+			var html = "<tr><td>Password: </td><td><input type = 'text' name='pw'></td></tr>"
+			$('#theTable > tbody > tr').eq(6).after(html);
+		} else {
+			$("#theTable tr:eq(7)").remove();
+		}
+	}
+</script>
+</head>
 <body>
 <h2> Submit a Report </h2>
 
 <form action = "/SecureWitness/submitreport/" method = "post" enctype="multipart/form-data">{% csrf_token %}
 
-<table>
+<table id="theTable" onload="toggle_encrypt();">
 	<tr><td>Short Description:</td><td><input type = "text" name = "short"></td></tr>
 	<tr><td>Long Description:</td><td><textarea name = "long" rows="7" cols="40"></textarea></td></tr>
 	<tr><td>Location:</td><td><input type = "text" name = "location"></td></tr>
 	<tr><td>Date of Incident:</td><td><input type = "date" name = "date"></td></tr>
 	<tr><td>Keywords(space-separated):</td><td><input type = "text" name = "keys"></td></tr>
-	<tr><td>Upload files</td><td><input type="file" name="files" multiple="multiple" accept="file_extension|audio/*|video/*|image/*|media_type" multiple></td></tr>
+	<tr><td>Upload files</td><td><input type="file" name="files" accept="file_extension|audio/*|video/*|image/*|media_type" multiple></td></tr>
+	<tr><td> Encrypt files? <input type = "checkbox" id = "encrypt" name="encrypt" onclick="toggle_encrypt()"></td></tr>
+	<tr><td>Private report? <input type = "checkbox" name = "private"></td></tr>
 	</table>
-	<tr><td>Password:</td><td><input type = "text" name = "pw"></td></tr>
-	Private report? <input type = "checkbox" name = "private">
 	<input type = "submit" value = "Submit Report">
 </form>
 </body>

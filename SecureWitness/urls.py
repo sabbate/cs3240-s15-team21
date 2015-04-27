@@ -85,6 +85,16 @@ urlpatterns = [
     url(r'^account/loggedin/reports/(\d+)/rename/$', views.rename_report),
     url(r'^account/loggedin/reports/(\d+)/copy/$', views.copy_report),
     url(r'^account/loggedin/reports/(\d+)/remove/$', views.remove_report),
+    url(r'^admin/folders/new_folder/$', views.new_folder),
+    url(r'^account/folders/new_folder/$', views.new_folder),
+    url(r'^admin/folders/new_folder/add/$', views.add_new_folder),
+    url(r'^account/folders/new_folder/add/$', views.add_new_folder),
+    # url(r'^admin/reports/(\d+)/$', views.edit_report),
+    # url(r'^admin/reports/(\d+)/change_group/$', views.report_change_group),
+    # url(r'^admin/reports/(\d+)/change_folder/$', views.report_change_folder),
+    # url(r'^admin/reports/(\d+)/rename/$', views.rename_report),
+    # url(r'^admin/reports/(\d+)/copy/$', views.copy_report),
+    # url(r'^admin/reports/(\d+)/remove/$', views.remove_report),
 
 
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
