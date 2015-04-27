@@ -99,9 +99,17 @@ def submitreport(request):
             f = File(author_id=usr.id, report_id=r.report_id, docfile=path, file_name=file.name)
             f.save();
         # r.save();
-        return HttpResponse('Thank you for submitting a report!')
+        return HttpResponseRedirect('../newreport/submit_report_successful')
     else:
-        return HttpResponse('Your submission was unsuccessful.')
+        return HttpResponseRedirect('../newreport/submit_report_failed')
+
+
+def submit_report_successful(request):
+    return render_to_response('submit_report_successful.html')
+
+
+def submit_report_failed(request):
+    return render_to_response('submit_report_failed.html')
 
 
 def search_form(request):
@@ -555,7 +563,7 @@ def grant_access_to_files(request):
 
 
 def grant_access_to_files_failed(request):
-    return render_to_response('grant_access_to_files.html')
+    return render_to_response('grant_access_to_files_failed.html')
 
 
 def member_add_user_succeeded(request, group_id):
@@ -1066,7 +1074,7 @@ def rename_report(request, id):
     c['author_id'] = report.author.id
     c['report'] = report
 
-    return render_to_response('edit_report.html', c)
+    return HttpResponseRedirect('../', c)
 
 
 def copy_report(request, id):
