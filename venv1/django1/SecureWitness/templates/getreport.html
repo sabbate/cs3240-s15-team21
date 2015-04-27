@@ -1,0 +1,16 @@
+{% if report %}
+    <ul>
+        Report ID: {{ report.report_id }}<br />
+		Incident Date: {{ report.incident_date }}<br />
+		Short Description: {{ report.short_desc }}<br />
+		Long Description: {{ report.long_desc }}<br />
+		Keywords: {{ report.keywords }} <br />
+		Files: 
+		{% for f in files %}
+		<a href="http://localhost:8000/SecureWitness/download/?f={{f.file_name}}">{{ f.file_name }}</a>
+		{% endfor %}
+	</table>
+    </ul>
+{% else %}
+    <p>Report does not exist</p>
+{% endif %}

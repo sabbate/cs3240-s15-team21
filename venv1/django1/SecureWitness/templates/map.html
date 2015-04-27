@@ -16,11 +16,13 @@
 		var markers = [];
 		function loadmarkers() {
 			rtable = document.getElementById("rtable");
+			//alert(rtable.rows.length);
 			for (var i=1;i<rtable.rows.length; i++) {
 				row = rtable.rows[i];
 				RID = row.cells[0].innerHTML;
 				date = row.cells[1].innerHTML;
 				loc = row.cells[2].innerHTML;
+				//alert(rtable.rows.length);
 				desc = row.cells[3].innerHTML;
 				rep = [RID, date, loc, desc];
 				reports.push(rep);
@@ -180,7 +182,7 @@
     <div id="panel">
       <input id="address" type="textbox" >
       <input type="button" value="Find reports" onclick="codeAddress()">
-	  <input type = "button" value="View Most Popular Location" onclick="popular()"> <br />
+	  <input type = "button" value="View Most Popular Area" onclick="popular()"> <br />
     </div>
     <div id="map-canvas"></div>
 	{% if reports %}
@@ -188,8 +190,8 @@
 	<table id='rtable' border = '1'>
 		<tr><td>RID</td><td>Date of Incident</td><td>Location</td><td>Report Description</td></tr>
         {% for report in reports %}
-        <tr><td>{{ report.report_id }}</td><td>{{ report.incident_date }}</td>
-		<td>{{ report.location }}</td><td>{{ report.short_desc }}</td></tr>
+        <tr><td><a href="http://localhost:8000/SecureWitness/getreport/?rid={{report.report_id }}">{{report.report_id }}</a></td><td>{{ report.incident_date }}</td>
+		<td>{{ report.location }}</td><td>{{ report.short_desc }}</td><tr>
         {% endfor %}
 	</table>
     </ul>

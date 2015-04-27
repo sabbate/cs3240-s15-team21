@@ -35,7 +35,8 @@ from django.contrib.auth.views import password_reset, password_reset_confirm
 from django.core import serializers
 import json
 from django.contrib.contenttypes.models import ContentType
-
+import datetime
+from django.views.static import serve
 
 class GroupIndexView(generic.ListView):
     template_name = 'SecureWitness/group_index.html'
@@ -93,7 +94,7 @@ def submitreport(request):
             dest.write(file.read())
             dest.close()
             encrypt(path, file.name, password)
-            f = File(author_id=usr.id, report_id=r.report_id, docfile=path)
+            f = File(author_id=usr.id, report_id=r.report_id, docfile=path, file_name=file.name)
             f.save();
         # r.save();
         return HttpResponse('Thank you for submitting a report!')
@@ -106,22 +107,28 @@ def search_form(request):
 
 
 def search(request):
-    if 'q' in request.GET and request.GET['q']:
-        q = request.GET['q']
-        if "AND" in q:
-            terms = q.split(" AND ");
-            r = Report.objects.filter(keywords__icontains=terms[0])
-            for word in terms:
-                r = r.filter(keywords__icontains=word)
-            reports = r
-        if "OR" in q:
-            terms = q.split(" OR ");
-            reports = Report.objects.filter(keywords__icontains=terms[0])
-            for word in terms[1:]:
-                reports = reports | Report.objects.filter(keywords__icontains=word)
-            return render(request, 'search_results.html', {'reports': reports, 'query': q})
-        else:
-            return HttpResponse('No results found. Please try another search term.')
+	if 'q' in request.GET and request.GET['q']:
+		q = request.GET['q']
+		if "AND" in q:
+			terms = q.split(" AND ");
+			r = Report.objects.filter(keywords__icontains=terms[0])
+			for word in terms:
+				r = r.filter(keywords__icontains=word)
+			reports = r.filter(private=0)
+			return  render(request, 'search_results.html', {'reports': reports, 'query': q})
+		if "OR" in q:
+			terms = q.split(" OR ");
+			reports = Report.objects.filter(keywords__icontains=terms[0])
+			for word in terms[1:]:
+				reports = reports | Report.objects.filter(keywords__icontains=word)
+			reports = reports.filter(private=0)
+			return render(request, 'search_results.html', {'reports': reports, 'query': q})
+		else:
+			reports = Report.objects.filter(keywords__icontains=q)
+			reports = reports.filter(private=0);
+			return render(request, 'search_results.html', {'reports': reports, 'query': q})
+	else:
+		return HttpResponse('No results found. Please try another search term.')
 
 
 def login(request):
@@ -887,7 +894,18 @@ def map(request):
     # json_list = serializers.serialize('json', reports)
     return render(request, 'map.html', {'reports': reports})
 
+def getreport(request):
+	if (request.GET['rid']):
+		reportID = request.GET['rid'];
+		r = Report.objects.get(report_id = reportID);
+		f = File.objects.filter(report_id=reportID);
+		return render(request, 'getreport.html', {'report': r, 'files': f})
 
+def download(request):
+	if (request.GET['f']):
+		fname = request.GET['f'];
+		filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
+		return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 '''
 def reset_confirm(request, uidb64=None, token=None):
     return password_reset_confirm(request, template_name='app/reset_confirm.html',

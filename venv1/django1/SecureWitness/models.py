@@ -51,15 +51,15 @@ class Folder(models.Model):
 class Report(models.Model):
     report_id = models.AutoField(primary_key=True)
     # <<<<<<< HEAD
-    #folder = models.ForeignKey(Folder, default=0)
-    #author = models.ForeignKey(User)
+    folder = models.ForeignKey(Folder, default=0)
+    author = models.ForeignKey(User)
     #create_date = models.DateTimeField('date created')
     #last_update_date = models.DateTimeField('date of last modification')
     # =======
-    folder_id = models.ForeignKey(Folder, blank=True, null=True)
-    group_id = models.ForeignKey(Group, blank=True, null=True)
-    #group = models.ForeignKey(Group, blank=True, null=True)
-    author_id = models.ForeignKey(User)
+    #folder_id = models.ForeignKey(Folder, blank=True, null=True)
+    #group_id = models.ForeignKey(Group, blank=True, null=True)
+    group = models.ForeignKey(Group, blank=True, null=True)
+    #author_id = models.ForeignKey(User)
     create_date = models.DateTimeField('date created', default=datetime.now())
     last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
     # >>>>>>> 34f645a9f0350f3f3fe5b36d71f7902221a8cfbf

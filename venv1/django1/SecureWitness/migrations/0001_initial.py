@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.conf import settings
 import datetime
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -17,9 +17,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ActivationProfile',
             fields=[
-                ('activation_key', models.CharField(default='DEFAULT VALUE', max_length=300)),
-                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL, serialize=False, primary_key=True)),
-                ('key_expires', models.DateTimeField(default=datetime.datetime(2015, 4, 26, 18, 57, 57, 268603))),
+                ('activation_key', models.CharField(max_length=300, default='DEFAULT VALUE')),
+                ('user', models.OneToOneField(serialize=False, primary_key=True, to=settings.AUTH_USER_MODEL)),
+                ('key_expires', models.DateTimeField(default=datetime.datetime(2015, 4, 26, 22, 52, 13, 700462))),
             ],
             options={
             },
@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
             name='File',
             fields=[
                 ('file_id', models.AutoField(serialize=False, primary_key=True)),
-                ('docfile', models.FileField(default=False, upload_to='files/')),
+                ('docfile', models.FileField(upload_to='files/', default=False)),
                 ('file_name', models.CharField(max_length=100)),
                 ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 ('folder_name', models.CharField(max_length=100)),
                 ('GID', models.ForeignKey(to='auth.Group')),
                 ('author_id', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('parent', models.ForeignKey(to='SecureWitness.Folder', null=True, blank=True)),
+                ('parent', models.ForeignKey(null=True, blank=True, to='SecureWitness.Folder')),
             ],
             options={
             },
@@ -53,7 +53,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='GroupProfile',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
                 ('datetime', models.DateTimeField(verbose_name='date created')),
                 ('group', models.OneToOneField(to='auth.Group')),
             ],
@@ -65,18 +65,18 @@ class Migration(migrations.Migration):
             name='Report',
             fields=[
                 ('report_id', models.AutoField(serialize=False, primary_key=True)),
-                ('create_date', models.DateTimeField(verbose_name='date created')),
-                ('last_update_date', models.DateTimeField(verbose_name='date of last modification')),
+                ('create_date', models.DateTimeField(verbose_name='date created', default=datetime.datetime(2015, 4, 26, 22, 52, 13, 700462))),
+                ('last_update_date', models.DateTimeField(verbose_name='date of last modification', default=datetime.datetime(2015, 4, 26, 22, 52, 13, 700462))),
                 ('report_name', models.CharField(max_length=200)),
-                ('short_desc', models.CharField(default='DEFAULT VALUE', max_length=150)),
-                ('long_desc', models.CharField(default='DEFAULT VALUE', max_length=300)),
-                ('location', models.CharField(default='DEFAULT VALUE', max_length=300)),
-                ('incident_date', models.CharField(default='DEFAULT VALUE', max_length=300)),
-                ('keywords', models.CharField(default='DEFAULT VALUE', max_length=300)),
+                ('short_desc', models.CharField(max_length=150, default='DEFAULT VALUE')),
+                ('long_desc', models.CharField(max_length=300, default='DEFAULT VALUE')),
+                ('location', models.CharField(max_length=300, default='DEFAULT VALUE')),
+                ('incident_date', models.CharField(max_length=300, default='DEFAULT VALUE')),
+                ('keywords', models.CharField(max_length=300, default='DEFAULT VALUE')),
                 ('private', models.BooleanField(default=False)),
                 ('author', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('folder', models.ForeignKey(default=0, to='SecureWitness.Folder')),
-                ('group', models.ForeignKey(to='auth.Group', null=True, blank=True)),
+                ('folder', models.ForeignKey(to='SecureWitness.Folder', default=0)),
+                ('group', models.ForeignKey(null=True, blank=True, to='auth.Group')),
             ],
             options={
             },
