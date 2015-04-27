@@ -161,12 +161,34 @@ def loggedin(request):
     c.update(csrf(request))
 
     try:
-        groups = request.user.groups.all()
+        groups = []
+        user_to_groups = UserToGroup.objects.filter(user_id=request.user.id)
+        for group in user_to_groups:
+            groups.append(Group.objects.get(id=group.group_id.id))
     except:
         groups = None
 
     try:
-        reports = UserToReports.objects.filter(authorID=request.user.username)
+        reports = []
+
+        # TODO Reports which the user is the author
+        reports_author = Report.objects.filter(author_id=request.user)
+        for report in reports_author:
+            reports.append(report)
+
+        # Need to check ReportUserSharing for every instance of this user
+        shared_with_user = ReportUserSharing.objects.filter(user=request.user)
+        for item in shared_with_user:
+            reports.append(Report.objects.get(report_id=item.report.report_id))
+        # Need to check ReportGroupSharing for every instance of a group that the user is in
+        if groups:
+            for group in groups:
+                reports_for_group = Report.objects.filter(group_id=group)
+                for item in reports_for_group:
+                    reports.append(item)
+                reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
+                for item in reports_shared_with_group:
+                    reports.append(item)
     except:
         reports = None
     c['full_name'] = request.user.username
@@ -177,6 +199,10 @@ def loggedin(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def admin(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
     c = {}
     c.update(csrf(request))
     # c['username'] =  request.newAdmin.username
@@ -218,6 +244,11 @@ def suspend_user_view(request):
 
 
 def assigning_admin_view(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     username = request.POST.get('username_admin', '')
 
     try:
@@ -236,6 +267,11 @@ def assigning_admin_view(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def removing_admin_view(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     username = request.POST.get('username_removeadmin', '')
 
     try:
@@ -359,26 +395,51 @@ def register_user(request):
 
 
 def register_success(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('register_success.html')
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def admin_assigned(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_assigned.html')
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def admin_already_assigned(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_already_assigned.html')
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def admin_assign_failed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_assign_failed.html')
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def user_suspended(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('user_suspended.html')
 
 
@@ -399,6 +460,11 @@ def user_suspend_failed(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def group_management(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     c = {}
     c.update(csrf(request))
     grouplist = Group.objects.all()
@@ -408,6 +474,11 @@ def group_management(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def create_group_failed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('create_group_failed.html')
 
 
@@ -464,18 +535,38 @@ def member_add_user_failed(request, group_id):
 
 
 def add_user_succeeded(request, group_id):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('add_user_succeeded.html')
 
 
 def add_user_failed(request, group_id):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('add_user_failed.html')
 
 
 def admin_remove_failed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_remove_failed.html')
 
 
 def admin_removed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('admin_removed.html')
 
 
@@ -484,14 +575,29 @@ def not_admin(request):
 
 
 def user_activated(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('user_activated.html')
 
 
 def user_already_activated(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('user_already_activated.html')
 
 
 def user_activate_failed(request):
+    user = request.user
+    if user.is_superuser == False:
+        auth.logout(request)
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
     return render_to_response('user_activate_failed.html')
 
 
@@ -878,15 +984,76 @@ def report_change_folder(request, id):
 
 
 def remove_report(request, id):
-    pass
+    if request.method == 'POST':
+        cur_report = Report.objects.get(report_id=id)
+        group_id = cur_report.group_id.id
+        cur_report.delete()
+
+        c = {}
+        c.update(csrf(request))
+        group_list = Group.objects.all()
+        c['groups'] = group_list
+        return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
 
 
 def rename_report(request, id):
-    pass
+    if request.method == 'POST':
+        cur_report = Report.objects.get(report_id=id)
+        new_name = request.POST.get('new_name')
+        cur_report.report_name = new_name
+        cur_report.save()
+
+    c = {}
+    c.update(csrf(request))
+
+    report = Report.objects.get(report_id=id)
+    if report.folder_id:
+        c['folder_name'] = report.folder_id.folder_name
+        c['folder_id'] = report.folder_id.folder_id
+    if report.group_id:
+        c['group_name'] = report.group_id.name
+        c['group_id'] = report.group_id.id
+    c['report_name'] = report.report_name
+    c['author_name'] = report.author_id.username
+    c['author_id'] = report.author_id.id
+    c['report'] = report
+
+    return render_to_response('edit_report.html', c)
 
 
 def copy_report(request, id):
-    pass
+    if request.method == 'POST':
+        cur_report = Report.objects.get(report_id=id)
+        new_report = Report(folder_id=cur_report.folder_id,
+                            group_id=cur_report.group_id,
+                            author_id=request.user,
+                            create_date=datetime.now(),
+                            last_update_date=datetime.now(),
+                            report_name="{0} (copy)".format(cur_report.report_name),
+                            short_desc=cur_report.short_desc,
+                            long_desc=cur_report.long_desc,
+                            location=cur_report.location,
+                            incident_date=cur_report.incident_date,
+                            keywords=cur_report.keywords,
+                            private=cur_report.private)
+        new_report.save()
+
+        c = {}
+        c.update(csrf(request))
+
+        report = new_report
+        if report.folder_id:
+            c['folder_name'] = report.folder_id.folder_name
+            c['folder_id'] = report.folder_id.folder_id
+        if report.group_id:
+            c['group_name'] = report.group_id.name
+            c['group_id'] = report.group_id.id
+        c['report_name'] = report.report_name
+        c['author_name'] = report.author_id.username
+        c['author_id'] = report.author_id.id
+        c['report'] = report
+
+        return HttpResponseRedirect('/SecureWitness/admin/reports/' + str(report.report_id), c)
 
 
 def map(request):

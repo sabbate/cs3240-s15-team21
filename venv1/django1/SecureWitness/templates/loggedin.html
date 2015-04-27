@@ -14,7 +14,7 @@
     <p>The groups you are affiliated to: </p>
 
     {% if groups %}
-        <p>Found {{ groups|length }} groups{{ reports|pluralize }}.</p>
+        <p>Found {{ groups|length }} groups.</p>
         <ul>
             {% for group in groups %}
                 <li><a href="{% url 'member_edit_group' group.id%}" >{{ group }}</a></li>
@@ -44,17 +44,15 @@
     </form>
 
 
+    <br />
 
-    <p></p>
-    <p></p>
-        <!--display reports related to this user-->
+    <!--display reports related to this user-->
     <p>The reports you are affiliated to: </p>
 
     {% if reports %}
-        <p>Found {{ reports|length }} groups{{ reports|pluralize }}.</p>
         <ul>
             {% for report in reports %}
-            <li>{{ report.report_name}}</li>
+            <li><a href="/SecureWitness/admin/reports/{{ report.report_id }}">{{ report.report_name }} by {{ report.author_id }}</a></li>
             {% endfor %}
         </ul>
     {% else %}

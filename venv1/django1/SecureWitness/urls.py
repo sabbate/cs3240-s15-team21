@@ -16,7 +16,6 @@ urlpatterns = [
     url(r'^search/$', views.search),
     url(r'^submitreport/$', views.submitreport),
 
-
     url(r'^account/login/$', views.login),
     url(r'^account/auth/$', views.auth_view),
     url(r'^account/logout/$', views.logout),
@@ -85,6 +84,7 @@ urlpatterns = [
     url(r'^admin/reports/(\d+)/change_folder/$', views.report_change_folder),
     url(r'^admin/reports/(\d+)/rename/$', views.rename_report),
     url(r'^admin/reports/(\d+)/copy/$', views.copy_report),
+    url(r'^admin/reports/(\d+)/remove/$', views.remove_report),
 
 
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',

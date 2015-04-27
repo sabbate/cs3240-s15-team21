@@ -62,6 +62,7 @@ class Report(models.Model):
     #author_id = models.ForeignKey(User)
     create_date = models.DateTimeField('date created', default=datetime.now())
     last_update_date = models.DateTimeField('date of last modification', default=datetime.now())
+
     # >>>>>>> 34f645a9f0350f3f3fe5b36d71f7902221a8cfbf
 
     report_name = models.CharField(max_length=200)
@@ -101,7 +102,24 @@ class UserToGroup(models.Model):
 class ActivationProfile(models.Model):
     activation_key = models.CharField(max_length=300, default='DEFAULT VALUE')
     user = models.OneToOneField(User, primary_key=True)
-    key_expires = models.DateTimeField(default=datetime.today())
+    key_expires = models.DateTimeField()
     # I commented out the old one, because it was giving me errors - Grant
     # key_expires = models.DateTimeField(default=datetime.date.today())
 
+
+class ReportUserSharing(models.Model):
+    # Stores sharing pairs of report-user
+    report = models.ForeignKey(Report)
+    user = models.ForeignKey(User)
+
+    def __str__(self):
+        return str(self.report) + " SHARED WITH " + str(self.user)
+
+
+class ReportGroupSharing(models.Model):
+    # Stores sharing pairs of report-group
+    report = models.ForeignKey(Report)
+    group = models.ForeignKey(Group)
+
+    def __str__(self):
+        return str(self.report) + " SHARED WITH " + str(self.group)

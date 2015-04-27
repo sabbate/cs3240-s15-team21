@@ -5,11 +5,23 @@
 
     <h2>{{report_name}}</h2>
 
-    <!-- TODO Rename the report -->
+    <!-- Rename the report -->
+    <form action="rename/" method="post">
+        {% csrf_token %}
 
+        <label for="new_name">Rename this report:</label>
+        <input type="text" name="new_name" value="{{ report_name }}" id="new_name">
+        <input type="submit" value="Rename"/>
+    </form>
     <br />
 
-    <!-- TODO Copy the report -->
+    <!-- Copy the report -->
+    <form action="copy/" method="post">
+        {% csrf_token %}
+
+        <label for="copy_report">Copy this report:</label>
+        <input type="submit" value="Copy"/>
+    </form>
 
     <br />
 
@@ -41,5 +53,11 @@
     <br />
 
     <!-- TODO Remove the report -->
+    <form action="remove/" method="post">
+        {% csrf_token %}
+
+        <label for="remove_report">Remove this report: </label>
+        <input type="submit" value="Remove"/>
+    </form>
 
 {% endblock %}
