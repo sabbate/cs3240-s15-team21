@@ -48,7 +48,7 @@
     <h4>Reports in this Folder:</h4>
     {% if reports %}
         {% for report in reports %}
-            <p>{{ report }}</p>
+            <p><a href="../../reports/{{ report.report_id }}">{{ report }}</a></p>
         {% endfor %}
     {% endif %}
 
