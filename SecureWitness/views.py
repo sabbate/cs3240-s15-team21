@@ -177,19 +177,19 @@ def loggedin(request):
         for report in reports_author:
             reports.append(report)
 
-        # # Need to check ReportUserSharing for every instance of this user
-        # shared_with_user = ReportUserSharing.objects.filter(user=request.user)
-        # for item in shared_with_user:
-        #     reports.append(Report.objects.get(report_id=item.report.report_id))
-        # # Need to check ReportGroupSharing for every instance of a group that the user is in
-        # if groups:
-        #     for group in groups:
-        #         reports_for_group = Report.objects.filter(group_id=group)
-        #         for item in reports_for_group:
-        #             reports.append(item)
-        #         reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
-        #         for item in reports_shared_with_group:
-        #             reports.append(item)
+            # # Need to check ReportUserSharing for every instance of this user
+            # shared_with_user = ReportUserSharing.objects.filter(user=request.user)
+            # for item in shared_with_user:
+            # reports.append(Report.objects.get(report_id=item.report.report_id))
+            # # Need to check ReportGroupSharing for every instance of a group that the user is in
+            # if groups:
+            # for group in groups:
+            #         reports_for_group = Report.objects.filter(group_id=group)
+            #         for item in reports_for_group:
+            #             reports.append(item)
+            #         reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
+            #         for item in reports_shared_with_group:
+            #             reports.append(item)
     except:
         reports = None
     c['full_name'] = request.user.username
@@ -493,7 +493,6 @@ def add_user(request, group_id):
 
     group = Group.objects.get(id=group_id)
 
-
     user_to_groups = UserToGroup.objects.filter(group_id=group)
     related_groups = []
     for u in user_to_groups:
@@ -534,9 +533,9 @@ def grant_access_to_files(request):
     # content_type = ContentType.objects.get_for_model(User)
     # permission = Permission.objects.create(codename=code_name, name=name, content_type_id=content_type.id)
     # for user in users_in_group:
-    #     if not user == request.user:
-    #         user.user_permissions.add(permission)
-    return render_to_response('grant_access_to_files.html', {'groupname':group.name, 'reportname':report.short_desc})
+    # if not user == request.user:
+    # user.user_permissions.add(permission)
+    return render_to_response('grant_access_to_files.html', {'groupname': group.name, 'reportname': report.short_desc})
 
 
 # return render_to_response('grant_access_to_files.html', {'files':})
@@ -683,7 +682,7 @@ def quit_group(request):
         users.append(u.user_id)
     if not user in users:
         return HttpResponseRedirect('..')
-    
+
     for u in user_to_groups:
         if user == u.user_id:
             u.delete()
@@ -955,7 +954,7 @@ def edit_report(request, id):
         c['group_id'] = report.group.id
     c['report_name'] = report.report_name
     c['author'] = report.author_id
-    #c['author_id'] = report.author_id.id
+    # c['author_id'] = report.author_id.id
     c['report'] = report
 
     return render_to_response('edit_report.html', c)
@@ -1094,24 +1093,25 @@ def map(request):
 
 
 def getreport(request):
-	if (request.GET['rid']):
-		reportID = request.GET['rid'];
-		try:
-			r = Report.objects.get(report_id=reportID);
-			f = File.objects.filter(report_id=reportID);
-			
-			if (r.private == 0):
-				return render(request, 'getreport.html', {'report': r, 'files': f})
-			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-			for s in shared:
-				if (s.report_id == r.report_id):
-					shared_r = Report.objects.get(report_id=s.report_id)
-					r = r | shared_r
-					return render(request, 'getreport.html', {'report': r, 'files': f})
-			else:
-				return HttpResponse("You are not authorized to view this report.");
-		except Report.DoesNotExist:
-			return HttpResponse("No report with this ID was found.");
+    if request.GET['rid']:
+        reportID = request.GET['rid'];
+        try:
+            r = Report.objects.get(report_id=reportID);
+            f = File.objects.filter(report_id=reportID);
+
+            if r.private == 0:
+                return render(request, 'getreport.html', {'report': r, 'files': f})
+            shared = ReportUserSharing.objects.filter(user_id=request.user.id)
+            for s in shared:
+                if (s.report_id == r.report_id):
+                    shared_r = Report.objects.get(report_id=s.report_id)
+                    r |= shared_r
+                    return render(request, 'getreport.html', {'report': r, 'files': f})
+            else:
+                return HttpResponse("You are not authorized to view this report.");
+        except Report.DoesNotExist:
+            return HttpResponse("No report with this ID was found.");
+
 
 def download(request):
     if (request.GET['f']):
@@ -1119,13 +1119,77 @@ def download(request):
         filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
+
 def allreports(request):
-	reports = Report.objects.filter(private=0)
-	reports = reports | Report.objects.filter(author = request.user.id)
-	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-	for s in shared:
-		reports = reports | Report.objects.get(report_id = s.report_id)
-	return render(request, 'all-reports.html', {'reports': reports})
+    reports = Report.objects.filter(private=0)
+    reports = reports | Report.objects.filter(author=request.user.id)
+    shared = ReportUserSharing.objects.filter(user_id=request.user.id)
+    for s in shared:
+        reports = reports | Report.objects.get(report_id=s.report_id)
+    return render(request, 'all-reports.html', {'reports': reports})
+
+
+@login_required(login_url="/SecureWitness/account/login")
+def new_folder(request):
+    c = {}
+    c.update(csrf(request))
+    return render_to_response('add_folder.html', c)
+
+
+@login_required(login_url="/SecureWitness/account/login")
+def add_new_folder(request):
+    if request.method == 'POST':
+        folder_name = request.POST.get('folder_name')
+        group_name = request.POST.get('group_name')
+        parent_name = request.POST.get('parent_name')
+
+        # Find the specified group
+        if group_name:
+            group = Group.objects.get(name=group_name)
+        else:
+            # If the group doesn't exist, redirect back to the create page
+            c = {}
+            c.update(csrf(request))
+            return HttpResponseRedirect('/SecureWitness/admin/folders/new_folder', c)
+
+        # Find the specified parent
+        parent = None
+        if parent_name:
+            # Check if the parent exists
+            try:
+                parent = Folder.objects.get(folder_name=parent_name)
+            except:
+                parent = None
+        else:
+            parent = None
+
+        folder = Folder(folder_name=folder_name,
+                        parent=parent,
+                        GID=group,
+                        author_id=request.user)
+        folder.save()
+    else:
+        c = {}
+        c.update(csrf(request))
+        return HttpResponseRedirect('/SecureWitness/admin/folders/new_folder', c)
+
+    c = {}
+    c.update(csrf(request))
+    children = None
+    reports = None
+
+    c['folder_name'] = folder.folder_name
+    c['children'] = children
+    c['group_name'] = group.name
+    c['group_id'] = group.id
+    c['reports'] = reports
+    if None != folder.parent:
+        c['parent_name'] = folder.parent.folder_name
+        c['parent_id'] = folder.parent.folder_id
+
+    return HttpResponseRedirect('/SecureWitness/account/folders/' + str(folder.folder_id), c)
+
+
 '''
 def reset_confirm(request, uidb64=None, token=None):
     return password_reset_confirm(request, template_name='app/reset_confirm.html',
