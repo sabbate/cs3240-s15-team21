@@ -159,7 +159,10 @@ def loggedin(request):
         groups = None
 
     try:
-        reports = UserToReports.objects.filter(authorID=request.user.username)
+        # TODO Talk with Eliza over what this is
+        # reports = UserToReports.objects.filter(authorID=request.user.username)
+        
+        pass
     except:
         reports = None
     c['full_name'] = request.user.username

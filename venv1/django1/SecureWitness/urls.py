@@ -16,7 +16,6 @@ urlpatterns = [
     url(r'^search/$', views.search),
     url(r'^submitreport/$', views.submitreport),
 
-
     url(r'^account/login/$', views.login),
     url(r'^account/auth/$', views.auth_view),
     url(r'^account/logout/$', views.logout),
