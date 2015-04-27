@@ -26,9 +26,9 @@ urlpatterns = [
     url(r'^account/register_success/$', views.register_success),
     url(r'^account/confirmed/$', views.confirmed),
     url(r'^account/confirm_expired/$', views.confirm_expired),
-    url(r'^account/confirm/(?P<activation_key>\w+)/', views.register_confirm),
-    url(r'^account/register/duplicate_email/', views.duplicate_email),
-    url(r'^account/resetpassword/', django.contrib.auth.views.password_reset,
+    url(r'^account/confirm/(?P<activation_key>\w+)/$', views.register_confirm),
+    url(r'^account/register/duplicate_email/$', views.duplicate_email),
+    url(r'^account/resetpassword/$', django.contrib.auth.views.password_reset,
         {'template_name': 'registration/password_reset_form.html'}),
 
     url(r'^user_suspended/$', views.user_suspended),
