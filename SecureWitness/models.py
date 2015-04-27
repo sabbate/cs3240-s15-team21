@@ -117,6 +117,7 @@ class ReportUserSharing(models.Model):
         return str(self.report) + " SHARED WITH " + str(self.user)
 """
 
+
 class ReportGroupSharing(models.Model):
     # Stores sharing pairs of report-group
     report = models.ForeignKey(Report)
