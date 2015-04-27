@@ -162,21 +162,26 @@ def loggedin(request):
         groups = None
 
     try:
-        reports = set()
+        reports = []
+
+        # TODO Reports which the user is the author
+        reports_author = Report.objects.filter(author_id=request.user)
+        for report in reports_author:
+            reports.append(report)
 
         # Need to check ReportUserSharing for every instance of this user
         shared_with_user = ReportUserSharing.objects.filter(user=request.user)
         for item in shared_with_user:
-            reports.add(Report.objects.get(report_id=item.report.report_id))
+            reports.append(Report.objects.get(report_id=item.report.report_id))
         # Need to check ReportGroupSharing for every instance of a group that the user is in
         if groups:
             for group in groups:
                 reports_for_group = Report.objects.filter(group_id=group)
                 for item in reports_for_group:
-                    reports.add(item)
+                    reports.append(item)
                 reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
                 for item in reports_shared_with_group:
-                    reports.add(item)
+                    reports.append(item)
     except:
         reports = None
     c['full_name'] = request.user.username

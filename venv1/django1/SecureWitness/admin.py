@@ -9,7 +9,7 @@ class FileAdmin(admin.ModelAdmin):
 class ReportAdmin(admin.ModelAdmin):
     fields = (
         'report_name', 'author_id', 'folder_id', 'group_id', 'short_desc', 'long_desc', 'location', 'keywords',
-        'private')
+        'private', 'create_date', 'last_update_date')
 
 
 class FolderAdmin(admin.ModelAdmin):
