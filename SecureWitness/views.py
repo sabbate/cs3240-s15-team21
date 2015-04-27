@@ -694,7 +694,12 @@ def member_edit_group(request, id):
     c = {}
     c.update(csrf(request))
     group = Group.objects.get(id=id)
-    users = group.user_set.all()
+
+    user_to_groups = UserToGroup.objects.filter(group_id=group)
+    users = []
+    for user in user_to_groups:
+        users.append(user.user_id)
+
     groupname = group.name
     usernames = []
     folder_list = Folder.objects.filter(GID=id).filter(parent=None)
@@ -952,7 +957,7 @@ def edit_report(request, id):
     if report.group:
         c['group_name'] = report.group.name
         c['group_id'] = report.group.id
-    c['report_name'] = report.report_name
+    c['report_name'] = report.short_desc
     c['author'] = report.author_id
     # c['author_id'] = report.author_id.id
     c['report'] = report
@@ -974,15 +979,15 @@ def report_change_group(request, id):
     c.update(csrf(request))
 
     report = Report.objects.get(report_id=id)
-    if report.folder_id:
-        c['folder_name'] = report.folder_id.folder_name
-        c['folder_id'] = report.folder_id.folder_id
-    if report.group_id:
-        c['group_name'] = report.group_id.name
-        c['group_id'] = report.group_id.id
-    c['report_name'] = report.report_name
+    if report.folder:
+        c['folder_name'] = report.folder.folder_name
+        c['folder_id'] = report.folder.folder_id
+    if report.group:
+        c['group_name'] = report.group.name
+        c['group_id'] = report.group.id
+    c['report_name'] = report.short_desc
     c['author_name'] = report.author.username
-    c['author_id'] = report.author_id.id
+    c['author_id'] = report.author.id
     c['report'] = report
 
     return render_to_response('edit_report.html', c)
@@ -1005,7 +1010,7 @@ def report_change_folder(request, id):
     if report.group_id:
         c['group_name'] = report.group_id.name
         c['group_id'] = report.group_id.id
-    c['report_name'] = report.report_name
+    c['report_name'] = report.short_desc
     c['author_name'] = report.author.username
     c['author_id'] = report.author.id
     c['report'] = report
@@ -1030,7 +1035,7 @@ def rename_report(request, id):
     if request.method == 'POST':
         cur_report = Report.objects.get(report_id=id)
         new_name = request.POST.get('new_name')
-        cur_report.report_name = new_name
+        cur_report.short_desc = new_name
         cur_report.save()
 
     c = {}
@@ -1038,12 +1043,12 @@ def rename_report(request, id):
 
     report = Report.objects.get(report_id=id)
     if report.folder_id:
-        c['folder_name'] = report.folder_id.folder_name
-        c['folder_id'] = report.folder_id.folder_id
+        c['folder_name'] = report.folder.folder_name
+        c['folder_id'] = report.folder.folder_id
     if report.group_id:
-        c['group_name'] = report.group_id.name
-        c['group_id'] = report.group_id.id
-    c['report_name'] = report.report_name
+        c['group_name'] = report.group.name
+        c['group_id'] = report.group.id
+    c['report_name'] = report.short_desc
     c['author_name'] = report.author.username
     c['author_id'] = report.author.id
     c['report'] = report
@@ -1057,9 +1062,9 @@ def copy_report(request, id):
         new_report = Report(folder_id=cur_report.folder_id,
                             group_id=cur_report.group_id,
                             author=request.user,
-                            create_date=datetime.now(),
-                            last_update_date=datetime.now(),
-                            report_name="{0} (copy)".format(cur_report.report_name),
+                            create_date=datetime.datetime.now(),
+                            last_update_date=datetime.datetime.now(),
+                            report_name="{0} (copy)".format(cur_report.short_desc),
                             short_desc=cur_report.short_desc,
                             long_desc=cur_report.long_desc,
                             location=cur_report.location,
@@ -1073,12 +1078,12 @@ def copy_report(request, id):
 
         report = new_report
         if report.folder_id:
-            c['folder_name'] = report.folder_id.folder_name
-            c['folder_id'] = report.folder_id.folder_id
+            c['folder_name'] = report.folder.folder_name
+            c['folder_id'] = report.folder.folder_id
         if report.group_id:
-            c['group_name'] = report.group_id.name
-            c['group_id'] = report.group_id.id
-        c['report_name'] = report.report_name
+            c['group_name'] = report.group.name
+            c['group_id'] = report.group.id
+        c['report_name'] = report.short_desc
         c['author_name'] = report.author.username
         c['author_id'] = report.author.id
         c['report'] = report
