@@ -163,9 +163,9 @@ def loggedin(request):
 
     try:
         groups = []
-        user_to_groups = UserToGroup.objects.filter(user_id=request.user.id)
+        user_to_groups = UserToGroup.objects.filter(user_id=request.user)
         for group in user_to_groups:
-            groups.append(Group.objects.get(id=group.group.id))
+            groups.append(Group.objects.get(id=group.group_id.id))
     except:
         groups = None
 
@@ -497,7 +497,8 @@ def add_user(request, group_id):
     user_to_groups = UserToGroup.objects.filter(group_id=group)
     related_groups = []
     for u in user_to_groups:
-        related_groups.append(u.group_id)
+        if u.user_id == user:
+            related_groups.append(u.group_id)
 
     if group in related_groups:
         return HttpResponseRedirect('../add_user_failed')
@@ -509,23 +510,33 @@ def add_user(request, group_id):
 # TODO: Pass private files into request
 def grant_access_to_files(request):
     # give access to the group
-    content_type = ContentType.objects.get_for_model(Group)
-    code_name = 'can_access_report_' + request.report_id
-    name = 'Can Access Report ' + request.report_id
-    permission = Permission.objects.create(condename=code_name, name=name, content_type=content_type)
-    group = Group.objects.get(id=request.POST.get(group_id))
-    if group.has_perm('SecureWitness.' + code_name):
-        render_to_response('grant_access_to_files_failed.html')
-    group.permissions.add(permission)
+    # content_type = ContentType.objects.get_for_model(Group)
+    report_id = request.POST.get('report_id')
+    group_id = request.POST.get('group_id')
 
-    # give access to every group member
-    users_in_group = group.user_set.all()
-    content_type = ContentType.objects.get_for_model(User)
-    permission = Permission.objects.create(codename=code_name, name=name, content_type=content_type)
-    for user in users_in_group:
-        if not user == request.user:
-            user.user_permissions.add(permission)
-    return render_to_response('grant_access_to_files.html')
+    try:
+        report = Report.objects.get(report_id=report_id)
+        group = Group.objects.get(id=group_id)
+    except:
+        return HttpResponseRedirect('../grant_access_to_files_failed')
+    report = Report.objects.get(report_id=report_id)
+    group = Group.objects.get(id=group_id)
+
+    report_group = ReportGroupSharing.objects.filter(group_id=group_id)
+    for r in report_group:
+        if r.report == report:
+            return HttpResponseRedirect('../grant_access_to_files_failed')
+    report_group_sharing = ReportGroupSharing(report=report, group=group)
+    report_group_sharing.save()
+
+    # # give access to every group member
+    # users_in_group = group.user_set.all()
+    # content_type = ContentType.objects.get_for_model(User)
+    # permission = Permission.objects.create(codename=code_name, name=name, content_type_id=content_type.id)
+    # for user in users_in_group:
+    #     if not user == request.user:
+    #         user.user_permissions.add(permission)
+    return render_to_response('grant_access_to_files.html', {'groupname':group.name, 'reportname':report.short_desc})
 
 
 # return render_to_response('grant_access_to_files.html', {'files':})

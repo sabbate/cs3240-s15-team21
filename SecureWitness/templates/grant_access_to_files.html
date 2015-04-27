@@ -1,20 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <p>Click <a href="/SecureWitness/account/loggedin">here</a> to go back. </p>
 
-    <p>All private files you have: </p>
-        <div style="height:120px;width:240px;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:auto;">
-            {% if priFiles %}
-                <ul>
-                {% for f in priFiles %}
-                    <li>{{f}}</li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <p>No private files available.</p>
-            {% endif %}
+    <p>Now report {{ reportname }} is visible to {{ groupname }}</p>
 
-        </div>
 
 
 {% endblock %}

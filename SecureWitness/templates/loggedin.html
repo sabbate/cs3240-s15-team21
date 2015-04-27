@@ -52,7 +52,13 @@
     {% if reports %}
         <ul>
             {% for report in reports %}
-            <li><a href="/SecureWitness/admin/reports/{{ report.report_id }}">{{ report.report_name }} by {{ report.author_id }}</a></li>
+                {% if report.private %}
+                    <li>({{ report.report_id }})<a href="/SecureWitness/admin/reports/{{ report.report_id }}">{{ report.short_desc }} </a> by {{ report.author_id }} ------> Private</li>
+                {% else %}
+                    <li>({{ report.report_id }})<a href="/SecureWitness/admin/reports/{{ report.report_id }}">{{ report.short_desc }} </a> by {{ report.author_id }} ------> Public</li>
+                {% endif %}
+
+
             {% endfor %}
         </ul>
     {% else %}
