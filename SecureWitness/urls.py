@@ -59,7 +59,7 @@ urlpatterns = [
     url(r'^admin_assigned/$', views.admin_assigned),
     url(r'^admin_assign_failed/$', views.admin_assign_failed),
     url(r'^admin_already_assigned/$', views.admin_already_assigned),
-    url(r'^admin/group_management/', views.group_management, name='group_management'),
+    url(r'^admin/group_management/$', views.group_management, name='group_management'),
     url(r'^admin/group_management/create_group/$', views.create_group),
     url(r'^admin/group_management/create_group_failed/$', views.create_group_failed),
     url(r'^admin_remove_failed/$', views.admin_remove_failed),

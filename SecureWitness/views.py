@@ -89,7 +89,7 @@ def submitreport(request):
                    location=loc, incident_date=date, keywords=keys, private=priv)
         r.save();
         r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
-        for key, file in request.FILES.items():
+        for file in request.FILES.getlist('files'):
             path = os.getcwd() + '\\SecureWitness\\files\\'
             dest = open(path + file.name, 'wb+')
             dest.write(file.read())
@@ -1062,7 +1062,6 @@ def map(request):
     # json_list = serializers.serialize('json', reports)
     return render(request, 'map.html', {'reports': reports})
 
-
 def getreport(request):
 	if (request.GET['rid']):
 		reportID = request.GET['rid'];
@@ -1072,14 +1071,17 @@ def getreport(request):
 			
 			if (r.private == 0):
 				return render(request, 'getreport.html', {'report': r, 'files': f})
-			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-			for s in shared:
-				if (s.report_id == r.report_id):
+			if (r.author_id == request.user.id):
+				return render(request, 'getreport.html', {'report': r, 'files': f})
+			groups = UserToGroup.objects.filter(user_id_id = request.user.id)
+			for g in groups:
+				group = Group.objects.get(id=request.group_id)
+				code_name = 'can_access_report_' + request.report_id
+				if group.has_perm('SecureWitness.' + code_name):
 					shared_r = Report.objects.get(report_id=s.report_id)
-					r = r | shared_r
+					r = shared_r
 					return render(request, 'getreport.html', {'report': r, 'files': f})
-			else:
-				return HttpResponse("You are not authorized to view this report.");
+			return HttpResponse("You are not authorized to view this report.");
 		except Report.DoesNotExist:
 			return HttpResponse("No report with this ID was found.");
 
@@ -1091,10 +1093,18 @@ def download(request):
 
 def allreports(request):
 	reports = Report.objects.filter(private=0)
-	reports = reports | Report.objects.filter(author_id = request.user.id)
-	shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-	for s in shared:
-		reports = reports | Report.objects.get(report_id = s.report_id)
+	private_reports = Report.objects.filter(private=1);
+	private_reports = private_reports.filter(author_id=request.user.id);
+	reports = reports | private_reports
+	for r in Report.objects.all():
+		rid = r.report_id
+		#content_type = ContentType.objects.get_for_model(Group)
+		groups = UserToGroup.objects.filter(user_id_id = request.user.id)
+		for g in groups:
+			group = Group.objects.get(id=g.group_id_id)
+			code_name = 'can_access_report_' + request.rid
+			if group.has_perm('SecureWitness.' + code_name):
+				reports = reports | Report.objects.get(report_id=rid)
 	return render(request, 'all-reports.html', {'reports': reports})
 '''
 def reset_confirm(request, uidb64=None, token=None):
