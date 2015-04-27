@@ -1,6 +1,6 @@
 # ADDING A COMMENT TO TRACK, TEAM 21 FOR LIFE
 """
-Django settings for django1 project.
+Django settings for cs3240-s15-team21 project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -56,9 +56,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'django1.urls'
+ROOT_URLCONF = 'cs3240-s15-team21.urls'
 
-WSGI_APPLICATION = 'django1.wsgi.application'
+WSGI_APPLICATION = 'cs3240-s15-team21.wsgi.application'
 
 
 # Database
