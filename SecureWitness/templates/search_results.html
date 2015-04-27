@@ -1,12 +1,16 @@
 <p>You searched for: <strong>{{ query }}</strong></p>
 
 {% if reports %}
-    <p>Found {{ reports|length }} report{{ reports|pluralize }}.</p>
+
     <ul>
+	<table id='rtable' border = '1'>
+		<tr><td>RID</td><td>Date of Incident</td><td>Report Description</td></tr>
         {% for report in reports %}
-        <li>{{ report.short_desc }}</li>
+        <tr><td><a href="http://localhost:8000/SecureWitness/getreport/?rid={{report.report_id }}">{{report.report_id }}</a></td><td>{{ report.incident_date }}</td>
+		<td>{{ report.short_desc }}</td></tr>
         {% endfor %}
+	</table>
     </ul>
 {% else %}
-    <p>No reports matched your search criteria.</p>
+    <p>No reports.</p>
 {% endif %}

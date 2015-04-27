@@ -108,29 +108,45 @@ def search_form(request):
 
 
 def search(request):
-    if 'q' in request.GET and request.GET['q']:
-        q = request.GET['q']
-        if "AND" in q:
-            terms = q.split(" AND ");
-            r = Report.objects.filter(keywords__icontains=terms[0])
-            for word in terms:
-                r = r.filter(keywords__icontains=word)
-            reports = r.filter(private=0)
-            return render(request, 'search_results.html', {'reports': reports, 'query': q})
-        if "OR" in q:
-            terms = q.split(" OR ");
-            reports = Report.objects.filter(keywords__icontains=terms[0])
-            for word in terms[1:]:
-                reports = reports | Report.objects.filter(keywords__icontains=word)
-            reports = reports.filter(private=0)
-            return render(request, 'search_results.html', {'reports': reports, 'query': q})
-        else:
-            reports = Report.objects.filter(keywords__icontains=q)
-            reports = reports.filter(private=0);
-            return render(request, 'search_results.html', {'reports': reports, 'query': q})
-    else:
-        return HttpResponse('No results found. Please try another search term.')
-
+	if 'q' in request.GET and request.GET['q']:
+		q = request.GET['q']
+		if "AND" in q:
+			terms = q.split(" AND ");
+			r = Report.objects.filter(keywords__icontains=terms[0])
+			for word in terms:
+				r = r.filter(keywords__icontains=word)
+			public_reports = r.filter(private=0)
+			private_user_reports = r.filter(private=1).filter(author_id=request.user.id)
+			reports = public_reports | private_user_reports
+			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+			for s in shared:
+				reports = reports | r.filter(report_id = s.report_id)
+			return render(request, 'search_results.html', {'reports': reports, 'query': q})
+		if "OR" in q:
+			terms = q.split(" OR ");
+			reports = Report.objects.filter(keywords__icontains=terms[0])
+			for word in terms[1:]:
+				reports = reports | Report.objects.filter(keywords__icontains=word)
+			public_reports = reports.filter(private=0)
+			private_user_reports = reports.filter(private=1).filter(author_id = request.user.id)
+			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+			r = public_reports | private_user_reports
+			for s in shared:
+				r = r | reports.filter(report_id = s.report_id)
+			reports = r
+			return render(request, 'search_results.html', {'reports': reports, 'query': q})
+		else:
+			reports = Report.objects.filter(keywords__icontains=q)
+			public_reports = reports.filter(private=0);
+			private_user_reports = reports.filter(private=1).filter(author_id = request.user.id)
+			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
+			r = public_reports | private_user_reports
+			for s in shared:
+				r = r | reports.filter(report_id = s.report_id)
+			reports = r
+			return render(request, 'search_results.html', {'reports': reports, 'query': q})
+	else:
+		return HttpResponse('No results found. Please try another search term.')
 
 def login(request):
     c = {}
@@ -1110,6 +1126,8 @@ def getreport(request):
 			if (r.private == 0):
 				return render(request, 'getreport.html', {'report': r, 'files': f})
 			else:
+				if (r.author_id == request.user.id):
+					return render(request, 'getreport.html', {'report': r, 'files': f})
 				shared = ReportUserSharing.objects.filter(user_id = request.user.id)
 				for s in shared:
 					if (s.report_id == r.report_id):
@@ -1143,7 +1161,6 @@ def download(request):
         fname = request.GET['f'];
         filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
-
 
 def allreports(request):
 	reports = Report.objects.filter(private = 0)
