@@ -1,6 +1,0 @@
-(...)
-<<<<<<< HEAD
-#OXER COMMENT 1
-=======
-#OXER Comment 10
->>>>>>> oxer
