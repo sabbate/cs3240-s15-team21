@@ -8,6 +8,7 @@ urlpatterns = patterns('',
                        # url(r'^blog/', include('blog.urls')),
 
                        # url(r'^groups/', include('SecureWitness.urls', namespace="SecureWitness")),
+                       url(r'^$', 'SecureWitness.views.login'),
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^SecureWitness/', include('SecureWitness.urls')),
                        )
