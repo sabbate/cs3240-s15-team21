@@ -979,16 +979,23 @@ def edit_report(request, id):
 
 @login_required(login_url="/SecureWitness/account/login")
 def report_change_group(request, id):
-    if request.method == 'POST':
-        # TODO Check if valid group name
-        cur_report = Report.objects.get(report_id=id)
-        groups = Group.objects.filter(name=request.POST.get('new_group_name'))
-        # Change the group and save
-        cur_report.group = groups[0]
-        cur_report.save()
 
     c = {}
     c.update(csrf(request))
+
+    if request.method == 'POST':
+        try:
+            groups = Group.objects.filter(name=request.POST.get('new_group_name'))
+        except:
+            return HttpResponseRedirect('../', c)
+        cur_report = Report.objects.get(report_id=id)
+        groups = Group.objects.filter(name=request.POST.get('new_group_name'))
+        if len(groups) == 0:
+            return HttpResponseRedirect('../', c)
+
+        # Change the group and save
+        cur_report.group = groups[0]
+        cur_report.save()
 
     report = Report.objects.get(report_id=id)
     if report.folder_id:
@@ -1002,19 +1009,23 @@ def report_change_group(request, id):
     c['author_id'] = report.author.id
     c['report'] = report
 
-    return render_to_response('edit_report.html', c)
+    return HttpResponseRedirect('../', c)
 
 
 def report_change_folder(request, id):
+    c = {}
+    c.update(csrf(request))
     if request.method == 'POST':
+
+        try:
+            new_folder = Folder.objects.get(folder_name=request.POST.get('new_folder_name'))
+        except:
+            return HttpResponseRedirect('../', c)
         cur_report = Report.objects.get(report_id=id)
         new_folder = Folder.objects.get(folder_name=request.POST.get('new_folder_name'))
         cur_report.folder_id = new_folder
         cur_report.save()
 
-    c = {}
-    c.update(csrf(request))
-
     report = Report.objects.get(report_id=id)
     if report.folder_id:
         c['folder_name'] = report.folder.folder_name
@@ -1027,7 +1038,7 @@ def report_change_folder(request, id):
     c['author_id'] = report.author.id
     c['report'] = report
 
-    return render_to_response('edit_report.html', c)
+    return HttpResponseRedirect('../', c)
 
 
 def remove_report(request, id):
@@ -1038,15 +1049,14 @@ def remove_report(request, id):
 
         report_group = ReportGroupSharing.objects.filter(group_id=group_id)
         for r in report_group:
-             r.delete()
+            r.delete()
 
         c = {}
         c.update(csrf(request))
         group_list = Group.objects.all()
         c['groups'] = group_list
-#        return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
+        # return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
         return HttpResponseRedirect('/SecureWitness/account/loggedin/', c)
-
 
 
 def rename_report(request, id):
@@ -1164,6 +1174,7 @@ def download(request):
         filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
+
 def allreports(request):
     if (request.user.is_authenticated()):
         reports = getreports(request.user)
@@ -1173,19 +1184,20 @@ def allreports(request):
 
 
 def getreports(user):
-	public_reports = Report.objects.filter(private=0)
-	private_reports = Report.objects.filter(private=1)
-	user_groups = UserToGroup.objects.filter(user_id_id = user.id)
-	reports = public_reports
-	for group in user_groups:
-		group_reports = ReportGroupSharing.objects.filter(group_id = group.group_id_id)
-		for report in group_reports:
-			reports = reports | private_reports.filter(report_id = report.report_id)
-	for report in private_reports:
-		if ((report not in reports) and (report.author_id == user.id)):
-			reports = reports | Report.objects.filter(report_id = report.report_id)
-	return reports
-		
+    public_reports = Report.objects.filter(private=0)
+    private_reports = Report.objects.filter(private=1)
+    user_groups = UserToGroup.objects.filter(user_id_id=user.id)
+    reports = public_reports
+    for group in user_groups:
+        group_reports = ReportGroupSharing.objects.filter(group_id=group.group_id_id)
+        for report in group_reports:
+            reports = reports | private_reports.filter(report_id=report.report_id)
+    for report in private_reports:
+        if (report not in reports) and (report.author_id == user.id):
+            reports = reports | Report.objects.filter(report_id=report.report_id)
+    return reports
+
+
 """
         reports = Report.objects.filter(private=0)
         private_reports = Report.objects.filter(private=1);
