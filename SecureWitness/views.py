@@ -64,10 +64,7 @@ class ReportIndexView(generic.ListView):
 
 
 def index(request):
-    reports = Report.objects.raw('SELECT * FROM SecureWitness_report')
-    return render(request, 'all-reports.html', {'reports': reports})
-    # return HttpResponse("Welcome to SecureWitness!")
-
+	return HttpResponseRedirect('/SecureWitness/allreports')
 
 def newreport(request):
     return render(request, 'newreport.html')
@@ -149,9 +146,12 @@ def search(request):
 		return HttpResponse('No results found. Please try another search term.')
 
 def login(request):
-    c = {}
-    c.update(csrf(request))
-    return render_to_response('login.html', c)
+	if(request.user.is_authenticated()):
+		return HttpResponseRedirect('/SecureWitness/account/loggedin')
+	else:
+		c = {}
+		c.update(csrf(request))
+		return render_to_response('login.html', c)
 
 
 def auth_view(request):
@@ -1163,10 +1163,8 @@ def download(request):
 
 def allreports(request):
 	if(request.user.is_authenticated()):
-		reports = Report.objects.filter(private = 0)
-		user_reports = Report.objects.filter(author = request.user.id)
-		user_private = user_reports.filter(private = 1)
-		reports = reports | user_private
+		reports = Report.objects.filter(private = 0) | Report.objects.filter(author = request.user.id)
+		#user_private = user_reports.filter(private = 1)
 		shared = ReportUserSharing.objects.filter(user_id = request.user.id)
 		for s in shared:
 			reports = reports | Report.objects.get(report_id = s.report_id)

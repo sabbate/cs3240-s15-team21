@@ -25,6 +25,12 @@ function sort(option) {
 </script>
 </head>
 <body>
+
+<form action = "/SecureWitness/search/" method = "get">
+	Search term:<input type = "text" name = "q">
+	<input type = "submit" value = "Search">
+</form>
+
 <input type='button' name='sort' id='0' onclick = 'sort(0)' value = 'Sort by RID'>
 <input type='button' name='sort' id='1' onclick = 'sort(1)' value = 'Sort by Date'>
 <input type='button' name='sort' id='1' onclick = 'sort(2)' value = 'Sort by Description'>

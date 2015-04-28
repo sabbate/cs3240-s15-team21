@@ -1,3 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+
 <p>You searched for: <strong>{{ query }}</strong></p>
 
 {% if reports %}
@@ -14,3 +18,5 @@
 {% else %}
     <p>No reports.</p>
 {% endif %}
+
+{% endblock %}
