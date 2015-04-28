@@ -64,7 +64,8 @@ class ReportIndexView(generic.ListView):
 
 
 def index(request):
-	return HttpResponseRedirect('/SecureWitness/allreports')
+    return HttpResponseRedirect('/SecureWitness/allreports')
+
 
 def newreport(request):
     return render(request, 'newreport.html')
@@ -114,53 +115,56 @@ def search_form(request):
 
 
 def search(request):
-	if 'q' in request.GET and request.GET['q']:
-		q = request.GET['q']
-		if "AND" in q:
-			terms = q.split(" AND ");
-			r = Report.objects.filter(keywords__icontains=terms[0])
-			for word in terms:
-				r = r.filter(keywords__icontains=word)
-			public_reports = r.filter(private=0)
-			private_user_reports = r.filter(private=1).filter(author_id=request.user.id)
-			reports = public_reports | private_user_reports
-			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-			for s in shared:
-				reports = reports | r.filter(report_id = s.report_id)
-			return render(request, 'search_results.html', {'reports': reports, 'query': q})
-		if "OR" in q:
-			terms = q.split(" OR ");
-			reports = Report.objects.filter(keywords__icontains=terms[0])
-			for word in terms[1:]:
-				reports = reports | Report.objects.filter(keywords__icontains=word)
-			public_reports = reports.filter(private=0)
-			private_user_reports = reports.filter(private=1).filter(author_id = request.user.id)
-			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-			r = public_reports | private_user_reports
-			for s in shared:
-				r = r | reports.filter(report_id = s.report_id)
-			reports = r
-			return render(request, 'search_results.html', {'reports': reports, 'query': q})
-		else:
-			reports = Report.objects.filter(keywords__icontains=q)
-			public_reports = reports.filter(private=0);
-			private_user_reports = reports.filter(private=1).filter(author_id = request.user.id)
-			shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-			r = public_reports | private_user_reports
-			for s in shared:
-				r = r | reports.filter(report_id = s.report_id)
-			reports = r
-			return render(request, 'search_results.html', {'reports': reports, 'query': q})
-	else:
-		return HttpResponse('No results found. Please try another search term.')
+    if 'q' in request.GET and request.GET['q']:
+        q = request.GET['q']
+        if "AND" in q:
+            terms = q.split(" AND ");
+            r = Report.objects.filter(keywords__icontains=terms[0])
+            for word in terms:
+                r = r.filter(keywords__icontains=word)
+            public_reports = r.filter(private=0)
+            private_user_reports = r.filter(private=1).filter(author_id=request.user.id)
+            reports = public_reports | private_user_reports
+            shared = ReportUserSharing.objects.filter(user_id=request.user.id)
+            for s in shared:
+                reports = reports | r.filter(report_id=s.report_id)
+            return render(request, 'search_results.html', {'reports': reports, 'query': q})
+        if "OR" in q:
+            terms = q.split(" OR ");
+            reports = Report.objects.filter(keywords__icontains=terms[0])
+            for word in terms[1:]:
+                reports = reports | Report.objects.filter(keywords__icontains=word)
+            public_reports = reports.filter(private=0)
+            private_user_reports = reports.filter(private=1).filter(author_id=request.user.id)
+            shared = ReportUserSharing.objects.filter(user_id=request.user.id)
+            r = public_reports | private_user_reports
+            for s in shared:
+                r = r | reports.filter(report_id=s.report_id)
+            reports = r
+            return render(request, 'search_results.html', {'reports': reports, 'query': q})
+        else:
+            reports = Report.objects.filter(keywords__icontains=q)
+            public_reports = reports.filter(private=0);
+            private_user_reports = reports.filter(private=1).filter(author_id=request.user.id)
+            shared = ReportUserSharing.objects.filter(user_id=request.user.id)
+            r = public_reports | private_user_reports
+            for s in shared:
+                r = r | reports.filter(report_id=s.report_id)
+            reports = r
+            return render(request, 'search_results.html', {'reports': reports, 'query': q})
+    else:
+        return HttpResponse('No results found. Please try another search term.')
+
 
 def login(request):
-	if(request.user.is_authenticated()):
-		return HttpResponseRedirect('/SecureWitness/account/loggedin')
-	else:
-		c = {}
-		c.update(csrf(request))
-		return render_to_response('login.html', c)
+    if request.user.is_authenticated():
+        c = {}
+        c.update(csrf(request))
+        return HttpResponseRedirect('/SecureWitness/account/loggedin', c)
+    else:
+        c = {}
+        c.update(csrf(request))
+        return render_to_response('login.html', c)
 
 
 def auth_view(request):
@@ -209,9 +213,9 @@ def loggedin(request):
             # # Need to check ReportGroupSharing for every instance of a group that the user is in
             # if groups:
             # for group in groups:
-            #         reports_for_group = Report.objects.filter(group_id=group)
-            #         for item in reports_for_group:
-            #             reports.append(item)
+            # reports_for_group = Report.objects.filter(group_id=group)
+            # for item in reports_for_group:
+            # reports.append(item)
             #         reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
             #         for item in reports_shared_with_group:
             #             reports.append(item)
@@ -421,7 +425,6 @@ def register_user(request):
 
 
 def register_success(request):
-
     return render_to_response('register_success.html')
 
 
@@ -1113,37 +1116,38 @@ def copy_report(request, id):
 
 
 def map(request):
-	if(request.user.is_authenticated()):
-		reports = Report.objects.filter(private = 0)
-		user_reports = Report.objects.filter(author = request.user.id)
-		user_private = user_reports.filter(private = 1)
-		reports = reports | user_private
-		shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-		for s in shared:
-			reports = reports | Report.objects.get(report_id = s.report_id)	
-		return render(request, 'map.html', {'reports': reports})
-	else:
-		return HttpResponseRedirect('/SecureWitness/account/login')
+    if (request.user.is_authenticated()):
+        reports = Report.objects.filter(private=0)
+        user_reports = Report.objects.filter(author=request.user.id)
+        user_private = user_reports.filter(private=1)
+        reports = reports | user_private
+        shared = ReportUserSharing.objects.filter(user_id=request.user.id)
+        for s in shared:
+            reports = reports | Report.objects.get(report_id=s.report_id)
+        return render(request, 'map.html', {'reports': reports})
+    else:
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
 
 def getreport(request):
-	if (request.GET['rid']):
-		reportID = request.GET['rid']
-		try:
-			r = Report.objects.get(report_id=reportID)
-			f = File.objects.filter(report_id=reportID)
-			if (r.private == 0):
-				return render(request, 'getreport.html', {'report': r, 'files': f})
-			else:
-				if (r.author_id == request.user.id):
-					return render(request, 'getreport.html', {'report': r, 'files': f})
-				shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-				for s in shared:
-					if (s.report_id == r.report_id):
-						return render(request, 'getreport.html', {'report': r, 'files': f})
-			return HttpResponse("You are not authorized to view this report")
-		except Report.DoesNotExist:
-			return HttpResponse("No report with this ID was found")
-		"""
+    if (request.GET['rid']):
+        reportID = request.GET['rid']
+        try:
+            r = Report.objects.get(report_id=reportID)
+            f = File.objects.filter(report_id=reportID)
+            if (r.private == 0):
+                return render(request, 'getreport.html', {'report': r, 'files': f})
+            else:
+                if (r.author_id == request.user.id):
+                    return render(request, 'getreport.html', {'report': r, 'files': f})
+                shared = ReportUserSharing.objects.filter(user_id=request.user.id)
+                for s in shared:
+                    if (s.report_id == r.report_id):
+                        return render(request, 'getreport.html', {'report': r, 'files': f})
+            return HttpResponse("You are not authorized to view this report")
+        except Report.DoesNotExist:
+            return HttpResponse("No report with this ID was found")
+        """
 			r = Report.objects.get(report_id=reportID);
 			f = File.objects.filter(report_id=reportID);
 			
@@ -1164,22 +1168,26 @@ def getreport(request):
 			return HttpResponse("No report with this ID was found.");
 		"""
 
+
 def download(request):
     if (request.GET['f']):
         fname = request.GET['f'];
         filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
+
 def allreports(request):
-	if(request.user.is_authenticated()):
-		reports = Report.objects.filter(private = 0) | Report.objects.filter(author = request.user.id)
-		#user_private = user_reports.filter(private = 1)
-		shared = ReportUserSharing.objects.filter(user_id = request.user.id)
-		for s in shared:
-			reports = reports | Report.objects.get(report_id = s.report_id)
-		return render(request, 'all-reports.html', {'reports': reports})
-	else:
-		return HttpResponseRedirect('/SecureWitness/account/login')
+    if (request.user.is_authenticated()):
+        reports = Report.objects.filter(private=0) | Report.objects.filter(author=request.user.id)
+        # user_private = user_reports.filter(private = 1)
+        shared = ReportUserSharing.objects.filter(user_id=request.user.id)
+        for s in shared:
+            reports = reports | Report.objects.get(report_id=s.report_id)
+        return render(request, 'all-reports.html', {'reports': reports})
+    else:
+        return HttpResponseRedirect('/SecureWitness/account/login')
+
+
 """
 	reports = Report.objects.filter(private=0)
 	private_reports = Report.objects.filter(private=1);
@@ -1195,6 +1203,7 @@ def allreports(request):
 			if group.has_perm('SecureWitness.' + code_name):
 				reports = reports | Report.objects.get(report_id=rid)
 """
+
 
 @login_required(login_url="/SecureWitness/account/login")
 def new_folder(request):
