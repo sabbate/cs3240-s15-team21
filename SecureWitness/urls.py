@@ -15,6 +15,9 @@ urlpatterns = [
     url(r'^search_form/$', views.search_form),
     url(r'^search/$', views.search),
     url(r'^submitreport/$', views.submitreport),
+    url(r'^newreport/submit_report_successful$', views.submit_report_successful),
+    url(r'^newreport/submit_report_failed$', views.submit_report_failed),
+
 
     url(r'^account/login/$', views.login),
     url(r'^account/auth/$', views.auth_view),
