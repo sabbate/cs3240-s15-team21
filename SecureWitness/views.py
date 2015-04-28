@@ -1045,14 +1045,20 @@ def report_change_folder(request, id):
 def remove_report(request, id):
     if request.method == 'POST':
         cur_report = Report.objects.get(report_id=id)
-        group_id = cur_report.group.id
+        group_id = cur_report.group_id
         cur_report.delete()
+
+        report_group = ReportGroupSharing.objects.filter(group_id=group_id)
+        for r in report_group:
+             r.delete()
 
         c = {}
         c.update(csrf(request))
         group_list = Group.objects.all()
         c['groups'] = group_list
-        return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
+#        return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
+        return HttpResponseRedirect('/SecureWitness/account/loggedin/', c)
+
 
 
 def rename_report(request, id):
