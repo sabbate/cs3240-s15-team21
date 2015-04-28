@@ -80,13 +80,20 @@ def submitreport(request):
         keys = request.POST.get('keys', False)
         priv = request.POST.get('private', False)
         password = request.POST.get('pw', False)
-        # files = HttpRequest.FILES;
 
         cur_time = datetime.datetime.now()
         usr = User.objects.get(username=request.user.username)
+
+        # TODO check if a report with the same short_desc exists
+        same_name = Report.objects.filter(short_desc=short)
+        if same_name.__sizeof__() > 0:
+            c = {}
+            c.update(csrf(request))
+            return HttpResponseRedirect('/SecureWitness/newreport/', c)
+
         r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
                    location=loc, incident_date=date, keywords=keys, private=priv)
-        r.save();
+        r.save()
         r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
         for file in request.FILES.getlist('files'):
             path = os.getcwd() + '\\SecureWitness\\files\\'
@@ -95,8 +102,8 @@ def submitreport(request):
             dest.close()
             encrypt(path, file.name, password)
             f = File(author_id=usr.id, report_id=r.report_id, docfile=path, file_name=file.name)
-            f.save();
-        # r.save();
+            f.save()
+        # r.save()
         return HttpResponseRedirect('../newreport/submit_report_successful')
     else:
         return HttpResponseRedirect('../newreport/submit_report_failed')
@@ -217,9 +224,9 @@ def loggedin(request):
             # reports_for_group = Report.objects.filter(group_id=group)
             # for item in reports_for_group:
             # reports.append(item)
-            #         reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
-            #         for item in reports_shared_with_group:
-            #             reports.append(item)
+            # reports_shared_with_group = ReportGroupSharing.objects.filter(group=group)
+            # for item in reports_shared_with_group:
+            # reports.append(item)
     except:
         reports = None
     c['full_name'] = request.user.username
@@ -1138,24 +1145,26 @@ def map(request):
 
 
 def getreport(request):
-    if (request.GET['rid']):
+    if request.GET['rid']:
         reportID = request.GET['rid']
         try:
             r = Report.objects.get(report_id=reportID)
             f = File.objects.filter(report_id=reportID)
-            if (r.private == 0):
+            if r.private == 0:
                 return render(request, 'getreport.html', {'report': r, 'files': f})
             else:
-                if (r.author_id == request.user.id):
+                if request.user.id == r.author_id:
                     return render(request, 'getreport.html', {'report': r, 'files': f})
                 shared = ReportUserSharing.objects.filter(user_id=request.user.id)
                 for s in shared:
-                    if (s.report_id == r.report_id):
+                    if r.report_id == s.report_id:
                         return render(request, 'getreport.html', {'report': r, 'files': f})
             return HttpResponse("You are not authorized to view this report")
         except Report.DoesNotExist:
             return HttpResponse("No report with this ID was found")
-        """
+
+
+"""
 			r = Report.objects.get(report_id=reportID);
 			f = File.objects.filter(report_id=reportID);
 			
@@ -1174,18 +1183,18 @@ def getreport(request):
 			return HttpResponse("You are not authorized to view this report.");
 		except Report.DoesNotExist:
 			return HttpResponse("No report with this ID was found.");
-		"""
+"""
 
 
 def download(request):
-    if (request.GET['f']):
-        fname = request.GET['f'];
+    if request.GET['f']:
+        fname = request.GET['f']
         filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 
 def allreports(request):
-    if (request.user.is_authenticated()):
+    if request.user.is_authenticated():
         reports = Report.objects.filter(private=0) | Report.objects.filter(author=request.user.id)
         # user_private = user_reports.filter(private = 1)
         shared = ReportUserSharing.objects.filter(user_id=request.user.id)
@@ -1197,19 +1206,19 @@ def allreports(request):
 
 
 """
-	reports = Report.objects.filter(private=0)
-	private_reports = Report.objects.filter(private=1);
-	private_reports = private_reports.filter(author_id=request.user.id);
-	reports = reports | private_reports
-	for r in Report.objects.all():
-		rid = r.report_id
-		#content_type = ContentType.objects.get_for_model(Group)
-		groups = UserToGroup.objects.filter(user_id_id = request.user.id)
-		for g in groups:
-			group = Group.objects.get(id=g.group_id_id)
-			code_name = 'can_access_report_' + request.rid
-			if group.has_perm('SecureWitness.' + code_name):
-				reports = reports | Report.objects.get(report_id=rid)
+        reports = Report.objects.filter(private=0)
+        private_reports = Report.objects.filter(private=1);
+        private_reports = private_reports.filter(author_id=request.user.id);
+        reports = reports | private_reports
+        for r in Report.objects.all():
+            rid = r.report_id
+            # content_type = ContentType.objects.get_for_model(Group)
+            groups = UserToGroup.objects.filter(user_id_id=request.user.id)
+            for g in groups:
+                group = Group.objects.get(id=g.group_id_id)
+                code_name = 'can_access_report_' + request.rid
+                if group.has_perm('SecureWitness.' + code_name):
+                    reports = reports | Report.objects.get(report_id=rid)
 """
 
 
