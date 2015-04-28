@@ -83,6 +83,14 @@ def submitreport(request):
 
         cur_time = datetime.datetime.now()
         usr = User.objects.get(username=request.user.username)
+
+        # TODO check if a report with the same short_desc exists
+        same_name = Report.objects.filter(short_desc=short)
+        if same_name.__sizeof__() > 0:
+            c = {}
+            c.update(csrf(request))
+            return HttpResponseRedirect('/SecureWitness/newreport/', c)
+
         r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
                    location=loc, incident_date=date, keywords=keys, private=priv)
         r.save()
