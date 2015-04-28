@@ -80,7 +80,7 @@ def submitreport(request):
 		keys = request.POST.get('keys', False)
 		priv = request.POST.get('private', False)
 		password = request.POST.get('pw', False)
-		encrypt = request.POST.get('encrypt', False)
+		encryption = request.POST.get('encrypt', False)
 		cur_time = datetime.datetime.now()
 		usr = User.objects.get(username=request.user.username)
 		
@@ -99,7 +99,7 @@ def submitreport(request):
 			dest = open(path + file.name, 'wb+')
 			dest.write(file.read())
 			dest.close()
-			if (encrypt and password):
+			if (encryption and password):
 				encrypt(path, file.name, password)
 			f = File(author_id=usr.id, report_id=r.report_id, docfile=path, file_name=file.name)
 			f.save()
