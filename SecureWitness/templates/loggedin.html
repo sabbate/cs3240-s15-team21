@@ -3,7 +3,10 @@
 {% block content %}
 
     <h2>Hi {{full_name}} you are now logged in!</h2>
-{#    {% if {{  }} %}#}
+    {% if is_admin %}
+        <p>You are an admin user! Click <a href="/SecureWitness/admin/">here</a> to get to your admin page. </p>
+    {% endif %}
+
 
     <p>Click <a href="/SecureWitness/account/logout/">here</a> to logout. </p>
     <p></p>

@@ -189,6 +189,7 @@ def auth_view(request):
 def loggedin(request):
     c = {}
     c.update(csrf(request))
+    c['is_admin'] = request.user.is_superuser
 
     try:
         groups = []
@@ -235,6 +236,7 @@ def admin(request):
         return HttpResponseRedirect('/SecureWitness/account/login')
     c = {}
     c.update(csrf(request))
+    c['is_admin'] = request.user.is_superuser
     # c['username'] =  request.newAdmin.username
     return render_to_response('admin.html', c)
 
