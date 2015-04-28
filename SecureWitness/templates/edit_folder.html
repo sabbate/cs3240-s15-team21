@@ -30,7 +30,7 @@
         <label for="parent">Parent:</label>
         <input type="text" name="parent" value="{{ parent_name }}" id="parent">
         {% if parent_name %}
-            <a href="../{{ parent_id }}">Link</a>
+            <a href="../../{{ parent_id }}">Link</a>
         {% endif %}
         <input type="submit" value="Update"/>
     </form>
@@ -55,7 +55,7 @@
     <h4>Current Sub-Folders:</h4>
     {% if children %}
         {% for child in children %}
-            <p><a href="../{{ child.folder_id }}">{{ child.folder_name }}</a></p>
+            <p><a href="../../{{ child.folder_id }}">{{ child.folder_name }}</a></p>
         {% endfor %}
     {% endif %}
 

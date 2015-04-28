@@ -781,6 +781,8 @@ def duplicate_email(request):
 
 @login_required(login_url="/SecureWitness/account/login")
 def change_parent(request, id):
+    c = {}
+    c.update(csrf(request))
     if request.method == 'POST':
         # TODO Check if parent inputted is correct
         if request.POST.get('parent'):
@@ -788,6 +790,12 @@ def change_parent(request, id):
             group = folder.GID.id
             parent_name = request.POST.get('parent')
             # Make sure it is the correct parent in that group as well
+
+            try:
+                folder.parent = Folder.objects.filter(folder_name=parent_name).get(GID=group)
+            except:
+                return HttpResponseRedirect('../', c)
+
             folder.parent = Folder.objects.filter(folder_name=parent_name).get(GID=group)
             folder.save()
 
@@ -812,11 +820,13 @@ def change_parent(request, id):
             c['parent_name'] = folder.parent.folder_name
             c['parent_id'] = folder.parent.folder_id
 
-        return render_to_response('edit_folder.html', c)
+        return HttpResponseRedirect('../', c)
 
 
 @login_required(login_url="/SecureWitness/account/login")
 def rename_folder(request, id):
+
+
     if request.method == 'POST':
         if request.POST.get('new_name'):
             folder = Folder.objects.get(folder_id=id)
@@ -838,7 +848,7 @@ def rename_folder(request, id):
             c['parent_name'] = folder.parent.folder_name
             c['parent_id'] = folder.parent.folder_id
 
-        return render_to_response('edit_folder.html', c)
+        return HttpResponseRedirect('../', c)
 
 
 def add_subfolder(request, id):
@@ -955,7 +965,7 @@ def remove_folder(request, id):
     c['users'] = UserToGroup.objects.filter(group_id=group.id)
     c['allusers'] = UserToGroup.objects.all()
     c['folders'] = Folder.objects.filter(GID=group.id)
-    return render_to_response('edit_folder.html', c)
+    return HttpResponseRedirect('/SecureWitness/account/loggedin/', c)
 
 
 @login_required(login_url="/SecureWitness/account/login")
@@ -1217,7 +1227,7 @@ def getreports(user):
 def new_folder(request):
     c = {}
     c.update(csrf(request))
-    return render_to_response('add_folder.html', c)
+    return HttpResponseRedirect('../', c)
 
 
 @login_required(login_url="/SecureWitness/account/login")
