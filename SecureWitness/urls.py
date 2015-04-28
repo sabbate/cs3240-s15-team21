@@ -103,13 +103,13 @@ urlpatterns = [
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         django.contrib.auth.views.password_reset_confirm,
         {'template_name': 'registration/password_reset_confirm.html'}),
-	url(r'^resetpassword/passwordsent/$', django.contrib.auth.views.password_reset_complete,
-	{'template_name': 'registration/password_reset_complete.html'}),
-	url(r'^password_reset/done/$', django.contrib.auth.views.password_reset_done,
-	{'template_name': 'registration/password_reset_done.html'}),
-	url(r'^getreport/$', views.getreport),
-	url(r'^download/$', views.download),
-	url(r'^allreports/$', views.allreports),
+    url(r'^resetpassword/passwordsent/$', django.contrib.auth.views.password_reset_complete,
+        {'template_name': 'registration/password_reset_complete.html'}),
+    url(r'^password_reset/done/$', django.contrib.auth.views.password_reset_done,
+        {'template_name': 'registration/password_reset_done.html'}),
+    url(r'^getreport/$', views.getreport),
+    url(r'^download/$', views.download),
+    url(r'^allreports/$', views.allreports),
 
 ]
 
