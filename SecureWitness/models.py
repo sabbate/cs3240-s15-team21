@@ -107,7 +107,7 @@ class ActivationProfile(models.Model):
     # key_expires = models.DateTimeField(default=datetime.date.today())
 
 
-
+"""
 class ReportUserSharing(models.Model):
     # Stores sharing pairs of report-user
     report = models.ForeignKey(Report)
@@ -125,4 +125,3 @@ class ReportGroupSharing(models.Model):
 
     def __str__(self):
         return str(self.report) + " SHARED WITH " + str(self.group)
-		"""

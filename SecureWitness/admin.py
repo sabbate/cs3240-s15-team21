@@ -32,6 +32,6 @@ admin.site.register(SecureWitness.models.Report, ReportAdmin)
 admin.site.register(SecureWitness.models.Folder, FolderAdmin)
 admin.site.register(SecureWitness.models.UserToGroup, UserToGroupAdmin)
 #admin.site.register(SecureWitness.models.ReportUserSharing, ReportUserSharingAdmin)
-#admin.site.register(SecureWitness.models.ReportGroupSharing, ReportGroupSharingAdmin)
+admin.site.register(SecureWitness.models.ReportGroupSharing, ReportGroupSharingAdmin)
 #admin.site.register(SecureWitness.models.ReportGroupSharing, ReportGroupSharingAdmin)
 

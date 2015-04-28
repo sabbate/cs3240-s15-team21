@@ -43,7 +43,7 @@
         {% csrf_token %}
         <label for="new_folder_name">Folder: </label>
         <input type="text" name="new_folder_name" value="{{ folder_name }}" id="new_folder_name">
-        <a href="../../folders/{{ folder_id }}">Link</a>
+        <a href="../../../folders/{{ folder_id }}">Link</a>
         <input type="submit" value="Change"/>
     </form>
 
