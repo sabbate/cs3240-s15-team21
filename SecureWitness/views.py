@@ -1039,15 +1039,14 @@ def remove_report(request, id):
 
         report_group = ReportGroupSharing.objects.filter(group_id=group_id)
         for r in report_group:
-             r.delete()
+            r.delete()
 
         c = {}
         c.update(csrf(request))
         group_list = Group.objects.all()
         c['groups'] = group_list
-#        return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
+        # return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
         return HttpResponseRedirect('/SecureWitness/account/loggedin/', c)
-
 
 
 def rename_report(request, id):
@@ -1162,6 +1161,7 @@ def download(request):
         filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
+
 def allreports(request):
     if (request.user.is_authenticated()):
         reports = getreports(request.user)
@@ -1171,19 +1171,20 @@ def allreports(request):
 
 
 def getreports(user):
-	public_reports = Report.objects.filter(private=0)
-	private_reports = Report.objects.filter(private=1)
-	user_groups = UserToGroup.objects.filter(user_id_id = user.id)
-	reports = public_reports
-	for group in user_groups:
-		group_reports = ReportGroupSharing.objects.filter(group_id = group.group_id_id)
-		for report in group_reports:
-			reports = reports | private_reports.filter(report_id = report.report_id)
-	for report in private_reports:
-		if ((report not in reports) and (report.author_id == user.id)):
-			reports = reports | Report.objects.filter(report_id = report.report_id)
-	return reports
-		
+    public_reports = Report.objects.filter(private=0)
+    private_reports = Report.objects.filter(private=1)
+    user_groups = UserToGroup.objects.filter(user_id_id=user.id)
+    reports = public_reports
+    for group in user_groups:
+        group_reports = ReportGroupSharing.objects.filter(group_id=group.group_id_id)
+        for report in group_reports:
+            reports = reports | private_reports.filter(report_id=report.report_id)
+    for report in private_reports:
+        if (report not in reports) and (report.author_id == user.id):
+            reports = reports | Report.objects.filter(report_id=report.report_id)
+    return reports
+
+
 """
         reports = Report.objects.filter(private=0)
         private_reports = Report.objects.filter(private=1);
