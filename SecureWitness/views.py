@@ -1163,7 +1163,6 @@ def download(request):
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
 def allreports(request):
-<<<<<<< HEAD
     if (request.user.is_authenticated()):
         reports = getreports(request.user)
         return render(request, 'all-reports.html', {'reports': reports})
