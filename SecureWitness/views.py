@@ -1175,7 +1175,6 @@ def download(request):
         filepath = os.getcwd() + '\\SecureWitness\\files\\' + fname
         return serve(request, os.path.basename(filepath), os.path.dirname(filepath))
 
-
 def allreports(request):
     if (request.user.is_authenticated()):
         reports = Report.objects.filter(private=0) | Report.objects.filter(author=request.user.id)
