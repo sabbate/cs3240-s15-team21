@@ -978,7 +978,7 @@ def edit_report(request, id):
     if report.folder_id:
         c['folder_name'] = report.folder.folder_name
         c['folder_id'] = report.folder.folder_id
-    if report.group:
+    if report.group_id:
         c['group_name'] = report.group.name
         c['group_id'] = report.group.id
     c['report_name'] = report.short_desc
@@ -1003,10 +1003,10 @@ def report_change_group(request, id):
     c.update(csrf(request))
 
     report = Report.objects.get(report_id=id)
-    if report.folder:
+    if report.folder_id:
         c['folder_name'] = report.folder.folder_name
         c['folder_id'] = report.folder.folder_id
-    if report.group:
+    if report.group_id:
         c['group_name'] = report.group.name
         c['group_id'] = report.group.id
     c['report_name'] = report.short_desc
@@ -1112,7 +1112,7 @@ def copy_report(request, id):
         c['author_id'] = report.author.id
         c['report'] = report
 
-        return HttpResponseRedirect('/SecureWitness/admin/reports/' + str(report.report_id), c)
+        return HttpResponseRedirect('../../' + str(report.report_id), c)
 
 
 def map(request):
