@@ -126,38 +126,18 @@ def search(request):
         q = request.GET['q']
         if "AND" in q:
             terms = q.split(" AND ");
-            r = Report.objects.filter(keywords__icontains=terms[0])
+            r = getreports(request.user)
             for word in terms:
                 r = r.filter(keywords__icontains=word)
-            public_reports = r.filter(private=0)
-            private_user_reports = r.filter(private=1).filter(author_id=request.user.id)
-            reports = public_reports | private_user_reports
-            shared = ReportUserSharing.objects.filter(user_id=request.user.id)
-            for s in shared:
-                reports = reports | r.filter(report_id=s.report_id)
             return render(request, 'search_results.html', {'reports': reports, 'query': q})
         if "OR" in q:
             terms = q.split(" OR ");
-            reports = Report.objects.filter(keywords__icontains=terms[0])
+            reports = getreports(request.user).filter(keywords__icontains=terms[0])
             for word in terms[1:]:
-                reports = reports | Report.objects.filter(keywords__icontains=word)
-            public_reports = reports.filter(private=0)
-            private_user_reports = reports.filter(private=1).filter(author_id=request.user.id)
-            shared = ReportUserSharing.objects.filter(user_id=request.user.id)
-            r = public_reports | private_user_reports
-            for s in shared:
-                r = r | reports.filter(report_id=s.report_id)
-            reports = r
+                reports = reports | getreports(request.user).filter(keywords__icontains=word)
             return render(request, 'search_results.html', {'reports': reports, 'query': q})
         else:
-            reports = Report.objects.filter(keywords__icontains=q)
-            public_reports = reports.filter(private=0);
-            private_user_reports = reports.filter(private=1).filter(author_id=request.user.id)
-            shared = ReportUserSharing.objects.filter(user_id=request.user.id)
-            r = public_reports | private_user_reports
-            for s in shared:
-                r = r | reports.filter(report_id=s.report_id)
-            reports = r
+            reports = getreports(request.user).filter(keywords__icontains=q)
             return render(request, 'search_results.html', {'reports': reports, 'query': q})
     else:
         return HttpResponse('No results found. Please try another search term.')
@@ -1070,15 +1050,14 @@ def remove_report(request, id):
 
         report_group = ReportGroupSharing.objects.filter(group_id=group_id)
         for r in report_group:
-             r.delete()
+            r.delete()
 
         c = {}
         c.update(csrf(request))
         group_list = Group.objects.all()
         c['groups'] = group_list
-#        return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
+        # return HttpResponseRedirect('/SecureWitness/admin/group_management/' + str(group_id), c)
         return HttpResponseRedirect('/SecureWitness/account/loggedin/', c)
-
 
 
 def rename_report(request, id):
@@ -1143,13 +1122,7 @@ def copy_report(request, id):
 
 def map(request):
     if (request.user.is_authenticated()):
-        reports = Report.objects.filter(private=0)
-        user_reports = Report.objects.filter(author=request.user.id)
-        user_private = user_reports.filter(private=1)
-        reports = reports | user_private
-        shared = ReportUserSharing.objects.filter(user_id=request.user.id)
-        for s in shared:
-            reports = reports | Report.objects.get(report_id=s.report_id)
+        reports = getreports(request.user)
         return render(request, 'map.html', {'reports': reports})
     else:
         return HttpResponseRedirect('/SecureWitness/account/login')
@@ -1166,10 +1139,6 @@ def getreport(request):
             else:
                 if request.user.id == r.author_id:
                     return render(request, 'getreport.html', {'report': r, 'files': f})
-                shared = ReportUserSharing.objects.filter(user_id=request.user.id)
-                for s in shared:
-                    if r.report_id == s.report_id:
-                        return render(request, 'getreport.html', {'report': r, 'files': f})
             return HttpResponse("You are not authorized to view this report")
         except Report.DoesNotExist:
             return HttpResponse("No report with this ID was found")
@@ -1205,15 +1174,26 @@ def download(request):
 
 
 def allreports(request):
-    if request.user.is_authenticated():
-        reports = Report.objects.filter(private=0) | Report.objects.filter(author=request.user.id)
-        # user_private = user_reports.filter(private = 1)
-        shared = ReportUserSharing.objects.filter(user_id=request.user.id)
-        for s in shared:
-            reports = reports | Report.objects.get(report_id=s.report_id)
+    if (request.user.is_authenticated()):
+        reports = getreports(request.user)
         return render(request, 'all-reports.html', {'reports': reports})
     else:
         return HttpResponseRedirect('/SecureWitness/account/login')
+
+
+def getreports(user):
+    public_reports = Report.objects.filter(private=0)
+    private_reports = Report.objects.filter(private=1)
+    user_groups = UserToGroup.objects.filter(user_id_id=user.id)
+    reports = public_reports
+    for group in user_groups:
+        group_reports = ReportGroupSharing.objects.filter(group_id=group.group_id_id)
+        for report in group_reports:
+            reports = reports | private_reports.filter(report_id=report.report_id)
+    for report in private_reports:
+        if (report not in reports) and (report.author_id == user.id):
+            reports = reports | Report.objects.filter(report_id=report.report_id)
+    return reports
 
 
 """
