@@ -72,41 +72,40 @@ def newreport(request):
 
 
 def submitreport(request):
-    if request.POST.get('short', False) and request.POST.get('long', False):
-        short = request.POST.get('short', False)
-        long = request.POST.get('long', False)
-        loc = request.POST.get('location', False)
-        date = request.POST.get('date', False)
-        keys = request.POST.get('keys', False)
-        priv = request.POST.get('private', False)
-        password = request.POST.get('pw', False)
-
-        cur_time = datetime.datetime.now()
-        usr = User.objects.get(username=request.user.username)
-
-        # TODO check if a report with the same short_desc exists
-        same_name = Report.objects.filter(short_desc=short)
-        if same_name.__sizeof__() > 0:
-            c = {}
-            c.update(csrf(request))
-            return HttpResponseRedirect('/SecureWitness/newreport/', c)
-
-        r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
+	if request.POST.get('short', False) and request.POST.get('long', False):
+		short = request.POST.get('short', False)
+		long = request.POST.get('long', False)
+		loc = request.POST.get('location', False)
+		date = request.POST.get('date', False)
+		keys = request.POST.get('keys', False)
+		priv = request.POST.get('private', False)
+		password = request.POST.get('pw', False)
+		encryption = request.POST.get('encrypt', False)
+		cur_time = datetime.datetime.now()
+		usr = User.objects.get(username=request.user.username)
+		
+		same_name = Report.objects.filter(short_desc=short)
+		if same_name.count() > 0:
+			c = {}
+			c.update(csrf(request))
+			return HttpResponseRedirect('/SecureWitness/newreport/', c)
+		
+		r = Report(author_id=usr.id, create_date=cur_time, last_update_date=cur_time, short_desc=short, long_desc=long,
                    location=loc, incident_date=date, keywords=keys, private=priv)
-        r.save()
-        r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
-        for file in request.FILES.getlist('files'):
-            path = os.getcwd() + '\\SecureWitness\\files\\'
-            dest = open(path + file.name, 'wb+')
-            dest.write(file.read())
-            dest.close()
-            encrypt(path, file.name, password)
-            f = File(author_id=usr.id, report_id=r.report_id, docfile=path, file_name=file.name)
-            f.save()
-        # r.save()
-        return HttpResponseRedirect('../newreport/submit_report_successful')
-    else:
-        return HttpResponseRedirect('../newreport/submit_report_failed')
+		r.save()
+		r = Report.objects.filter(author_id=usr.id, short_desc=short, incident_date=date)[0]
+		for file in request.FILES.getlist('files'):
+			path = os.getcwd() + '\\SecureWitness\\files\\'
+			dest = open(path + file.name, 'wb+')
+			dest.write(file.read())
+			dest.close()
+			if (encryption and password):
+				encrypt(path, file.name, password)
+			f = File(author_id=usr.id, report_id=r.report_id, docfile=path, file_name=file.name)
+			f.save()
+		return HttpResponseRedirect('../newreport/submit_report_successful')
+	else:
+		return HttpResponseRedirect('../newreport/submit_report_failed')
 
 
 def submit_report_successful(request):
@@ -1096,38 +1095,41 @@ def rename_report(request, id):
 
 
 def copy_report(request, id):
-    if request.method == 'POST':
-        cur_report = Report.objects.get(report_id=id)
-        new_report = Report(folder_id=cur_report.folder_id,
-                            group_id=cur_report.group_id,
-                            author=request.user,
-                            create_date=datetime.datetime.now(),
-                            last_update_date=datetime.datetime.now(),
-                            short_desc="{0} (copy)".format(cur_report.short_desc),
-                            report_name=cur_report.report_name,
-                            long_desc=cur_report.long_desc,
-                            location=cur_report.location,
-                            incident_date=cur_report.incident_date,
-                            keywords=cur_report.keywords,
-                            private=cur_report.private)
-        new_report.save()
+	if request.method == 'POST':
+		cur_report = Report.objects.get(report_id=id)
+		new_report = Report(folder_id=cur_report.folder_id,
+							group_id=cur_report.group_id,
+							author=request.user,
+							create_date=datetime.datetime.now(),
+							last_update_date=datetime.datetime.now(),
+							short_desc="{0} (copy)".format(cur_report.short_desc),
+							report_name=cur_report.report_name,
+							long_desc=cur_report.long_desc,
+							location=cur_report.location,
+							incident_date=cur_report.incident_date,
+							keywords=cur_report.keywords,
+							private=cur_report.private)
+		new_report.save()
 
-        c = {}
-        c.update(csrf(request))
-
-        report = new_report
-        if report.folder_id:
-            c['folder_name'] = report.folder.folder_name
-            c['folder_id'] = report.folder.folder_id
-        if report.group_id:
-            c['group_name'] = report.group.name
-            c['group_id'] = report.group.id
-        c['report_name'] = report.short_desc
-        c['author_name'] = report.author.username
-        c['author_id'] = report.author.id
-        c['report'] = report
-
-        return HttpResponseRedirect('../../' + str(report.report_id), c)
+		c = {}
+		c.update(csrf(request))
+		
+		report = new_report
+		if report.folder_id:
+			c['folder_name'] = report.folder.folder_name
+			c['folder_id'] = report.folder.folder_id
+		if report.group_id:
+			c['group_name'] = report.group.name
+			c['group_id'] = report.group.id
+		c['report_name'] = report.short_desc
+		c['author_name'] = report.author.username
+		c['author_id'] = report.author.id
+		c['report'] = report
+		files = File.objects.filter(report_id = id)
+		for f in files:
+			newfile = File(docfile = f.docfile, file_name = f.file_name, author_id = f.author_id, report_id = new_report.report_id)
+			newfile.save()
+		return HttpResponseRedirect('../../' + str(report.report_id), c)
 
 
 def map(request):
