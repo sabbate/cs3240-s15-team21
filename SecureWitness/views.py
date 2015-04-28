@@ -1229,7 +1229,7 @@ def getreports(user):
 def new_folder(request):
     c = {}
     c.update(csrf(request))
-    return HttpResponseRedirect('../', c)
+    return render_to_response('add_folder.html', c)
 
 
 @login_required(login_url="/SecureWitness/account/login")
@@ -1241,6 +1241,12 @@ def add_new_folder(request):
 
         # Find the specified group
         if group_name:
+            try:
+                group = Group.objects.get(name=group_name)
+            except:
+                c = {}
+                c.update(csrf(request))
+                return HttpResponseRedirect('../', c)
             group = Group.objects.get(name=group_name)
         else:
             # If the group doesn't exist, redirect back to the create page
